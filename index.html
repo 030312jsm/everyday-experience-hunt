@@ -463,6 +463,8 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
 #end{border-top:0;background:var(--paper);position:relative;z-index:3}
 .rows--screen{min-height:calc(100svh - 38px);justify-content:center;
   padding-top:clamp(18px,3vh,34px);padding-bottom:clamp(18px,3vh,34px)}
+.turnBody .rows--turn{min-height:calc(100svh - 38px - clamp(44px,7vh,96px));
+  padding-top:0;padding-bottom:0}
 #end h2{font-weight:800}
 .endSign{color:var(--ink-3)}
 #fsBtn:focus-visible{outline:2px solid var(--blu);outline-offset:3px}
@@ -682,7 +684,7 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
       </div>
     </div>
     <div class="turnBody"><div class="wrap">
-<div class="rows" style="margin-top:clamp(34px,5vh,64px)">
+<div class="rows rows--screen rows--turn">
       <div class="row rv"><p class="q">무엇을 하려고 했는가</p><p class="a">평택역 근처에서 저녁을 먹기 위해 이동중이었다.</p></div>
       <div class="row rv"><p class="q">어디에서 어떤 일이 있었는가</p><p class="a">보행자 신호를 확인해보니 남은 시간을 표시해주었다.</p></div>
       <div class="row rv"><p class="q">왜 좋은 경험이라고 느꼈는가</p><p class="a">신호에 남은시간이 직관적으로 표시되어 있으니, 초록불일때는 건너도 되는지, 빨간불일때는 얼마를 기다려야하는지 보다 쉽게 파악할 수 있었다.</p></div>
