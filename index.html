@@ -465,6 +465,10 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
   padding-top:clamp(18px,3vh,34px);padding-bottom:clamp(18px,3vh,34px)}
 .turnBody .rows--turn{min-height:calc(100svh - 38px - clamp(44px,7vh,96px));
   padding-top:0;padding-bottom:0}
+/* 소제목 없이 본문만 */
+.row .q{display:none}
+.row{grid-template-columns:minmax(0,1fr)}
+.row .a{font-size:clamp(16px,1.42vw,19.5px);line-height:1.78;max-width:78ch}
 #end h2{font-weight:800}
 .endSign{color:var(--ink-3)}
 #fsBtn:focus-visible{outline:2px solid var(--blu);outline-offset:3px}
@@ -535,10 +539,10 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
     </div>
     <div class="turnBody"><div class="wrap">
 <div class="rows">
-      <div class="row rv"><p class="q">무엇을 하려고 했는가</p><p class="a">지방권 시내버스를 탑승하려고 네이버 대중교통 어플을 사용했다.</p></div>
-      <div class="row rv"><p class="q">어디에서 어떤 일이 있었는가</p><p class="a">공주시, 장수군 등의 지방 지역에서는 어플상의 정보와 달리 버스 시간이 정확하게 오지 않고, 심지어 오지도 않는 경우가 가끔씩 있었다.</p></div>
-      <div class="row rv"><p class="q">어떤 문제가 발생했는가</p><p class="a">버스 시간이 정확한 시간에 오지 않고, 적게는 몇 분 길게는 몇십 분이 차이 나는 교통으로 약속시간을 지키지 못하거나, 알바 시간에 늦을 뻔한 경험도 많아, 택시를 사용하는 경우도 있었다.</p></div>
-      <div class="row rv"><p class="q">왜 불편하다고 느꼈는가</p><p class="a">그로 인하여 불규칙적인 시간을 사용하는 것이 피곤하고 불편하게 느껴졌다. 해당 버스의 위치를 정확히 표시하는 요소가 수도권처럼 필요해 보였다.</p></div>
+      <div class="row rv"><p class="q">무엇을 하려고 했는가</p><p class="a">지방권 시내버스를 탑승하려고 <b>네이버 대중교통 어플</b>을 사용했다.</p></div>
+      <div class="row rv"><p class="q">어디에서 어떤 일이 있었는가</p><p class="a">공주시, 장수군 등의 지방 지역에서는 <b>어플상의 정보와 달리</b> 버스 시간이 정확하게 오지 않고, 심지어 <b>오지도 않는</b> 경우가 가끔씩 있었다.</p></div>
+      <div class="row rv"><p class="q">어떤 문제가 발생했는가</p><p class="a">버스 시간이 <b>정확한 시간에 오지 않고</b>, 적게는 몇 분 길게는 몇십 분이 차이 나는 교통으로 약속시간을 지키지 못하거나, 알바 시간에 늦을 뻔한 경험도 많아, <b>택시를 사용하는 경우도</b> 있었다.</p></div>
+      <div class="row rv"><p class="q">왜 불편하다고 느꼈는가</p><p class="a">그로 인하여 불규칙적인 시간을 사용하는 것이 <b>피곤하고 불편하게</b> 느껴졌다. 해당 버스의 위치를 <b>정확히 표시하는</b> 요소가 수도권처럼 필요해 보였다.</p></div>
       <div class="row row--key rv"><p class="q">인사이트</p><p class="a">지방 버스는 <b>실제 버스 위치가 아니라 시간표로</b> 도착 시간을 알려줘서, 앱을 믿고 움직여도 시간을 지킬 수 없고 결국 택시 같은 추가 비용을 쓰게 된다.</p></div>
       <p class="kw"><span class="kwlab">키워드</span><span class="tag">#지방대중교통</span><span class="tag">#버스도착정보</span><span class="tag">#실시간 위치</span></p>
     </div>
@@ -576,7 +580,7 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
       <div class="seqside">
         <div class="seqbar"><i></i></div>
         <ol>
-          <li>검색 결과에 주차장 이름은 나오지만, 잔여 면수 자리는 비어 있다.</li>
+          <li>검색 결과에 주차장 이름은 나오지만,<br>잔여 면수 자리는 비어 있다.</li>
           <li>지도에 표시된 주차 구역에도 남은 자리 정보가 없다.</li>
           <li>대형 마트처럼 차단기가 있는 곳도 혼잡도를 알 수 없다.</li>
         </ol>
@@ -591,7 +595,7 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
       <div class="row rv"><p class="q">어디에서 어떤 일이 있었는가</p><p class="a">주차장에 도착하기 전, 주차공간은 여유가 있는지, 혼잡도는 어느 정도인지 알 수 없었다.</p></div>
       <div class="row rv"><p class="q">왜 불편하다고 느꼈는가</p><p class="a">주차장을 검색할 시, 주차 가능 차대 수와 혼잡도가 검색 시 곧장 나오지 않고, 주차장을 일일이 눌러가며 확인해야 한다. 하지만 그마저도 정보가 부족해 나오지 않는 경우가 허다하다.</p></div>
       <div class="row rv"><p class="q">큰 부지의 경우</p><p class="a">큰 부지를 가지는 학교나 대형 마트의 경우 자동 주차차단기가 설치되어 있는 경우가 많은데, 지도앱을 통해 정보가 전달되지 않아 현 상황을 알 수 없어서 불편했다.</p></div>
-      <div class="row rv"><p class="q">기타</p><p class="a">해시태그를 통한 검색 시, 추가적인 별도의 조작 없이도 필요한 정보를 빠르게 파악할 수 있었으면 좋겠다.</p></div>
+      <div class="row rv"><p class="q">기타</p><p class="a">해시태그를 통한 검색 시, 추가적인 별도의 조작 없이도 필요한 정보를<br>빠르게 파악할 수 있었으면 좋겠다.</p></div>
       <div class="row row--key rv"><p class="q">인사이트</p><p class="a"><b>빠른 정보 서치</b>와, 그에 맞는 서비스 제공에 대한 필요성.</p></div>
       <p class="kw"><span class="kwlab">키워드</span><span class="tag">#빠른 정보 전달</span><span class="tag">#실시간</span><span class="tag">#어플 내 여백 활용</span></p>
     </div>
