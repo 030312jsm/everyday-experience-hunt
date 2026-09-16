@@ -469,6 +469,26 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
 #end h2{font-weight:800}
 .endSign{color:var(--ink-3)}
 #fsBtn:focus-visible{outline:2px solid var(--blu);outline-offset:3px}
+
+/* ── 우측 목차 레일 ───────────────────────── */
+#rail{position:fixed;right:clamp(12px,1.8vw,28px);top:50%;transform:translateY(-50%);
+  z-index:60;display:flex;flex-direction:column;align-items:flex-end;
+  gap:clamp(10px,1.5vh,18px);padding:6px 0}
+#rail a{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;
+  padding:4px 0;cursor:pointer}
+#rail .lb{font-size:11.5px;font-weight:600;letter-spacing:.03em;color:var(--ink-3);
+  white-space:nowrap;opacity:0;transform:translateX(8px);
+  transition:opacity .3s ease,transform .35s cubic-bezier(.16,1,.3,1),color .25s ease}
+#rail i{display:block;width:16px;height:2px;border-radius:2px;background:rgba(24,32,46,.28);
+  transition:width .35s cubic-bezier(.16,1,.3,1),background-color .25s ease}
+#rail a:hover .lb{opacity:1;transform:none;color:var(--ink-2)}
+#rail a:hover i{width:30px;background:rgba(24,32,46,.5)}
+#rail a.on .lb{opacity:1;transform:none;color:var(--blu)}
+#rail a.on i{width:38px;background:var(--blu)}
+#rail a:focus-visible{outline:2px solid var(--blu);outline-offset:4px;border-radius:4px}
+@media(max-width:1100px){#rail .lb{display:none}}
+@media(max-width:880px){#rail{display:none}}
+@media(prefers-reduced-motion:reduce){#rail .lb,#rail i{transition:none}}
 </style>
 
 <div id="top">
@@ -479,6 +499,7 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
   <div id="prog"></div>
 </div>
 
+<nav id="rail" aria-label="섹션 목차"></nav>
 <main>
 
 <section id="cover" data-nav="표지" data-beat>
@@ -902,6 +923,23 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
   });
   var solos = [].slice.call(document.querySelectorAll('.solo, .wide'));
   var bleed = document.querySelector('.bleedwrap img');
+  /* 우측 목차 레일 */
+  var rail = document.getElementById('rail'), railLinks = [];
+  if (rail){
+    secs.forEach(function(sec, k){
+      var a = document.createElement('a');
+      a.href = '#' + sec.id;
+      a.innerHTML = '<span class="lb">' + sec.dataset.nav + '</span><i></i>';
+      a.setAttribute('aria-label', sec.dataset.nav);
+      a.addEventListener('click', function(e){
+        e.preventDefault();
+        var y = Math.max(0, sec.getBoundingClientRect().top + scrollY - 38);
+        scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+      });
+      rail.appendChild(a); railLinks.push(a);
+    });
+  }
+
   var wide = matchMedia('(min-width: 881px)');
   var ticking = false;
 
@@ -915,7 +953,8 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
 
     var mid = scrollY + vh * .35, b = 0;
     for (var i = 0; i < secs.length; i++) if (secs[i].offsetTop <= mid) b = i;
-    if (b !== cur){ cur = b; now.textContent = secs[b].dataset.nav; }
+    if (b !== cur){ cur = b; now.textContent = secs[b].dataset.nav;
+      if (railLinks.length) railLinks.forEach(function(a,k){ a.classList.toggle('on', k === b); }); }
 
     if (reduce) return;
 
