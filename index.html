@@ -907,7 +907,11 @@ h1,h2,h3{font-weight:800;letter-spacing:-.04em}
     if (!window.__useEnter) requestAnimationFrame(window.__startCover);
 
     var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('go'); io.unobserve(e.target); } });
+      es.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('go'); }
+        /* 화면 아래로 벗어났을 때만 되돌려서, 다시 내려오면 애니메이션이 재생되게 한다 */
+        else if (e.boundingClientRect.top > 0){ e.target.classList.remove('go'); }
+      });
     }, { threshold: .1, rootMargin: '0px 0px -8% 0px' });
     document.querySelectorAll('.head, .row, .figs, .kw, #end').forEach(function(n){ io.observe(n); });
   } else {
