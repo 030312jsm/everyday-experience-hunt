@@ -377,6 +377,93 @@ main{padding-top:38px}
   .turnpin{position:static!important;height:auto!important;opacity:1!important}
   .turnDev,.turnBody{transform:none!important;opacity:1!important}
 }
+
+/* ── D · 소프트 앱 UI ──────────────────────────────── */
+:root{
+  --paper:#F4F6FB; --card:#FFFFFF;
+  --ink:#18202E; --ink-2:#4B5568; --ink-3:#8A94A6;
+  --red:#2F6BFF;              /* 주 강조 */
+  --bad:#E5484D; --grn:#12805C; --blu:#2F6BFF;
+  --line:#DFE5F0; --soft:#E9EEFB;
+  --sh:0 16px 34px -24px rgba(24,32,46,.55);
+  --sh-lg:0 26px 54px -30px rgba(24,32,46,.6);
+}
+body{font-size:16.5px}
+h1,h2,h3{font-weight:800;letter-spacing:-.04em}
+
+#top{background:rgba(255,255,255,.86);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line)}
+#top b{font-weight:700}
+#prog{background:var(--red);height:2px}
+
+.rule{background:var(--line)}
+.rule--h{height:2px;background:var(--line)}
+.hrule{height:2px;background:var(--line)}
+.edge{display:none}
+
+.kind{border:0;border-radius:99px;padding:4px 12px 5px;font-weight:700;
+  background:var(--soft);color:var(--blu)}
+.k-bad{background:#FDECEC;color:var(--bad)}
+.k-good{background:#E3F4EE;color:var(--grn)}
+.k-fut{background:var(--soft);color:var(--blu)}
+
+#cover h1 em{color:var(--red)}
+.intro{border-top:1px solid var(--line)}
+
+.toc a{border-top:0;border-radius:18px;background:var(--card);box-shadow:var(--sh);
+  padding:clamp(16px,2.1vw,26px) clamp(18px,2.4vw,30px);margin-bottom:12px;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease}
+.toc a:last-of-type{border-bottom:0}
+.toc a:hover{padding-left:clamp(18px,2.4vw,30px);transform:translateY(-3px);box-shadow:var(--sh-lg)}
+.toc .mark{display:none}
+.toc .t{font-weight:700}
+
+.head{border-top:0}
+.head .src{color:var(--ink-3)}
+
+/* 분석 행 → 카드 */
+.rows{border-top:0;display:flex;flex-direction:column;gap:12px;
+  padding-top:clamp(10px,1.6vh,18px)}
+.row{border-bottom:0;background:var(--card);border-radius:18px;box-shadow:var(--sh);
+  padding:clamp(18px,2.2vw,26px) clamp(20px,2.6vw,32px);
+  grid-template-columns:clamp(132px,15vw,220px) minmax(0,1fr);
+  gap:clamp(16px,2.6vw,40px)}
+.row .q{color:var(--blu)}
+.row .a{color:var(--ink-2)}
+.row--key{background:var(--blu);box-shadow:0 22px 44px -26px rgba(47,107,255,.85)}
+.row--key .q,.row--key .a,.row--key .a b{color:#fff}
+.s4 .row--key{background:var(--grn);box-shadow:0 22px 44px -26px rgba(18,128,92,.8)}
+.s4 .row--key .q{color:#fff}
+.s5 .row--key{background:#1B2A4A;box-shadow:0 22px 44px -26px rgba(27,42,74,.8)}
+.s5 .row--key .q{color:#fff}
+
+.kw{gap:8px}
+.kwlab{color:var(--ink-3)}
+.tag{border:0;border-radius:99px;background:var(--soft);color:var(--blu);font-weight:500}
+.tag:hover{background:#D9E4FE;color:var(--blu)}
+
+/* 폰 목업 · 스테이지 */
+.dev{box-shadow:0 34px 60px -30px rgba(24,32,46,.55),0 0 0 1px rgba(24,32,46,.12)}
+.devHint{color:var(--ink-3)}
+.devNote h3{font-weight:800}
+.devMeta{border-top:1px solid var(--line)}
+.devMeta div{border-bottom:1px solid var(--line)}
+.devMeta b{color:var(--blu)}
+.turnFlow .fn{color:var(--blu)}
+.turnFlow img{filter:drop-shadow(0 26px 40px rgba(24,32,46,.3))}
+
+.seqside li{border-top:1px solid var(--line);color:var(--ink-3)}
+.seqside li.on{color:var(--ink)}
+.seqside li.on::before{color:var(--blu)}
+.seqbar{background:var(--line);opacity:1}
+.seqbar i{background:var(--blu)}
+
+.gCard .ph{background:#E9EEF8;border-radius:16px}
+
+#end{border-top:0;background:var(--paper);position:relative;z-index:3}
+#end h2{font-weight:800}
+.endSign{color:var(--ink-3)}
+#fsBtn:focus-visible{outline:2px solid var(--blu);outline-offset:3px}
 </style>
 
 <div id="top">
