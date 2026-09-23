@@ -307,21 +307,30 @@ main{padding-top:38px}
 @media(max-width:760px){#srcs ol{columns:1}}
 
 /* hunt3 추가 */
-/* 커스텀 커서 */
-.c-dot,.c-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:200;border-radius:50%;translate:-50% -50%;display:none}
-html.has-cur .c-dot,html.has-cur .c-ring{display:block}
+/* 커스텀 커서: 음성 비서 오브 */
+.c-dot,.c-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:200;translate:-50% -50%;display:none}
+html.has-cur .c-dot,html.has-cur .c-ring{display:flex}
 html.has-cur,html.has-cur *{cursor:none!important}
-.c-dot{width:6px;height:6px;background:#fff;mix-blend-mode:difference}
-.c-ring{width:38px;height:38px;border:1.5px solid #fff;mix-blend-mode:difference;display:grid;place-items:center;
-  transition:width .45s cubic-bezier(.7,0,.2,1),height .45s cubic-bezier(.7,0,.2,1),margin .45s cubic-bezier(.7,0,.2,1),background .3s,border-color .3s}
-.c-ring.hov{width:58px;height:58px}
-.c-ring.lab{width:96px;height:96px;margin:62px 0 0 62px;background:var(--blu);border-color:var(--blu);mix-blend-mode:normal;box-shadow:0 14px 30px -12px rgba(47,107,255,.7)}
-.c-ring svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;opacity:0;transition:opacity .25s}
-.c-ring.lab svg{opacity:1;transition-delay:.15s;animation:cspin 9s linear infinite}
-.c-ring text{font:700 10.5px Pretendard,system-ui,sans-serif;letter-spacing:.16em;fill:#fff}
-.c-ring .arw{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:18px;font-weight:700;opacity:0;transition:opacity .25s}
-.c-ring.lab .arw{opacity:1;transition-delay:.15s}
-@keyframes cspin{to{transform:rotate(360deg)}}
+.c-dot{width:12px;height:12px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff 0,#A9C1FF 30%,#2F6BFF 62%,#6A4DFF 100%);
+  box-shadow:0 0 10px rgba(47,107,255,.85),0 0 26px rgba(122,92,255,.45);transition:scale .2s,opacity .3s}
+.c-dot.tap{scale:.55}
+.c-ring{width:40px;height:40px;border-radius:999px;align-items:center;justify-content:center;gap:3px;
+  background:radial-gradient(circle,rgba(47,107,255,.14),rgba(47,107,255,.04) 70%);border:1px solid rgba(47,107,255,.28);
+  transition:width .45s cubic-bezier(.7,0,.2,1),height .45s cubic-bezier(.7,0,.2,1),margin .45s cubic-bezier(.7,0,.2,1),background .3s,border-color .3s,box-shadow .3s,opacity .3s;
+  animation:cbreath 2.6s ease-in-out infinite}
+@keyframes cbreath{50%{box-shadow:0 0 0 6px rgba(47,107,255,.06)}}
+.c-ring .wv{display:none;align-items:center;gap:3px;height:16px}
+.c-ring .wv b{display:block;width:3px;height:100%;border-radius:3px;background:var(--blu);transform-origin:center;animation:cwave .9s ease-in-out infinite}
+.c-ring .wv b:nth-child(2){animation-delay:-.15s}.c-ring .wv b:nth-child(3){animation-delay:-.45s}.c-ring .wv b:nth-child(4){animation-delay:-.3s}
+@keyframes cwave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+.c-ring .lb{display:none;font:800 11.5px Pretendard,system-ui,sans-serif;letter-spacing:.12em;color:#fff;white-space:nowrap}
+.c-ring.hov{width:58px;height:58px;background:rgba(47,107,255,.12);border-color:rgba(47,107,255,.5)}
+.c-ring.hov .wv{display:flex}
+.c-ring.lab{height:40px;background:linear-gradient(120deg,#2F6BFF,#6A4DFF);border-color:transparent;gap:10px;
+  box-shadow:0 14px 30px -12px rgba(47,107,255,.8);animation:none}
+.c-ring.lab .wv{display:flex}.c-ring.lab .wv b{background:#fff}
+.c-ring.lab .lb{display:block}
 .stage{cursor:pointer}
 
 #s10 .dele th,#s10 .dele td{padding:9px 22px}
@@ -419,7 +428,7 @@ html.has-cur,html.has-cur *{cursor:none!important}
   <div id="prog"></div>
 </header>
 <div class="c-dot" id="cDot" aria-hidden="true"></div>
-<div class="c-ring" id="cRing" aria-hidden="true"><svg viewBox="0 0 100 100"><path id="cPath" fill="none" d="M50 87a37 37 0 1 1 0-74a37 37 0 1 1 0 74"/><text><textPath id="cText" href="#cPath" startOffset="0"></textPath></text></svg><span class="arw">→</span></div>
+<div class="c-ring" id="cRing" aria-hidden="true"><i class="wv"><b></b><b></b><b></b><b></b></i><span class="lb" id="cLab"></span></div>
 <nav id="rail" aria-label="섹션 목차"></nav>
 
 <main>
@@ -810,17 +819,22 @@ html.has-cur,html.has-cur *{cursor:none!important}
   /* 커스텀 커서 */
   (function(){
     if (!matchMedia('(pointer: fine)').matches || reduce) return;
-    var dot=document.getElementById('cDot'), ring=document.getElementById('cRing'), txt=document.getElementById('cText');
+    var dot=document.getElementById('cDot'), ring=document.getElementById('cRing'), lb=document.getElementById('cLab');
     document.documentElement.classList.add('has-cur');
-    var x=innerWidth/2, y=innerHeight/2, rx=x, ry=y, lab='';
+    var x=innerWidth/2, y=innerHeight/2, rx=x, ry=y, lab=null;
     addEventListener('pointermove',function(e){ x=e.clientX; y=e.clientY; dot.style.transform='translate('+x+'px,'+y+'px)'; },{passive:true});
-    (function loop(){ rx+=(x-rx)*.18; ry+=(y-ry)*.18; ring.style.transform='translate('+rx+'px,'+ry+'px)'; requestAnimationFrame(loop); })();
+    (function loop(){ rx+=(x-rx)*.16; ry+=(y-ry)*.16; ring.style.transform='translate('+rx+'px,'+ry+'px)'; requestAnimationFrame(loop); })();
     addEventListener('pointerover',function(e){
       var t=e.target.closest('[data-cur]'), h=e.target.closest('a,button');
       var l=t?t.getAttribute('data-cur'):'';
-      if (l!==lab){ lab=l; if(l){ var r=(l+' · ').repeat(Math.max(2,Math.ceil(28/(l.length+3)))); txt.textContent=r; } }
+      if (l===lab) return; lab=l;
+      if (l){ lb.textContent=l; var w=Math.ceil(lb.scrollWidth||l.length*8)+64; ring.style.width=w+'px'; ring.style.marginLeft=(w/2+14)+'px'; ring.style.marginTop='34px'; }
+      else { ring.style.width=''; ring.style.marginLeft=''; ring.style.marginTop=''; }
       ring.classList.toggle('lab',!!l); ring.classList.toggle('hov',!l&&!!h);
     });
+    addEventListener('pointerover',function(e){ if(!lab) ring.classList.toggle('hov',!!e.target.closest('a,button')); });
+    addEventListener('pointerdown',function(){ dot.classList.add('tap'); });
+    addEventListener('pointerup',function(){ dot.classList.remove('tap'); });
     document.addEventListener('mouseleave',function(){ dot.style.opacity=ring.style.opacity=0; });
     document.addEventListener('mouseenter',function(){ dot.style.opacity=ring.style.opacity=1; });
   })();
