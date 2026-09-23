@@ -479,7 +479,7 @@ main{padding-top:38px}
         <div class="card stat rv d5"><span class="big r">47%</span><p>스마트 스피커 불만 1위는 <b>음성 인식 불량</b>이었다.<br><span class="src">컨슈머인사이트 · 전자신문 2021-03-24</span></p></div>
       </div>
     </div>
-    <div class="key rv"><span class="k">FINDING</span><p>스마트 스피커가 있어도 날씨·음악 같은 단순한 기능 위주로 쓰이고, 나머지 일은 대부분 스마트폰 앱으로 처리하는 편이다.</p></div>
+    <div class="key rv"><span class="k">INSIGHT</span><p>스마트 스피커가 있어도 날씨·음악 같은 단순한 기능 위주로 쓰이고, 나머지 일은 대부분 스마트폰 앱으로 처리하는 편이다.</p></div>
   </div>
 </section>
 
@@ -506,7 +506,7 @@ main{padding-top:38px}
         <p class="src">9to5Google 2025-10 · Google Blog 2026-06-17 · TechRadar 2025-12-17</p>
       </div>
     </div>
-    <div class="key rv"><span class="k">GOOD POINT</span><p>앱을 하나씩 열지 않아도, 음성으로 여러 기기와 외부 서비스를 함께 사용할 수 있다.</p></div>
+    <div class="key rv"><span class="k">INSIGHT</span><p>앱을 하나씩 열지 않아도, 음성으로 여러 기기와 외부 서비스를 함께 사용할 수 있다.</p></div>
   </div>
 </section>
 
@@ -545,7 +545,7 @@ main{padding-top:38px}
       <ul><li><b>택시 대신 불러주기</b>: 전화로 출발지와 목적지를 말하면 상담원이 카카오T 택시를 대신 부른다. 월 2만 건 이상, 누적 약 15만 건.</li>
       <li>AI가 아니라 사람이 확인하고 호출하는 방식이다.</li></ul>
       <p class="src">KT is × 카카오모빌리티 · 2026-08-10 보도</p></div>
-    <div class="key rv"><span class="k">GOOD POINT</span><p>대신 해주는 서비스에 대한 수요는 있는 편이다. 다만 현재는 대부분 사람이 중간에서 확인하는 방식이다.</p></div>
+    <div class="key rv"><span class="k">INSIGHT</span><p>대신 해주는 서비스에 대한 수요는 있는 편이다. 다만 현재는 대부분 사람이 중간에서 확인하는 방식이다.</p></div>
   </div>
 </section>
 
@@ -572,7 +572,7 @@ main{padding-top:38px}
         <p>2025-09 출시. 스마트폰을 없애지 않고 보완하는 안경으로, <b>작은 화면을 오히려 추가했다.</b> 수요가 공급을 넘어 해외 출시를 미뤘다.</p>
         <p class="src">Meta 2025-09 · TechCrunch 2026-01-06</p></div>
     </div>
-    <div class="key rv"><span class="k">FINDING</span><p>스마트폰을 대체하려던 기기는 대부분 실패했고, 스마트폰을 보완하는 기기는 판매가 늘고 있다. 결과를 확인할 화면은 아직 필요한 것으로 보인다.</p></div>
+    <div class="key rv"><span class="k">INSIGHT</span><p>스마트폰을 대체하려던 기기는 대부분 실패했고, 스마트폰을 보완하는 기기는 판매가 늘고 있다. 결과를 확인할 화면은 아직 필요한 것으로 보인다.</p></div>
   </div>
 </section>
 
@@ -653,7 +653,7 @@ main{padding-top:38px}
         <div class="card"><h4>물어보는 일</h4><p>돈·이동이 걸린 일만 확인</p></div>
       </div>
     </div>
-    <div class="key rv"><span class="k">KEY INSIGHT</span><p>필요한 기술은 대부분 나와 있고, 무엇을 바로 처리하고 무엇을 확인받을지 나누는 경험 설계가 필요하다.</p></div>
+    <div class="key rv"><span class="k">INSIGHT</span><p>필요한 기술은 대부분 나와 있고, 무엇을 바로 처리하고 무엇을 확인받을지 나누는 경험 설계가 필요하다.</p></div>
   </div>
 </section>
 
@@ -681,7 +681,7 @@ main{padding-top:38px}
       </table>
       <p class="note">비중은 조사한 서비스 사례를 바탕으로 정한 정성 비교</p>
     </div>
-    <div class="key rv"><span class="k">다시 시나리오로</span><p>시나리오 속 택시 호출과 저녁 주문은 돈과 이동이 걸린 일이라, 실제로는 사용자 확인을 한 번 거치는 것이 좋다.</p></div>
+    <div class="key rv"><span class="k">INSIGHT</span><p>시나리오 속 택시 호출과 저녁 주문은 돈과 이동이 걸린 일이라, 실제로는 사용자 확인을 한 번 거치는 것이 좋다.</p></div>
   </div>
 </section>
 
@@ -761,6 +761,8 @@ main{padding-top:38px}
     var d = (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') ? 1
           : ((e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') ? -1 : 0);
     if (!d) return; e.preventDefault();
+    var sc = document.getElementById('s8');
+    if (sc && window.__scn && Math.abs(scrollY - (sc.offsetTop - 38)) < 40 && __scn.step(d)) return;
     var stops = [];
     secs.forEach(function(s){
       var top = s.offsetTop - 38, h = s.offsetHeight, vh = innerHeight - 38;
@@ -771,6 +773,7 @@ main{padding-top:38px}
     if (d > 0){ for (var i = 0; i < stops.length; i++) if (stops[i] > y + 24){ next = stops[i]; break; } }
     else { for (var j = stops.length - 1; j >= 0; j--) if (stops[j] < y - 24){ next = stops[j]; break; } }
     if (next === null) next = d > 0 ? document.documentElement.scrollHeight : 0;
+    if (sc && window.__scn && Math.abs(next - (sc.offsetTop - 38)) < 2) __scn.set(d > 0 ? 0 : -1);
     scrollTo({ top: next, behavior: reduce ? 'auto' : 'smooth' });
   });
 
@@ -779,6 +782,8 @@ main{padding-top:38px}
   (function(){
     var st=[].slice.call(document.querySelectorAll('.st')), fg=[].slice.call(document.querySelectorAll('.stage figure'));
     function show(i){ st.forEach(function(b,k){b.classList.toggle('on',k===i)}); fg.forEach(function(f,k){f.classList.toggle('on',k===i)}); }
+    var cur=0; var show0=show; show=function(i){cur=i;show0(i);};
+    window.__scn={ step:function(d){ var n=cur+d; if(n<0||n>=st.length) return false; show(n); return true; }, set:function(i){ show(i<0?st.length-1:i); } };
     st.forEach(function(b,i){ b.addEventListener('click',function(){show(i)}); b.addEventListener('mouseenter',function(){show(i)}); });
   })();
   /* 전체화면 */
