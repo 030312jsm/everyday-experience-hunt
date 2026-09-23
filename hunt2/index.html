@@ -307,30 +307,18 @@ main{padding-top:38px}
 @media(max-width:760px){#srcs ol{columns:1}}
 
 /* hunt3 추가 */
-/* 커스텀 커서: 음성 비서 오브 */
+/* 커스텀 커서: 미니멀 */
 .c-dot,.c-ring{position:fixed;left:0;top:0;pointer-events:none;z-index:200;translate:-50% -50%;display:none}
 html.has-cur .c-dot,html.has-cur .c-ring{display:flex}
 html.has-cur,html.has-cur *{cursor:none!important}
-.c-dot{width:12px;height:12px;border-radius:50%;
-  background:radial-gradient(circle at 35% 30%,#fff 0,#A9C1FF 30%,#2F6BFF 62%,#6A4DFF 100%);
-  box-shadow:0 0 10px rgba(47,107,255,.85),0 0 26px rgba(122,92,255,.45);transition:scale .2s,opacity .3s}
-.c-dot.tap{scale:.55}
-.c-ring{width:40px;height:40px;border-radius:999px;align-items:center;justify-content:center;gap:3px;
-  background:radial-gradient(circle,rgba(47,107,255,.14),rgba(47,107,255,.04) 70%);border:1px solid rgba(47,107,255,.28);
-  transition:width .45s cubic-bezier(.7,0,.2,1),height .45s cubic-bezier(.7,0,.2,1),margin .45s cubic-bezier(.7,0,.2,1),background .3s,border-color .3s,box-shadow .3s,opacity .3s;
-  animation:cbreath 2.6s ease-in-out infinite}
-@keyframes cbreath{50%{box-shadow:0 0 0 6px rgba(47,107,255,.06)}}
-.c-ring .wv{display:none;align-items:center;gap:3px;height:16px}
-.c-ring .wv b{display:block;width:3px;height:100%;border-radius:3px;background:var(--blu);transform-origin:center;animation:cwave .9s ease-in-out infinite}
-.c-ring .wv b:nth-child(2){animation-delay:-.15s}.c-ring .wv b:nth-child(3){animation-delay:-.45s}.c-ring .wv b:nth-child(4){animation-delay:-.3s}
-@keyframes cwave{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
-.c-ring .lb{display:none;font:800 11.5px Pretendard,system-ui,sans-serif;letter-spacing:.12em;color:#fff;white-space:nowrap}
-.c-ring.hov{width:58px;height:58px;background:rgba(47,107,255,.12);border-color:rgba(47,107,255,.5)}
-.c-ring.hov .wv{display:flex}
-.c-ring.lab{height:40px;background:linear-gradient(120deg,#2F6BFF,#6A4DFF);border-color:transparent;gap:10px;
-  box-shadow:0 14px 30px -12px rgba(47,107,255,.8);animation:none}
-.c-ring.lab .wv{display:flex}.c-ring.lab .wv b{background:#fff}
-.c-ring.lab .lb{display:block}
+.c-dot{width:8px;height:8px;border-radius:50%;background:#fff;mix-blend-mode:difference;transition:width .3s cubic-bezier(.2,.8,.2,1),height .3s cubic-bezier(.2,.8,.2,1),opacity .2s}
+.c-dot.hov{width:44px;height:44px}
+.c-dot.hide{opacity:0}
+.c-ring{height:34px;padding:0 16px;border-radius:999px;background:var(--ink);color:#fff;align-items:center;gap:8px;
+  font:700 11px Pretendard,system-ui,sans-serif;letter-spacing:.14em;white-space:nowrap;
+  opacity:0;scale:.6;transition:opacity .2s,scale .3s cubic-bezier(.2,.8,.2,1)}
+.c-ring.lab{opacity:1;scale:1}
+.c-ring i{font-style:normal;font-size:13px;letter-spacing:0}
 .stage{cursor:pointer}
 
 #s10 .dele th,#s10 .dele td{padding:9px 22px}
@@ -428,7 +416,7 @@ html.has-cur,html.has-cur *{cursor:none!important}
   <div id="prog"></div>
 </header>
 <div class="c-dot" id="cDot" aria-hidden="true"></div>
-<div class="c-ring" id="cRing" aria-hidden="true"><i class="wv"><b></b><b></b><b></b><b></b></i><span class="lb" id="cLab"></span></div>
+<div class="c-ring" id="cRing" aria-hidden="true"><span id="cLab"></span><i>→</i></div>
 <nav id="rail" aria-label="섹션 목차"></nav>
 
 <main>
@@ -471,7 +459,7 @@ html.has-cur,html.has-cur *{cursor:none!important}
     <p class="eb rv">02 · Scenario<span>우리가 상상한 하루</span></p>
     <h2 class="h2 rv d1">스마트폰을 꺼내지 않는 하루</h2>
     <div class="scv">
-      <div class="stage rv d2" data-cur="NEXT SCENE"><figure class="on" data-i="0"><img class="bg" src="assets/sc1.jpg" alt="" aria-hidden="true"><img class="fg" src="assets/sc1.jpg" alt="집을 나서는 사람 옆에 오늘 일정과 날씨, 엘리베이터 도착 정보가 떠 있는 장면."></figure><figure class="" data-i="1"><img class="bg" src="assets/sc2.jpg" alt="" aria-hidden="true"><img class="fg" src="assets/sc2.jpg" alt="마트에서 카트를 미는 사람 앞에 매대 위치 안내가 떠 있는 장면."></figure><figure class="" data-i="2"><img class="bg" src="assets/sc3.jpg" alt="" aria-hidden="true"><img class="fg" src="assets/sc3.jpg" alt="밤거리에서 '나 이제 집에 가고 싶어'라고 말하자 택시와 경로 정보가 떠 있는 장면."></figure><figure class="" data-i="3"><img class="bg" src="assets/sc4.jpg" alt="" aria-hidden="true"><img class="fg" src="assets/sc4.jpg" alt="소파에 기댄 사람이 '나 오늘 너무 정신없다'라고 말하자 조명, 일정, 배달 정보가 떠 있는 장면."></figure></div>
+      <div class="stage rv d2" data-cur="NEXT"><figure class="on" data-i="0"><img class="bg" src="assets/sc1.jpg" alt="" aria-hidden="true"><img class="fg" src="assets/sc1.jpg" alt="집을 나서는 사람 옆에 오늘 일정과 날씨, 엘리베이터 도착 정보가 떠 있는 장면."></figure><figure class="" data-i="1"><img class="bg" src="assets/sc2.jpg" alt="" aria-hidden="true"><img class="fg" src="assets/sc2.jpg" alt="마트에서 카트를 미는 사람 앞에 매대 위치 안내가 떠 있는 장면."></figure><figure class="" data-i="2"><img class="bg" src="assets/sc3.jpg" alt="" aria-hidden="true"><img class="fg" src="assets/sc3.jpg" alt="밤거리에서 '나 이제 집에 가고 싶어'라고 말하자 택시와 경로 정보가 떠 있는 장면."></figure><figure class="" data-i="3"><img class="bg" src="assets/sc4.jpg" alt="" aria-hidden="true"><img class="fg" src="assets/sc4.jpg" alt="소파에 기댄 사람이 '나 오늘 너무 정신없다'라고 말하자 조명, 일정, 배달 정보가 떠 있는 장면."></figure></div>
       <div class="steps rv d3"><button data-cur="VIEW" class="st on" data-i="0"><span class="tm">08:10 · 외출</span><h3>나가려는 순간 필요한 정보만</h3>
         <p>오늘 일정과 날씨, 출근 시간을 알려주고 엘리베이터와 택시를 미리 부른다.</p></button><button data-cur="VIEW" class="st" data-i="1"><span class="tm">18:40 · 장보기</span><h3>필요한 물건이 있는 곳으로 안내</h3>
         <p>“유제품 코너 찾아줘”라고 말하면 매대까지 가는 길을 바닥과 화면에 표시한다.</p></button><button data-cur="VIEW" class="st" data-i="2"><span class="tm">22:30 · 귀가</span><h3>“나 이제 집에 가고 싶어”</h3>
@@ -819,24 +807,21 @@ html.has-cur,html.has-cur *{cursor:none!important}
   /* 커스텀 커서 */
   (function(){
     if (!matchMedia('(pointer: fine)').matches || reduce) return;
-    var dot=document.getElementById('cDot'), ring=document.getElementById('cRing'), lb=document.getElementById('cLab');
+    var dot=document.getElementById('cDot'), tag=document.getElementById('cRing'), lb=document.getElementById('cLab');
     document.documentElement.classList.add('has-cur');
-    var x=innerWidth/2, y=innerHeight/2, rx=x, ry=y, lab=null;
-    addEventListener('pointermove',function(e){ x=e.clientX; y=e.clientY; dot.style.transform='translate('+x+'px,'+y+'px)'; },{passive:true});
-    (function loop(){ rx+=(x-rx)*.16; ry+=(y-ry)*.16; ring.style.transform='translate('+rx+'px,'+ry+'px)'; requestAnimationFrame(loop); })();
+    var x=-99, y=-99, dx=x, dy=y;
+    addEventListener('pointermove',function(e){ x=e.clientX; y=e.clientY; },{passive:true});
+    (function loop(){ dx+=(x-dx)*.35; dy+=(y-dy)*.35;
+      dot.style.transform='translate('+dx+'px,'+dy+'px)'; tag.style.transform='translate('+(x+18)+'px,'+(y+18)+'px)';
+      requestAnimationFrame(loop); })();
+    tag.style.translate='0 0';
     addEventListener('pointerover',function(e){
       var t=e.target.closest('[data-cur]'), h=e.target.closest('a,button');
-      var l=t?t.getAttribute('data-cur'):'';
-      if (l===lab) return; lab=l;
-      if (l){ lb.textContent=l; var w=Math.ceil(lb.scrollWidth||l.length*8)+64; ring.style.width=w+'px'; ring.style.marginLeft=(w/2+14)+'px'; ring.style.marginTop='34px'; }
-      else { ring.style.width=''; ring.style.marginLeft=''; ring.style.marginTop=''; }
-      ring.classList.toggle('lab',!!l); ring.classList.toggle('hov',!l&&!!h);
+      if (t){ lb.textContent=t.getAttribute('data-cur'); }
+      tag.classList.toggle('lab',!!t); dot.classList.toggle('hide',!!t); dot.classList.toggle('hov',!t&&!!h);
     });
-    addEventListener('pointerover',function(e){ if(!lab) ring.classList.toggle('hov',!!e.target.closest('a,button')); });
-    addEventListener('pointerdown',function(){ dot.classList.add('tap'); });
-    addEventListener('pointerup',function(){ dot.classList.remove('tap'); });
-    document.addEventListener('mouseleave',function(){ dot.style.opacity=ring.style.opacity=0; });
-    document.addEventListener('mouseenter',function(){ dot.style.opacity=ring.style.opacity=1; });
+    document.addEventListener('mouseleave',function(){ dot.style.opacity=tag.style.opacity=0; });
+    document.addEventListener('mouseenter',function(){ dot.style.opacity=''; tag.style.opacity=''; });
   })();
   /* 전체화면 */
   var fs = document.getElementById('fsBtn');
