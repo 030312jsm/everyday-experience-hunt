@@ -493,7 +493,29 @@ main{padding-top:38px}
 #s2 .say{font-size:clamp(40px,5.6vw,84px)}
 #s2 .need{margin-top:clamp(18px,3vh,28px)}
 .first{margin:0;justify-self:center;text-align:center}
-.first img{display:block;height:min(58svh,540px);width:auto;border-radius:26px;box-shadow:var(--sh-lg)}
+.first .ph{width:min(262px,calc(min(60svh,560px) / 2.085))}
+.bai{position:absolute;inset:7.2% 0 0 0;background:#F3F6FC;padding:5% 6.5% 6%;display:flex;flex-direction:column;gap:7px;text-align:left}
+.bai p{margin:0}
+.bai .hd{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--ink)}
+.bai .av{width:24px;height:24px;border-radius:50%;background:var(--blu);display:grid;place-items:center}
+.bai .av svg{width:70%;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round}
+.bai .ask{align-self:flex-end;background:var(--blu);color:#fff;border-radius:12px 12px 3px 12px;padding:5px 9px;font-size:10.5px;font-weight:700}
+.bai .say2{align-self:flex-start;background:#E3E9F6;border-radius:12px 12px 12px 3px;padding:6px 9px;font-size:10.5px;color:var(--ink-2);line-height:1.45}
+.bai .card2{background:#fff;border-radius:12px;padding:9px 10px;box-shadow:0 8px 18px -12px rgba(24,32,46,.45)}
+.bai .lbl{font-size:10px;font-weight:800;color:var(--blu)}
+.bai .rtb{display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;margin-top:4px}
+.bai .when{font-size:9.5px;font-weight:700;color:var(--ink-3)}
+.bai .when i{font-style:normal;background:var(--soft);color:var(--blu);border-radius:4px;padding:0 4px;margin-right:4px}
+.bai .route{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.35}
+.bai .meta{font-size:9.5px;color:var(--ink-3)}
+.bai .won{font-size:13px;font-weight:800;color:var(--ink);margin-top:1px}
+.bai .bus{width:52px;fill:#DCE6FB;stroke:var(--blu);stroke-width:1.6}
+.bai .bus .w{fill:#fff;stroke-width:1.2}
+.bai .cta{margin-top:7px;background:var(--soft);color:var(--blu);border-radius:8px;text-align:center;padding:5px 0;font-size:10px;font-weight:800}
+.bai .nt{font-size:9.5px;color:var(--ink-2);margin-top:2px}
+.bai .ghost{margin-top:6px;background:#EEF1F6;color:var(--ink-2);border-radius:8px;text-align:center;padding:4px 0;font-size:9.5px;font-weight:700}
+.bai .mic{margin-top:auto;background:#fff;border-radius:99px;padding:6px 11px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--ink-3);box-shadow:0 6px 14px -10px rgba(24,32,46,.4)}
+.bai .mic svg{width:14px;fill:none;stroke:var(--blu);stroke-width:2;stroke-linecap:round}
 .first figcaption{margin-top:14px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
 .first figcaption b{display:block;font-size:14px;color:var(--blu);margin-bottom:2px}
 @media(max-width:900px){#s2 .hero2{grid-template-columns:1fr}}
@@ -612,7 +634,31 @@ main{padding-top:38px}
         </ul>
       </div>
       <figure class="first rv d3">
-        <img src="../assets/f1.jpg" width="738" height="1374" alt="1차 발표의 버스 예매 AI 화면. 금요일 저녁 서울에서 대전으로 가는 우등고속 버스를 추천하고 있다.">
+        <div class="ph"><div class="scr">
+          <div class="sb"><span>18:02</span><i>•••</i></div>
+          <div class="bai">
+            <p class="hd"><span class="av"><svg viewBox="0 0 24 24"><path d="M8 10h.01M16 10h.01M8.5 14.5c2 1.6 5 1.6 7 0"/></svg></span>버스 예매 AI</p>
+            <p class="ask">“금요일 저녁에 집에 갈래”</p>
+            <p class="say2">네! 금요일 저녁에 본가 가는 버스를 찾아볼게요.</p>
+            <div class="card2">
+              <p class="lbl">추천 버스</p>
+              <div class="rtb"><div>
+                <p class="when"><i>금요일</i>19:20 출발</p>
+                <p class="route">서울 → 대전</p>
+                <p class="meta">우등고속 · 약 2시간</p>
+                <p class="won">16,600원</p></div>
+                <svg class="bus" viewBox="0 0 64 36"><rect x="2" y="4" width="58" height="24" rx="6"/><path class="w" d="M8 9h9v8H8zM20 9h9v8h-9zM32 9h9v8h-9zM44 9h11v8H44z"/><circle cx="16" cy="29" r="4"/><circle cx="48" cy="29" r="4"/></svg>
+              </div>
+              <p class="cta">이 버스로 예매할까요?</p>
+            </div>
+            <div class="card2 note">
+              <p class="lbl">이전 예매 기록을 참고했어요</p>
+              <p class="nt">지난번과 같은 창가 좌석을 추천해요.</p>
+              <p class="ghost">다른 버스도 보기</p>
+            </div>
+            <p class="mic"><span>다시 말하기</span><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></p>
+          </div>
+        </div></div>
         <figcaption><b>1차 발표 · 버스 예매 AI</b>그때는 버스 한 가지. 이번엔 역까지 가는 길부터 집 앞까지.</figcaption>
       </figure>
     </div>
