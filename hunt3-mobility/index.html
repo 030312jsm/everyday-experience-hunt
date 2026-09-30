@@ -563,7 +563,11 @@ main{padding-top:38px}
 
 .svc dd.us{color:var(--blu);font-weight:700}
 #s4 .svc .card{padding:18px 22px}
-#s4 .svc dt{margin-top:8px}
+/* 카드끼리 항목 높이를 맞춘다: 카드 안 줄(상단·제목·dt/dd·출처 9줄)을 바깥 격자와 공유 */
+#s4 .svc{grid-template-rows:repeat(9,auto);row-gap:0}
+#s4 .svc .card{display:grid;grid-row:span 9;grid-template-rows:subgrid;align-content:start}
+#s4 .svc dl{display:contents}
+#s4 .svc dt{margin-top:12px}
 #s4 .svc dd{font-size:14px;line-height:1.5}
 #s4 .svc .src{margin-top:10px}
 #s4 .also{margin-top:10px;padding:14px 22px}
