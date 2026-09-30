@@ -1,6 +1,6 @@
 // 05 Mobility AI — 밤 도시 3D 경로 장면 (Three.js + 블룸)
 // 단계 0 목적 말하기 · 1 비교 · 2 확인 · 3 지연 재추천. 단계 전환은 window.__m3.show(i)
-import * as THREE from 'three';
+import * as THREE from './vendor/three.module.js';   // importmap 없이도(구형 Safari) 불러오도록 상대 경로
 import { RoomEnvironment } from './vendor/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from './vendor/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from './vendor/addons/postprocessing/RenderPass.js';
