@@ -488,6 +488,16 @@ main{padding-top:38px}
 .app .two .go2{background:var(--blu);color:#fff}
 @media(max-width:900px){.phones{grid-template-columns:1fr}}
 
+/* 02 1차 화면 */
+#s2 .hero2{grid-template-columns:minmax(0,1.5fr) auto;align-items:center}
+#s2 .say{font-size:clamp(40px,5.6vw,84px)}
+#s2 .need{margin-top:clamp(18px,3vh,28px)}
+.first{margin:0;justify-self:center;text-align:center}
+.first img{display:block;height:min(58svh,540px);width:auto;border-radius:26px;box-shadow:var(--sh-lg)}
+.first figcaption{margin-top:14px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.first figcaption b{display:block;font-size:14px;color:var(--blu);margin-bottom:2px}
+@media(max-width:900px){#s2 .hero2{grid-template-columns:1fr}}
+
 /* 06 3D 폰 */
 .pf{margin-top:clamp(18px,3vh,30px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(28px,6vw,96px);align-items:center}
 .pfs .st{flex:0 0 auto;padding:16px 20px}
@@ -593,14 +603,18 @@ main{padding-top:38px}
     <div class="hero2">
       <div>
         <p class="say rv d1">“금요일 저녁에<br><b>집에 갈래.</b>”</p>
-        <p class="lede rv d2">금요일 수업이 끝난 대학생이 다른 도시에 있는 본가로 가려는 상황. 1차 발표와 같은 출발점이다.</p>
+        <p class="lede rv d2">금요일 수업이 끝난 대학생이 대전 본가로 가려는 상황. 1차 발표에서 버스 예매 AI로 보여 줬던 바로 그 장면이다.</p>
+        <ul class="need rv d3">
+          <li><span>언제</span><b>금요일 저녁, 수업이 끝난 뒤</b></li>
+          <li><span>어디로</span><b>서울 → 대전 본가</b></li>
+          <li><span>무엇으로</span><b>기차 · 고속버스 · 택시 · 지하철</b></li>
+          <li><span>걱정</span><b>표가 없을까 · 늦지 않을까 · 도착해서 어떻게 가나</b></li>
+        </ul>
       </div>
-      <ul class="need rv d3">
-        <li><span>언제</span><b>금요일 저녁, 수업이 끝난 뒤</b></li>
-        <li><span>어디로</span><b>다른 도시의 본가</b></li>
-        <li><span>무엇으로</span><b>기차 · 고속버스 · 택시 · 지하철</b></li>
-        <li><span>걱정</span><b>표가 없을까 · 늦지 않을까 · 도착해서 어떻게 가나</b></li>
-      </ul>
+      <figure class="first rv d3">
+        <img src="../assets/f1.jpg" width="738" height="1374" alt="1차 발표의 버스 예매 AI 화면. 금요일 저녁 서울에서 대전으로 가는 우등고속 버스를 추천하고 있다.">
+        <figcaption><b>1차 발표 · 버스 예매 AI</b>그때는 버스 한 가지. 이번엔 역까지 가는 길부터 집 앞까지.</figcaption>
+      </figure>
     </div>
   </div>
 </section>
