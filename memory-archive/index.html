@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:PretendardV;src:url(assets/PretendardVariable.woff2) format('woff2');font-weight:45 920;font-display:swap}
+:root{
+  --bg:#FFFFFF; --bg2:#F5F5F3; --card:#FFFFFF; --line:#E6E6E3; --line2:#CFCFCB;
+  --ink:#111214; --ink2:#4A4D55; --ink3:#8C8F97; --amb:#2350F5; --amb2:#2350F5; --sage:#16A05A; --warm:rgba(35,80,245,.05);
+  --sans:PretendardV,Pretendard,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; --serif:var(--sans); --mono:var(--sans);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;word-break:keep-all;overflow:hidden}
+p,h1,h2,h3,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+
+/* ── 상단 바 · 재구성 계기판 · 타임라인 ── */
+#hud{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;justify-content:space-between;align-items:flex-start;padding:22px clamp(20px,3.4vw,52px);pointer-events:none}
+.brand{font-family:var(--mono);font-size:11.5px;letter-spacing:.22em;color:var(--ink2)}
+.brand b{color:var(--ink);font-weight:500}
+#meter{display:none;text-align:right;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ink3)}
+#meter .v{display:block;font-size:13px;color:var(--amb2);letter-spacing:.08em;margin-top:4px}
+#meter .bar{display:block;width:160px;height:2px;background:var(--line);margin:8px 0 0 auto;position:relative;overflow:hidden}
+#meter .bar i{position:absolute;inset:0;background:var(--amb);transform-origin:left;transform:scaleX(0)}
+#meter .meta{display:block;margin-top:8px;color:var(--ink3);letter-spacing:.1em}
+#tl{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:0 clamp(20px,3.4vw,52px) 18px;display:flex;align-items:flex-end;gap:14px}
+#tl .rail{flex:1;position:relative;height:34px}
+#tl .rail::before{content:"";position:absolute;left:0;right:0;bottom:8px;height:1px;background:var(--line2)}
+#tl button{appearance:none;border:0;background:none;padding:0;position:absolute;bottom:0;transform:translateX(-50%);cursor:pointer;height:34px;width:18px;display:flex;align-items:flex-end;justify-content:center}
+#tl button i{display:block;width:1px;height:9px;background:var(--ink3);margin-bottom:4px;transition:height .3s,background .3s}
+#tl button span{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--ink3);opacity:0;transition:opacity .25s}
+#tl button:hover span,#tl button.on span{opacity:1}
+#tl button.on i{height:16px;background:var(--amb)}
+#tl button.on span{color:var(--amb2)}
+#tl .ctl{display:flex;gap:6px;padding-bottom:2px}
+#tl .ctl button{position:static;transform:none;width:30px;height:30px;border:1px solid var(--line2);border-radius:50%;color:var(--ink2);font-size:13px;align-items:center}
+#tl .ctl button:hover{color:var(--ink);border-color:var(--ink2)}
+#count{font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.1em;padding-bottom:9px;min-width:56px}
+
+/* ── 슬라이드 ── */
+.sl{position:fixed;inset:0;padding:clamp(78px,11vh,112px) clamp(20px,5vw,84px) clamp(76px,11vh,104px);display:flex;flex-direction:column;justify-content:center;
+  opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s .45s;overflow-y:auto}
+.sl.on{opacity:1;visibility:visible;transition:opacity .5s ease,visibility 0s}
+.wrap{width:min(1320px,100%);margin:0 auto}
+/* 재구성: 슬라이드에 들어오면 조각이 흐릿함에서 선명함으로 */
+.fr{opacity:0;transform:translateY(12px);transition:opacity .6s ease,transform .7s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0) * 50ms + 120ms)}
+.sl.on .fr{opacity:1;transform:none}
+
+.eb{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;color:var(--amb);text-transform:uppercase;font-weight:700}
+.eb span{color:var(--ink3);margin-left:12px;letter-spacing:.12em}
+.h{font-weight:800;font-size:clamp(28px,3.2vw,48px);letter-spacing:-.035em;line-height:1.28;margin-top:14px}
+.h em{font-style:normal;color:var(--amb2)}
+.lead{font-size:clamp(15px,1.25vw,18px);color:var(--ink2);line-height:1.8;max-width:62ch;margin-top:16px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;border:1px solid var(--line2);border-radius:99px;padding:4px 10px;color:var(--ink2)}
+.chip.rec{border-color:rgba(17,18,20,.55);color:var(--ink)}
+.chip.mem{border-color:rgba(35,80,245,.6);color:var(--amb2)}
+.chip.ai{border-style:dashed;color:var(--ink3)}
+.src{font-family:var(--mono);font-size:10.5px;color:var(--ink3);letter-spacing:.06em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+
+/* 00 표지 */
+#s0 .wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,4vw,64px);align-items:center}
+#s0 h1{font-family:var(--serif);font-weight:900;font-size:clamp(46px,6.2vw,104px);line-height:1.02;letter-spacing:-.035em}
+#s0 h1 span{display:block;color:var(--amb2)}
+#s0 .sub{margin-top:22px;font-family:var(--serif);font-size:clamp(17px,1.6vw,24px);color:var(--ink2)}
+#s0 .row{margin-top:34px;display:flex;gap:28px;flex-wrap:wrap}
+#s0 .row div{border-top:1px solid var(--line2);padding-top:10px;min-width:140px}
+#s0 .row small{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;color:var(--ink3)}
+#s0 .row b{display:block;margin-top:4px;font-weight:600;font-size:15px}
+.hint{margin-top:30px;font-family:var(--mono);font-size:11px;color:var(--ink3);letter-spacing:.12em}
+
+.kv img{width:100%;display:block;border-radius:18px}
+.kv figcaption{margin-top:12px;font-size:13px;color:var(--ink3)}
+/* Cosmos 톤 */
+.c3d{display:block}
+#s0 .c3d{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+#s0 .wrap.cov{position:relative;z-index:1;display:block;text-align:center;pointer-events:none}
+#s0 .kick{font-size:13px;font-weight:700;color:var(--ink2)}
+#s0 h1{margin-top:14px;font-size:clamp(52px,7.4vw,124px);letter-spacing:-.055em;line-height:1}
+#s0 .sub{margin-top:18px;font-size:clamp(17px,1.6vw,23px);color:var(--ink2)}
+#s0 .pills{margin-top:26px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+#s0 .pills span{font-size:13px;font-weight:600;background:#fff;border:1px solid var(--line);border-radius:99px;padding:7px 14px;box-shadow:0 8px 20px -14px rgba(0,0,0,.35)}
+#s0 .hint{margin-top:34px}
+.card{border:0;background:#F6F6F4;border-radius:20px}
+.bimg,.scene,.pp img,.kv img{border-radius:20px;box-shadow:0 30px 60px -34px rgba(17,18,20,.45)}
+.bimg.g3{aspect-ratio:4/3.1;background:#F6F6F4;box-shadow:none}
+.bimg.g3 .c3d{position:absolute;inset:0;width:100%;height:100%}
+.lay{position:absolute;left:16px;bottom:14px;display:flex;gap:12px;font-size:12px;color:var(--ink2);background:rgba(255,255,255,.85);border-radius:99px;padding:6px 12px}
+.lay i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.lay .l1{background:#111214}.lay .l2{background:#fff;border:2px solid #2350F5}.lay .l3{border:1.5px dashed #9A9DA4}
+.bimg img.orig{position:absolute;right:14px;top:14px;width:30%;border-radius:12px;border:3px solid #fff;box-shadow:0 14px 30px -16px rgba(17,18,20,.5)}
+.emcap{position:absolute;left:16px;bottom:14px;font-size:12.5px;color:var(--ink2);background:rgba(255,255,255,.88);border-radius:99px;padding:7px 14px}
+.emcap b{color:var(--ink);margin-right:8px}
+.ptab span.on,.jtab button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.steps3 li.cur,.tinfo.sel li.on,.path li.cur{background:#fff;border-color:var(--ink);box-shadow:0 14px 30px -22px rgba(0,0,0,.45)}
+/* 기억 조각(타일) — 흩어져 떠 있다가 하나의 장면으로 모인다 */
+.tiles{position:relative;width:100%;aspect-ratio:519/293;perspective:1100px}
+.tile{position:absolute;background-repeat:no-repeat;border-radius:2px;
+  transform:translate3d(var(--tx),var(--ty),var(--tz)) rotateY(var(--ry)) rotate(var(--r));opacity:var(--o);filter:blur(var(--b)) saturate(.5);
+  transition:transform 1.6s cubic-bezier(.2,.75,.15,1),opacity 1.2s ease,filter 1.4s ease,border-radius 1s;transition-delay:var(--d);box-shadow:0 10px 30px -12px rgba(0,0,0,.8)}
+.tiles.float .tile{animation:bob 6s ease-in-out infinite alternate;animation-delay:calc(var(--d) * -8)}
+@keyframes bob{to{translate:0 -10px}}
+.tiles.done .tile{transform:none;opacity:1;filter:none;border-radius:0;animation:none;box-shadow:none}
+.tiles .frame{position:absolute;inset:-1px;border:1px solid var(--line2);border-radius:4px;opacity:0;transition:opacity .8s 1.2s;pointer-events:none}
+.tiles.done .frame{opacity:1}
+.tiles .cap{position:absolute;left:0;right:0;top:calc(100% + 12px);display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;color:var(--ink3);letter-spacing:.08em;opacity:0;transition:opacity .6s 1.4s}
+.tiles.done .cap{opacity:1}
+
+/* 01 방향 */
+.idx{margin-top:clamp(28px,5vh,52px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.idx .card{padding:26px 28px 30px;position:relative;min-height:230px;display:flex;flex-direction:column}
+.idx small{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--ink3)}
+.idx b{display:block;margin-top:auto;padding-top:28px;font-family:var(--serif);font-size:clamp(20px,1.9vw,28px);line-height:1.45;font-weight:700}
+.idx .card:last-child{border-color:rgba(35,80,245,.45);background:linear-gradient(180deg,rgba(35,80,245,.08),rgba(35,80,245,0) 70%),var(--card)}
+.idx .card:last-child b{color:var(--amb2)}
+.idx .no{position:absolute;right:22px;top:20px;font-family:var(--mono);font-size:11px;color:var(--ink3)}
+
+/* 02 개념 */
+#s2 .wrap{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(24px,4vw,60px);align-items:center}
+.ask{margin-top:24px;font-family:var(--serif);font-size:clamp(18px,1.7vw,25px);line-height:1.6;border-left:2px solid var(--amb);padding-left:18px}
+.steps3{margin-top:26px;display:grid;gap:8px}
+.steps3 li{display:grid;grid-template-columns:46px 1fr;gap:12px;align-items:baseline;padding:12px 16px;border:1px solid var(--line);border-radius:12px;opacity:.42;transition:opacity .4s,border-color .4s,background .4s}
+.steps3 li.cur{opacity:1;border-color:rgba(35,80,245,.5);background:var(--warm)}
+.steps3 li span{font-family:var(--mono);font-size:12px;color:var(--amb)}
+.steps3 li b{font-size:16px;font-weight:700}
+.steps3 li small{display:block;font-size:13.5px;color:var(--ink2);margin-top:2px}
+.share{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:6px;opacity:0;transition:opacity .6s .3s;z-index:3}
+.share span{font-size:11px;background:rgba(17,18,20,.72);border:0;border-radius:99px;padding:5px 11px;color:#fff}
+.share span i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--sage);margin-right:6px;vertical-align:1px}
+.tiles.shared .share{opacity:1}
+/* 3D 기억 공간: 캔버스가 뜨면 CSS 조각 대신 보인다 */
+#mem3d{position:absolute;left:0;top:-14%;width:110%;height:128%;display:none;z-index:1}
+#cTiles.gl #mem3d{display:block}
+#cTiles.gl .tile,#cTiles.gl .frame{display:none}
+#cTiles .share,#cTiles .cap{z-index:3}
+
+/* 03 시나리오 */
+#s3 .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:center}
+.beats{position:relative;margin-top:22px;min-height:clamp(280px,40vh,380px)}
+.beat{position:absolute;inset:0 0 auto 0;opacity:0;filter:blur(6px);transform:translateY(8px);transition:opacity .6s,filter .7s,transform .7s;pointer-events:none}
+.beat.cur{opacity:1;filter:none;transform:none;pointer-events:auto}
+.beat .t{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--amb)}
+.beat p{margin-top:12px;font-size:clamp(15px,1.25vw,18px);line-height:1.85;color:var(--ink2)}
+.beat p b{color:var(--ink);font-weight:600}
+.beat q{display:block;margin-top:14px;font-family:var(--serif);font-size:clamp(17px,1.5vw,22px);line-height:1.6;color:var(--ink);quotes:none;border-left:2px solid var(--amb);padding-left:16px}
+.beat q.ai{border-left-style:dashed;color:var(--amb2)}
+.dots{display:flex;gap:6px;margin-top:18px}
+.dots i{width:22px;height:2px;background:var(--line2);transition:background .3s}
+.dots i.on{background:var(--amb)}
+.scene{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:519/293;background:#000}
+.scene img{width:100%;height:100%;object-fit:cover;display:block;transition:filter 1.6s ease,transform 2.4s ease}
+.scene[data-k="0"] img,.scene[data-k="1"] img,.scene[data-k="2"] img{filter:brightness(.18) blur(16px) saturate(.1);transform:scale(1.08)}
+.scene .over{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;padding:16px}
+.scene .lbl{position:absolute;left:16px;top:14px;font-size:11px;letter-spacing:.06em;color:#fff;font-weight:600}
+.scene .pop{align-self:flex-start;max-width:78%;background:rgba(17,18,20,.8);color:#fff;border:0;border-radius:10px;padding:10px 13px;font-size:13px;line-height:1.55;opacity:0;transform:translateY(6px);transition:opacity .6s,transform .6s}
+.scene .pop.on{opacity:1;transform:none}
+.scene .pop small{display:block;font-size:10.5px;color:#9FB4FF;letter-spacing:.1em;margin-bottom:3px}
+.scene .branch{display:flex;gap:6px;flex-wrap:wrap}
+.scene .branch span{font-size:12px;background:rgba(17,18,20,.78);border:0;border-radius:8px;padding:6px 9px;color:#fff}
+.scene .msg{align-self:flex-end;background:var(--amb);color:#fff;font-weight:600}
+.scene .msg small{color:rgba(255,255,255,.75)}
+
+/* 04 유형 지도 */
+#s4 .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:center}
+.quad{position:relative;aspect-ratio:1/1;max-height:62vh;margin:0 auto;width:100%}
+.quad .ax{position:absolute;background:var(--line2)}
+.quad .ax.x{left:0;right:0;top:50%;height:1px}.quad .ax.y{top:0;bottom:0;left:50%;width:1px}
+.quad .al{position:absolute;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--ink3);background:var(--bg);padding:2px 6px}
+.quad .al.t{top:-8px;left:50%;transform:translate(-50%,-50%)}.quad .al.b{bottom:-8px;left:50%;transform:translate(-50%,50%)}
+.quad .al.l{left:0;top:50%;transform:translate(0,-160%)}.quad .al.r{right:0;top:50%;transform:translate(0,-160%)}
+.quad .zn{position:absolute;font-family:var(--serif);font-size:clamp(14px,1.2vw,17px);color:var(--ink3);width:50%;height:50%;display:flex;align-items:center;justify-content:center;transition:color .4s,background .4s}
+.quad .zn.on{color:var(--amb2);background:rgba(35,80,245,.06)}
+.pin{position:absolute;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;background-size:cover;background-position:center;border:2px solid var(--bg);box-shadow:0 0 0 1px var(--line2);transition:box-shadow .4s,transform .4s;z-index:2}
+.pin.on{box-shadow:0 0 0 2px var(--amb);transform:scale(1.12)}
+.pin b{position:absolute;top:100%;left:50%;transform:translate(-50%,6px);font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--ink2)}
+.tinfo{margin-top:24px;display:grid;gap:8px}
+.tinfo li{display:grid;grid-template-columns:120px 1fr;gap:6px 14px;padding:12px 16px;border:1px solid var(--line);border-radius:12px;transition:opacity .4s,border-color .4s,background .4s}
+.tinfo.sel li{opacity:.32}
+.tinfo.sel li.on{opacity:1;border-color:rgba(35,80,245,.5);background:var(--warm)}
+.tinfo b{font-size:14.5px;font-weight:700;grid-row:span 3}
+.tinfo span{font-size:13px;color:var(--ink2);line-height:1.5}
+.tinfo span em{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink3);margin-right:8px}
+
+/* 05~08 페르소나 */
+.pv{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);gap:clamp(22px,3.4vw,54px);align-items:start}
+.pp{position:relative}
+.pp img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:10px;display:block;filter:saturate(.85)}
+.pp .id{margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13.5px}
+.pp .id dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink3);padding-top:2px}
+.pp .id dd{font-weight:600}
+.beh{margin-top:18px;display:grid;gap:12px}
+.beh .r{display:grid;grid-template-columns:62px 1fr 62px;gap:8px;align-items:center;font-size:11px;color:var(--ink3)}
+.beh .r span:last-child{text-align:right}
+.beh .r b{position:relative;height:3px;background:var(--line2);border-radius:3px}
+.beh .r b i{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--amb);box-shadow:0 0 0 3px var(--bg)}
+.beh .r .hi{color:var(--ink);font-weight:600}
+.ptype{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--amb)}
+.pname{font-family:var(--serif);font-size:clamp(26px,2.8vw,42px);font-weight:700;margin-top:8px;letter-spacing:-.02em}
+.pname small{font-family:var(--sans);font-size:15px;color:var(--ink3);font-weight:500;margin-left:12px}
+.pq{margin-top:14px;font-family:var(--serif);font-size:clamp(16px,1.45vw,21px);line-height:1.6;color:var(--amb2);border-left:2px solid var(--amb);padding-left:16px}
+.tags{margin-top:14px;display:flex;gap:6px;flex-wrap:wrap}
+.tags span{font-size:12.5px;color:var(--ink2);border:1px solid var(--line2);border-radius:99px;padding:4px 11px}
+.panes{position:relative;margin-top:20px}
+.pane:not(.cur){display:none!important}
+.pane.cur{animation:dev .8s ease}
+@keyframes dev{from{opacity:0;filter:blur(8px)}to{opacity:1;filter:none}}
+.pn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pn .card{padding:18px 20px}
+.pn h3,.psc h3{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;color:var(--ink3);font-weight:500}
+.pn li{font-size:14px;line-height:1.55;color:var(--ink2);padding-left:14px;position:relative;margin-top:8px}
+.pn li::before{content:"";position:absolute;left:0;top:.7em;width:5px;height:1px;background:var(--amb)}
+.psc{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
+.psc .card{padding:18px 22px}
+.psc p{font-size:13.6px;line-height:1.78;color:var(--ink2);margin-top:10px}
+.psc p q{quotes:none;color:var(--ink)}
+.psc li{font-size:13.6px;line-height:1.6;color:var(--ink2);margin-top:10px;padding-left:14px;position:relative}
+.psc li::before{content:"";position:absolute;left:0;top:.72em;width:5px;height:1px;background:var(--amb)}
+.ptab{display:flex;gap:6px;margin-top:18px}
+.ptab span{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;border:1px solid var(--line2);border-radius:99px;padding:5px 12px;color:var(--ink3)}
+.ptab span.on{color:var(--bg);background:var(--amb);border-color:var(--amb)}
+
+/* 09 여정 지도 */
+.jtab{margin-top:22px;display:flex;gap:8px;flex-wrap:wrap}
+.jtab button{appearance:none;font:inherit;cursor:pointer;display:flex;align-items:center;gap:10px;border:1px solid var(--line2);background:none;color:var(--ink2);border-radius:99px;padding:5px 14px 5px 5px;font-size:13px;transition:all .3s}
+.jtab button img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.jtab button.on{border-color:var(--amb);color:var(--ink);background:var(--warm)}
+.jg{margin-top:16px;display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.jg.cur{display:grid;animation:dev .8s ease}
+.jg .card{padding:14px 16px}
+.jg h3{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--ink3);font-weight:500}
+.jg li,.jg p{font-size:12.8px;line-height:1.55;color:var(--ink2);margin-top:6px}
+.jg li{padding-left:12px;position:relative}
+.jg li::before{content:"";position:absolute;left:0;top:.7em;width:4px;height:1px;background:var(--amb)}
+.jg .ins{border-color:rgba(35,80,245,.5);background:var(--warm)}
+.jg .ins p{color:var(--amb2);font-family:var(--serif);font-size:13.5px;line-height:1.65}
+.jg .ins h3{color:var(--amb)}
+
+/* 10~12 브랜드 */
+.bv{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(22px,3.6vw,56px);align-items:center}
+.bimg{position:relative;border-radius:10px;overflow:hidden;background:#000}
+.bimg img{width:100%;display:block}
+.bname{font-family:var(--serif);font-weight:900;font-size:clamp(34px,4vw,64px);letter-spacing:.02em;margin-top:10px}
+.bname small{display:block;font-family:var(--mono);font-size:11px;font-weight:400;letter-spacing:.2em;color:var(--ink3);margin-top:6px}
+.btag{margin-top:14px;font-family:var(--serif);font-size:clamp(17px,1.55vw,22px);color:var(--amb2);line-height:1.55}
+.bdesc{margin-top:14px;font-size:14.5px;line-height:1.8;color:var(--ink2)}
+.bdesc b{color:var(--ink);font-weight:600}
+.feat{margin-top:16px;display:flex;flex-wrap:wrap;gap:6px}
+.feat span{font-size:12.5px;border:1px solid var(--line2);border-radius:8px;padding:6px 10px;color:var(--ink)}
+.conf{margin-top:16px}
+.conf .bar{display:flex;height:8px;border-radius:8px;overflow:hidden;gap:2px}
+.conf .bar i{display:block;height:100%}
+.conf .lg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12.5px;color:var(--ink2)}
+.conf .lg span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;background:var(--c);vertical-align:0}
+.conf .tot{font-family:var(--mono);font-size:12px;color:var(--ink3);margin-top:8px}
+.conf .tot b{font-size:20px;color:var(--amb2);font-weight:500;margin-left:6px}
+.amb{position:absolute;right:14px;top:14px;display:grid;gap:6px}
+.amb span{font-size:12px;background:rgba(17,18,20,.72);border:0;border-radius:8px;padding:7px 11px;color:#fff}
+.amb small{display:block;font-size:9.5px;color:rgba(255,255,255,.6);letter-spacing:.08em}
+.need{margin-top:14px;display:grid;gap:6px}
+.need li{font-size:13.5px;color:var(--ink2);padding-left:14px;position:relative}
+.need li::before{content:"";position:absolute;left:0;top:.7em;width:5px;height:1px;background:var(--amb)}
+/* EMBER: 단계마다 이미지가 조금씩 드러난다 */
+#em .bimg img{transition:filter 1.4s ease}
+#em .bimg[data-k="0"] img{filter:grayscale(1) blur(9px) brightness(.55) contrast(.9)}
+#em .bimg[data-k="1"] img{filter:grayscale(.8) blur(4px) brightness(.7)}
+#em .bimg[data-k="2"] img{filter:grayscale(.3) blur(1px) brightness(.9)}
+#em .bimg[data-k="3"] img{filter:none}
+.path{margin-top:18px;display:grid;gap:6px}
+.path li{display:grid;grid-template-columns:34px 1fr;align-items:center;padding:10px 14px;border:1px solid var(--line);border-radius:10px;opacity:.4;transition:all .4s}
+.path li.done{opacity:.75}
+.path li.cur{opacity:1;border-color:rgba(35,80,245,.55);background:var(--warm)}
+.path li span{font-family:var(--mono);font-size:11px;color:var(--amb)}
+.path li b{font-size:14.5px;font-weight:600}
+.path li small{font-family:var(--mono);font-size:10px;color:var(--ink3);margin-left:8px;letter-spacing:.08em}
+.solve{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+.solve span{font-size:12.5px;color:var(--ink2);border:1px dashed var(--line2);border-radius:8px;padding:5px 9px}
+
+/* 13 마무리 */
+#s13 .wrap{text-align:center}
+#s13 .end{font-family:var(--serif);font-size:clamp(26px,3.1vw,48px);line-height:1.5;font-weight:700;letter-spacing:-.02em}
+#s13 .end em{font-style:normal;color:var(--amb2)}
+#s13 .b3{margin-top:clamp(28px,5vh,48px);display:flex;justify-content:center;gap:clamp(18px,4vw,56px);flex-wrap:wrap}
+#s13 .b3 div{font-family:var(--serif);font-weight:900;font-size:20px;letter-spacing:.06em}
+#s13 .b3 small{display:block;font-family:var(--sans);font-weight:500;font-size:12.5px;color:var(--ink3);letter-spacing:0;margin-top:4px}
+
+@media (max-width:900px){
+  html,body{overflow:auto}
+  #s0 .wrap,#s2 .wrap,#s3 .wrap,#s4 .wrap,.pv,.bv,.psc{grid-template-columns:1fr}
+  .idx,.pn,.jg.cur{grid-template-columns:1fr}
+  #tl .rail{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01s!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header id="hud">
+  <p class="brand"><b>MEMORY ARCHIVE</b> &nbsp;·&nbsp; 기억을 공간처럼</p>
+  <p id="meter"><span id="mLab">RECONSTRUCTING</span><span class="v" id="mVal">000%</span><span class="bar"><i id="mBar"></i></span><span class="meta" id="mMeta"></span></p>
+</header>
+
+<main id="deck">
+
+<!-- 00 표지 -->
+<section class="sl" id="s0" data-nav="표지" data-meta="INDEX 00 · 2045">
+  <canvas class="c3d" id="cov3d" aria-hidden="true"></canvas>
+  <div class="wrap cov">
+    <p class="kick fr">Future Experience · 기억의 디지털화</p>
+    <h1 class="fr">Memory Archive</h1>
+    <p class="sub fr">기억을 공간처럼 탐색하는 서비스</p>
+    <p class="pills fr"><span>사진</span><span>영상</span><span>메시지</span><span>음악</span><span>위치</span><span>센서 기록</span></p>
+    <p class="hint fr">→ 키로 넘기기</p>
+  </div>
+</section>
+
+<!-- 01 방향 -->
+<section class="sl" id="s1" data-nav="방향" data-meta="INDEX 01 · DIRECTION">
+  <div class="wrap">
+    <p class="eb fr">01 · Direction<span>우리가 본 미래</span></p>
+    <h2 class="h fr">사진·영상·대화 기록이 쌓인 사회에서,<br>기억은 <em>다시 방문하는 공간</em>이 된다</h2>
+    <div class="idx">
+      <div class="card fr"><span class="no">A</span><small>미래 사회 방향</small><b>기억의 디지털화</b></div>
+      <div class="card fr"><span class="no">B</span><small>핵심 시나리오</small><b>사진·영상·대화 기록을 AI가 분석해 과거의 순간을 다시 체험</b></div>
+      <div class="card fr"><span class="no">C</span><small>최종 서비스 아이디어</small><b>Memory Archive<br>기억을 공간처럼 탐색하는 서비스</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 개념 -->
+<section class="sl" id="s2" data-nav="개념" data-meta="INDEX 02 · 2045" data-steps="3">
+  <div class="wrap">
+    <div>
+      <p class="eb fr">02 · Concept<span>기억을 다시 방문하는 사회</span></p>
+      <h2 class="h fr">2045년, 사진은 <em>정리하지 않는다</em></h2>
+      <p class="lead fr">AI가 사용자의 평생 기록을 자동으로 분석해 ‘기억’ 자체를 하나의 디지털 공간으로 만들어 준다. 사용자가 이렇게 말하면,</p>
+      <p class="ask fr">“스무 살 때 친구들이랑<br>가장 행복했던 순간을 보여줘.”</p>
+      <p class="lead fr" style="margin-top:12px">AI가 사진, 영상, 메시지, 음악, 위치 기록 등을 조합해 당시 순간을 3D 공간으로 재구성한다.</p>
+      <ol class="steps3 fr">
+        <li data-k="0"><span>01</span><div><b>기억 검색</b><small>공중에 떠 있는 수많은 기억 조각</small></div></li>
+        <li data-k="1"><span>02</span><div><b>기억 공간 진입</b><small>과거의 장소가 AI에 의해 재구성됨</small></div></li>
+        <li data-k="2"><span>03</span><div><b>기억 편집·공유</b><small>친구나 가족과 하나의 기억을 함께 감상</small></div></li>
+      </ol>
+    </div>
+    <div class="tiles fr" id="cTiles" data-src="img/key.jpg"><canvas id="mem3d" aria-hidden="true"></canvas><span class="frame"></span>
+      <div class="share"><span><i></i>민준 · 감상 중</span><span><i></i>친구 2명 · 동시 접속</span></div>
+      <p class="cap"><span id="cCap">FRAGMENTS · 1,284</span><span>SUMMER, 2036</span></p></div>
+  </div>
+</section>
+
+<!-- 03 시나리오 -->
+<section class="sl" id="s3" data-nav="시나리오" data-meta="INDEX 03 · 2048 · 민준" data-steps="8">
+  <div class="wrap">
+    <div>
+      <p class="eb fr">03 · Scenario<span>2048년, 32세 직장인 민준의 하루</span></p>
+      <div class="beats fr">
+        <div class="beat" data-k="0"><p class="t">20:40 · 귀가</p>
+          <p>민준은 퇴근 후 집으로 돌아온다. 오늘은 유난히 마음이 공허하다. 반복되는 업무와 빠르게 흘러가는 일상 속에서, 문득 <b>자신이 예전보다 덜 웃고 있다</b>는 생각이 들었다.</p></div>
+        <div class="beat" data-k="1"><p class="t">20:42 · 감지</p>
+          <p>집에 들어오자 거실 벽면의 인터페이스가 조용히 켜진다. 개인 AI는 민준의 표정과 목소리, 최근 수면 데이터와 활동량을 분석해 <b>낮은 정서 상태</b>를 감지한다.</p>
+          <q class="ai">“오늘은 조금 지쳐 보이네요. 기분을 환기할 수 있도록, 예전에 당신이 가장 즐거워했던 순간들을 함께 보시겠어요?”</q></div>
+        <div class="beat" data-k="2"><p class="t">20:43 · 요청</p>
+          <p>민준은 잠시 고민하다가 말한다.</p>
+          <q>“대학교 2학년 여름… 친구들이랑 밤바다 보러 갔던 날 기억나?”</q>
+          <p>AI는 몇 초간 데이터를 불러온다. 그날의 <b>사진, 짧은 영상, 메시지 대화, 위치 기록, 당시 재생했던 음악, 민준이 남긴 메모</b>, 그리고 친구들과 나눴던 <b>음성</b>까지 연결된다.</p></div>
+        <div class="beat" data-k="3"><p class="t">20:43 · 재구성</p>
+          <p>눈앞에는 어두운 방 대신 <b>여름 밤의 바닷가 산책로</b>가 펼쳐진다. 완전히 현실과 똑같지는 않지만, 충분히 익숙하고 따뜻하다.</p>
+          <p>파도 소리와 바람 소리, 멀리서 웃는 친구들의 소리, 가로등 불빛 아래 흔들리던 그림자까지 재구성된다.</p></div>
+        <div class="beat" data-k="4"><p class="t">20:47 · 걷기</p>
+          <p>민준은 공간 안을 천천히 걷는다. 모래사장 쪽에는 그날 찍은 사진들이 작은 빛 조각처럼 떠 있고, 특정 위치에 다가가면 그 자리에서 오간 대화 일부가 재생된다.</p>
+          <q>“야, 이 순간은 꼭 오래 기억하자.”</q>
+          <p>그날 친구가 웃으며 했던 말이 다시 들린다. 민준은 멈춰 선다.</p></div>
+        <div class="beat" data-k="5"><p class="t">20:52 · 연결</p>
+          <q class="ai">“이 장면을 더 자세히 보시겠어요? 아니면 이 기억과 연결된 다른 순간으로 이동하시겠어요?”</q>
+          <p>민준은 <b>“이날 이후의 여름들”</b>을 선택한다. 같은 사람들과 함께한 다른 계절의 기억들이 갈래처럼 뻗어 나온다.</p>
+          <p>민준은 깨닫는다. 지금의 자신은 단절된 현재가 아니라, <b>수많은 장면 위에 이어져 있는 존재</b>라는 것을.</p></div>
+        <div class="beat" data-k="6"><p class="t">21:05 · 발견</p>
+          <p>잠시 후 AI가 작은 카드를 띄운다. 민준은 그 문장을 보고 생각한다.</p>
+          <q>“아, 내가 단순히 피곤한 게 아니라, 내가 좋아하던 시간을 잃고 있었구나.”</q></div>
+        <div class="beat" data-k="7"><p class="t">21:08 · 현재로</p>
+          <p>그는 오래된 친구에게 메시지를 보낸다.</p>
+          <q>“오랜만에 만나자. 예전처럼 밤에 아무 데나 걸으면서 얘기하고 싶다.”</q>
+          <p>Memory Archive는 과거를 보여 주는 데서 끝나지 않는다. <b>그 기억을 통해 현재의 감정과 삶의 방향을 다시 이해하도록 돕는 것</b>, 그것이 이 서비스의 진짜 역할이다.</p></div>
+      </div>
+      <div class="dots" id="sDots"></div>
+    </div>
+    <div class="scene fr" id="scene" data-k="0">
+      <img src="img/key.jpg" alt="Memory Archive로 재구성된 여름 밤 바닷가 산책로. 사진 조각들이 떠 있다.">
+      <span class="lbl" id="sLbl">LIVING ROOM · 20:40</span>
+      <div class="over">
+        <div class="branch pop" data-on="5"><span>졸업 전시를 준비하던 밤</span><span>비 오는 날 학교 앞에서 먹었던 저녁</span><span>다 같이 지쳐서 웃던 작업실의 새벽 공기</span></div>
+        <p class="pop" data-on="6"><small>AI INSIGHT</small>당신은 ‘함께 무언가를 만들고, 밤늦게까지 이야기하던 시간’에서 높은 행복 반응을 보였습니다. 최근 6개월간 이와 유사한 경험은 거의 없었습니다.</p>
+        <p class="pop msg" data-on="7"><small>TO. 오래된 친구</small>오랜만에 만나자. 예전처럼 밤에 아무 데나 걸으면서 얘기하고 싶다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 유형 지도 -->
+<section class="sl" id="s4" data-nav="유형" data-meta="INDEX 04 · USER TYPES" data-steps="5">
+  <div class="wrap">
+    <div>
+      <p class="eb fr">04 · User Types<span>기억을 대하는 네 가지 방식</span></p>
+      <h2 class="h fr">어떻게 <em>남기고</em>, 어떻게 <em>꺼내 쓰는가</em></h2>
+      <ul class="tinfo fr" id="tinfo">
+        <li data-k="1"><b>① 의미 탐색형</b><span><em>인물</em>실수와 업무 과정을 기록하는 직장인</span><span><em>기록</em>중요한 사건을 직접 선택해 기록</span><span><em>활용</em>원인 분석, 개선, 자기계발</span></li>
+        <li data-k="2"><b>② 라이프 분석형</b><span><em>인물</em>일상을 살아가며 자신을 알아가는 사람</span><span><em>기록</em>생활 데이터가 자연스럽게 자동 축적</span><span><em>활용</em>취향·습관·감정 패턴 발견</span></li>
+        <li data-k="3"><b>③ 추억 보관형</b><span><em>인물</em>친구들과 여행을 즐기는 사람</span><span><em>기록</em>특별한 순간을 직접 기록</span><span><em>활용</em>소중한 순간을 오래 보존</span></li>
+        <li data-k="4"><b>④ 일상 아카이브형</b><span><em>인물</em>평범한 일상을 기록해 두었다가 잃어버린 사람을 회상하는 사람</span><span><em>기록</em>평소 의식하지 않아도 일상이 자동 축적</span><span><em>활용</em>시간이 지난 뒤 기억을 찾아 회상</span></li>
+      </ul>
+    </div>
+    <div class="quad fr" id="quad">
+      <i class="ax x"></i><i class="ax y"></i>
+      <span class="al t">분석 · 활용</span><span class="al b">기록 · 보존</span><span class="al l">선택적 기록</span><span class="al r">자동 축적</span>
+      <span class="zn" data-k="1" style="left:0;top:0">① 의미 탐색형</span>
+      <span class="zn" data-k="2" style="left:50%;top:0">② 라이프 분석형</span>
+      <span class="zn" data-k="3" style="left:0;top:50%">③ 추억 보관형</span>
+      <span class="zn" data-k="4" style="left:50%;top:50%">④ 일상 아카이브형</span>
+      <i class="pin" data-k="1" style="left:12%;top:16%;background-image:url(img/p1.jpg)"><b>김도윤</b></i>
+      <i class="pin" data-k="2" style="left:88%;top:8%;background-image:url(img/p2.jpg)"><b>장민소</b></i>
+      <i class="pin" data-k="3" style="left:14%;top:88%;background-image:url(img/p3.jpg)"><b>이다희</b></i>
+      <i class="pin" data-k="4" style="left:88%;top:86%;background-image:url(img/p4.jpg)"><b>강서윤</b></i>
+    </div>
+  </div>
+</section>
+
+<!-- 05 김도윤 -->
+<section class="sl" id="s5" data-nav="김도윤" data-meta="INDEX 05 · PERSONA ①" data-steps="2">
+  <div class="wrap pv">
+    <div class="pp fr">
+      <img src="img/p1.jpg" alt="노트북과 태블릿으로 프로젝트 기록을 살펴보는 직장인 김도윤">
+      <dl class="id"><dt>나이</dt><dd>34 · 남성</dd><dt>직업</dt><dd>직장인 (8년 차 프로젝트 매니저)</dd></dl>
+      <div class="beh"><p class="r"><span class="hi">선택적 기록</span><b><i style="left:10%"></i></b><span>자동 축적</span></p><p class="r"><span class="hi">분석·활용</span><b><i style="left:15%"></i></b><span>기록·보존</span></p></div>
+    </div>
+    <div>
+      <p class="ptype fr">① 의미 탐색형 · 실수에서 답을 찾는</p>
+      <h2 class="pname fr">김도윤<small>Profile 01</small></h2>
+      <p class="pq fr">“같은 실수를 반복하지 않을 수 있다면 기록해 두고 다시 돌아볼 가치가 있지”</p>
+      <div class="tags fr"><span>#분석</span><span>#회고</span><span>#업무 개선</span><span>#자기계발</span></div>
+      <div class="ptab fr"><span data-k="0">PAIN · NEEDS</span><span data-k="1">SCENARIO</span></div>
+      <div class="panes fr">
+        <div class="pane pn" data-k="0">
+          <div class="card"><h3>PAIN POINTS</h3><ul><li>흩어진 기록으로 인한 과거 상황 파악의 어려움</li><li>반복되는 실수와 판단 패턴 인식의 한계</li><li>기록이 실질적인 개선으로 이어지지 않음</li></ul></div>
+          <div class="card"><h3>NEEDS</h3><ul><li>중요한 경험과 자료의 통합 기록</li><li>유사 사례 및 반복 패턴 자동 분석</li><li>다음 행동으로 연결되는 구체적인 개선 가이드</li></ul></div>
+        </div>
+        <div class="pane psc" data-k="1">
+          <div class="card"><h3>USER SCENARIO</h3>
+            <p>오후 4시, 도윤은 신규 서비스 프로젝트의 일정 조율 회의에서 개발 진행률을 확인한 뒤 출시 일정을 일주일 앞당기는 방향으로 회의를 정리한다. 하지만 회의 직후 아직 검증되지 않은 핵심 기능이 남아 있다는 이야기를 듣고, 테스트 일정과 위험 요소를 충분히 확인하지 않고 판단했다는 것을 깨닫는다.</p>
+            <p>도윤은 이 상황을 Memory Archive에 직접 기록한다. 회의 내용과 프로젝트 일정, 팀 메시지를 함께 저장하고 <q>“진행률만 보고 결정함. 다음에는 테스트 일정과 위험 요소까지 확인할 것.”</q>이라는 메모를 남긴다.</p>
+            <p>퇴근 전, AI는 과거 프로젝트 중 일정 압박으로 세부 위험 요소를 늦게 확인했던 사례를 찾아 보여 준다. 도윤은 자신의 판단에서 반복되는 패턴을 알게 되고, 중요한 결정 전 확인할 항목을 정리해 다음 프로젝트에 적용한다.</p></div>
+          <div class="card"><h3>CHARACTERISTICS</h3><ul><li>중요한 실수와 판단 과정을 선택적으로 기록</li><li>반복되는 패턴을 분석해 개선점 도출</li><li>체계적인 자기관리와 업무 성장 중시</li></ul>
+            <p style="margin-top:16px"><q>“중요했던 실수들을 그때그때 기록해 두고, 나중에 비슷한 상황이 왔을 때 쉽게 찾아볼 수 있으면 좋겠어.”</q></p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 장민소 -->
+<section class="sl" id="s6" data-nav="장민소" data-meta="INDEX 06 · PERSONA ②" data-steps="2">
+  <div class="wrap pv">
+    <div class="pp fr">
+      <img src="img/p2.jpg" alt="헤드폰을 목에 건 프리랜서 장민소">
+      <dl class="id"><dt>나이</dt><dd>25 · 여성</dd><dt>직업</dt><dd>프리랜서</dd></dl>
+      <div class="beh"><p class="r"><span>선택적 기록</span><b><i style="left:92%"></i></b><span class="hi">자동 축적</span></p><p class="r"><span class="hi">분석·활용</span><b><i style="left:5%"></i></b><span>기록·보존</span></p></div>
+    </div>
+    <div>
+      <p class="ptype fr">② 라이프 분석형 · 일상 데이터로 나를 알아가는</p>
+      <h2 class="pname fr">장민소<small>Profile 02</small></h2>
+      <p class="pq fr">“기록은 AI가 알아서 해 줘. 난 그걸 보고 내가 어떤 사람인지 알고 싶어”</p>
+      <div class="tags fr"><span>#나를 알아가는 중</span><span>#일상 데이터</span><span>#패턴 발견</span><span>#나만의 루틴</span></div>
+      <div class="ptab fr"><span data-k="0">PAIN · NEEDS</span><span data-k="1">SCENARIO</span></div>
+      <div class="panes fr">
+        <div class="pane pn" data-k="0">
+          <div class="card"><h3>PAIN POINTS</h3><ul><li>쌓인 데이터가 너무 많아 스스로 의미를 찾기 어려움</li><li>AI 분석 결과의 근거가 보이지 않아 믿기 어려움</li><li>감정 맥락을 놓친 AI의 잘못된 분류</li></ul></div>
+          <div class="card"><h3>NEEDS</h3><ul><li>흩어진 일상 데이터의 자동 패턴 분석</li><li>분석 결과의 근거가 된 기억 조각 확인</li><li>AI 해석을 직접 수정하고 다음 분석에 반영</li></ul></div>
+        </div>
+        <div class="pane psc" data-k="1">
+          <div class="card"><h3>USER SCENARIO</h3>
+            <p>마감이 몰린 한 달을 보내고 지친 민소는 출퇴근도 정해진 일과도 없어, 어떤 날 컨디션이 좋았는지 스스로도 잘 모른다. 일기를 쓰거나 사진을 정리하는 편도 아니다.</p>
+            <p><q>“최근 석 달 동안 내가 제일 편안해 보였던 순간들 보여줘.”</q> AI가 위치 기록, 음악 재생 기록, 메시지, 사진을 분석해 기억 조각 몇 개를 띄운다. 대부분 오전이었고, 동네 도서관이었고, 휴대폰 알림을 꺼 둔 날이었다. 조각 하나에 들어가니 도서관 창가 자리와 그날 듣던 음악이 재구성되고, 민소는 혼자 조용히 작업한 날이 더 편안했다는 걸 처음 알게 된다.</p>
+            <p>그런데 친구와 크게 다툰 날이 “대화가 많았던 즐거운 날”로 분류된 걸 발견한다. 민소는 그 분류를 직접 고치고, 다음 달 오전 작업 시간을 도서관으로 잡아 둔다.</p></div>
+          <div class="card"><h3>CHARACTERISTICS</h3><ul><li>불규칙한 프리랜서 일상 속에서 자신의 컨디션과 취향을 파악하려는 성향</li><li>직접 기록하지 않고 AI가 자동으로 쌓은 데이터를 분석해 활용</li><li>분석 결과를 일정과 생활 습관 조정에 바로 반영</li></ul>
+            <p style="margin-top:16px"><q>“내가 뭘 좋아하는지 데이터가 먼저 알고 있더라. 근데 틀린 건 내가 고쳐 줘야 해.”</q></p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 이다희 -->
+<section class="sl" id="s7" data-nav="이다희" data-meta="INDEX 07 · PERSONA ③" data-steps="2">
+  <div class="wrap pv">
+    <div class="pp fr">
+      <img src="img/p3.jpg" alt="사진이 붙은 벽 앞에서 노트북과 필름 사진을 정리하는 이다희">
+      <dl class="id"><dt>나이</dt><dd>26 · 여성</dd><dt>직업</dt><dd>공간 브랜딩 에이전시</dd></dl>
+      <div class="beh"><p class="r"><span class="hi">선택적 기록</span><b><i style="left:12%"></i></b><span>자동 축적</span></p><p class="r"><span>분석·활용</span><b><i style="left:92%"></i></b><span class="hi">기록·보존</span></p></div>
+    </div>
+    <div>
+      <p class="ptype fr">③ 추억 보관형 · 소중한 순간을 영구 보존하는</p>
+      <h2 class="pname fr">이다희<small>Profile 03</small></h2>
+      <p class="pq fr">“단순히 사진 한 장 넘겨 보는 건 아쉬워요. 우리가 함께 웃고 떠들던 그 장소의 공기 자체를 남기고 싶어요.”</p>
+      <div class="tags fr"><span>#추억 보관</span><span>#공간 재체험</span><span>#함께하는 시간</span><span>#공기 감정</span></div>
+      <div class="ptab fr"><span data-k="0">PAIN · NEEDS</span><span data-k="1">SCENARIO</span></div>
+      <div class="panes fr">
+        <div class="pane pn" data-k="0">
+          <div class="card"><h3>PAIN POINTS</h3><ul><li>친구들 각자의 기기와 메신저에 기록이 흩어져 있어 하나의 공간으로 모으기 번거로움</li><li>2D 사진만으로는 당시의 현장감과 감정이 시간이 갈수록 흐려짐</li><li>공동 아카이브를 만들고 공유할 때, 각자가 원하는 기억의 우선순위가 달라 생기는 조율 부담</li></ul></div>
+          <div class="card"><h3>NEEDS</h3><ul><li>흩어진 멀티미디어 기록을 하나의 3D 공간으로 통합</li><li>원거리 친구들과 언제든 같은 기억 공간에 모일 수 있는 실시간 동시 접속 환경</li><li>세월이 흘러도 변질되거나 유실되지 않는 기억 데이터의 안정적 보존</li></ul></div>
+        </div>
+        <div class="pane psc" data-k="1">
+          <div class="card"><h3>USER SCENARIO</h3>
+            <p>프로젝트 마감에 지친 금요일 밤, 다희는 텅 빈 거실에서 대학 시절 친구들과 떠났던 여행의 온기가 그리워진다. 단톡방조차 뜸해진 일상 속에서 그때의 유대감을 다시 느끼고 싶어 Memory Archive를 켠다. <q>“4년 전 친구들이랑 다 같이 떠났던 첫 제주 여행 틀어 줘.”</q></p>
+            <p>AI가 친구들이 모아 둔 사진, 영상, 현장 음성, 음악, 동선 데이터를 엮어 내고, 거실 벽면이 확장되며 노을 진 애월 해변 산책로가 3D 공간으로 재구성된다. 벤치 위엔 필름 사진과 단톡방 대화가 빛 조각처럼 떠 있고, 접속 알림을 본 친구 수아가 공간에 들어온다. <q>“다희야, 이거 그때 렌터카 펑크 났던 그 해변이잖아!”</q></p>
+            <p>시간의 공백은 금세 지워진다. <q>“다음 주말에 진짜 얼굴 한번 보자.”</q></p></div>
+          <div class="card"><h3>CHARACTERISTICS</h3><ul><li>친구들과의 여행, 페스티벌, 기념일 등 특별한 순간을 직접 선별해 기록하는 성향</li><li>사진뿐만 아니라 당시의 웃음소리, 음악, 공간감까지 입체적으로 체험하길 원함</li><li>개인의 고립된 기록보다 지인들과 함께 공유하고 교감하는 공동의 기억을 중시</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 강서윤 -->
+<section class="sl" id="s8" data-nav="강서윤" data-meta="INDEX 08 · PERSONA ④" data-steps="2">
+  <div class="wrap pv">
+    <div class="pp fr">
+      <img src="img/p4.jpg" alt="어두운 방에서 턱을 괴고 생각에 잠긴 강서윤">
+      <dl class="id"><dt>나이</dt><dd>36 · 여성</dd><dt>직업</dt><dd>데이터 분석가</dd></dl>
+      <div class="beh"><p class="r"><span>선택적 기록</span><b><i style="left:92%"></i></b><span class="hi">자동 축적</span></p><p class="r"><span>분석·활용</span><b><i style="left:90%"></i></b><span class="hi">기록·보존</span></p></div>
+    </div>
+    <div>
+      <p class="ptype fr">④ 일상 아카이브형 · 무의식의 일상에서 온기를 찾는</p>
+      <h2 class="pname fr">강서윤<small>Profile 04</small></h2>
+      <p class="pq fr">“사진 속 활짝 웃는 얼굴보다, 거실을 채우던 따뜻한 온도와 무심한 도마 소리가 더 그리울 때가 있어.”</p>
+      <div class="tags fr"><span>#상실감 극복</span><span>#무의식적 기록</span><span>#공감각적 회상</span><span>#백색소음</span></div>
+      <div class="ptab fr"><span data-k="0">PAIN · NEEDS</span><span data-k="1">SCENARIO</span></div>
+      <div class="panes fr">
+        <div class="pane pn" data-k="0">
+          <div class="card"><h3>PAIN POINTS</h3><ul><li>직접적인 시각적 추억 회피</li><li>텅 빈 정적이 주는 숨 막힘</li><li>일상 기록의 부재로 인한 상실감</li></ul></div>
+          <div class="card"><h3>NEEDS</h3><ul><li>안전하고 간접적인 애도 공간</li><li>무의식적 일상(루틴)의 복원</li><li>데이터 속에서 온기 발견</li></ul></div>
+        </div>
+        <div class="pane psc" data-k="1">
+          <div class="card"><h3>USER SCENARIO</h3>
+            <p>퇴근 후 텅 빈 집으로 돌아온 서윤. 적막감에 숨이 막힐 듯한 외로움을 느끼지만, 남겨진 어머니의 사진이나 영상을 여는 것은 감당하기 힘들어 피하고 있다.</p>
+            <p>대신 서윤은 말한다. <q>“작년 11월 일요일 아침 10시쯤, 주방 쪽 데이터로 맞춰 줄래?”</q> AI는 스마트홈 센서에 쌓였던 공간 음향(달그락거리는 식기 소리, 낮게 깔린 TV 백색소음)과 주방 온도(24.5도)를 조용히 재구성한다.</p>
+            <p>평소보다 느리고 조심스럽게 닫히던 방문 소리, 서윤이 깨기 전 미리 데워 두었던 거실 바닥의 온기 데이터를 확인하며, 무심히 흘려보냈던 일상 속 묵묵한 애정을 뒤늦게 깨닫는다. 서윤은 익숙한 일상의 조각들 속에서 위안을 얻으며 천천히 상실감을 극복해 나간다.</p></div>
+          <div class="card"><h3>CHARACTERISTICS</h3><ul><li>의도적으로 남긴 사진이나 영상이 아닌, 센서에 의해 자연스럽게 남겨진 생활 로그</li><li>시각적 이미지는 상실감을 자극하므로 청각과 촉각 같은 공간의 감각으로 기억을 떠올림</li><li>직접적인 슬픔을 마주하는 것보다 자신만의 안전한 공간에서 간접적인 방식으로 상처를 치유</li></ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 여정 지도 -->
+<section class="sl" id="s9" data-nav="여정 지도" data-meta="INDEX 09 · JOURNEY MAP" data-steps="4">
+  <div class="wrap">
+    <p class="eb fr">09 · Journey Map<span>네 사람이 Memory Archive를 쓰는 과정</span></p>
+    <div class="jtab fr">
+      <button data-k="0"><img src="img/p1.jpg" alt="">김도윤 · 의미 탐색형</button>
+      <button data-k="1"><img src="img/p2.jpg" alt="">장민소 · 라이프 분석형</button>
+      <button data-k="2"><img src="img/p3.jpg" alt="">이다희 · 추억 보관형</button>
+      <button data-k="3"><img src="img/p4.jpg" alt="">강서윤 · 일상 아카이브형</button>
+    </div>
+    <div class="fr">
+    <div class="jg" data-k="0">
+      <div class="card"><h3>이용 전</h3><ul><li>같은 실수를 반복하지 않기 위해 중요한 업무 경험을 남기고 싶어 함</li><li>과거의 유사한 상황과 판단 과정을 빠르게 찾아볼 수 있길 기대함</li></ul></div>
+      <div class="card"><h3>이용 중</h3><ul><li>회의 기록, 메신저, 일정표 등 흩어진 자료를 하나로 정리함</li><li>과거의 유사한 실수와 반복되는 판단 패턴을 확인함</li><li>AI 분석을 통해 놓쳤던 위험 요소와 원인을 발견함</li></ul></div>
+      <div class="card"><h3>이용 후</h3><ul><li>자신의 판단 습관과 반복되는 실수의 원인을 구체적으로 이해함</li><li>분석 결과를 체크리스트로 정리해 다음 프로젝트에 바로 적용함</li></ul></div>
+      <div class="card"><h3>상황</h3><p>8년 차 프로젝트 매니저로 여러 팀의 일정과 의사결정을 관리함. 빠른 판단이 필요한 업무가 많아 중요한 맥락이나 피드백을 놓치기도 함. 업무 성장과 자기관리에 관심이 많아 중요한 경험은 따로 기록하는 편임.</p></div>
+      <div class="card"><h3>행동</h3><p>프로젝트 진행 중 중요한 실수나 판단이 발생하면 직접 기록한다. 관련 회의, 메시지, 문서와 함께 하나의 기억으로 정리하고, 비슷한 과거 사례를 찾아 반복되는 패턴을 다음 업무에 반영함.</p></div>
+      <div class="card"><h3>생각 &amp; 감정</h3><ul><li>“이번 실수도 그냥 지나가면 다음에 또 반복할 것 같은데.”</li><li>“예전에 비슷한 상황이 있었는지 바로 확인할 수 있으면 좋겠다.”</li><li>“내가 반복하는 판단 방식이 보이니까 다음에는 더 잘할 수 있을 것 같아.”</li></ul></div>
+      <div class="card"><h3>자주 쓰는 기능</h3><ul><li>중요 기억 직접 저장</li><li>유사 사례 검색</li><li>개선 체크리스트 생성</li></ul></div>
+      <div class="card"><h3>개선 방향</h3><ul><li>회의·메신저·문서 등 흩어진 업무 기록의 자동 연결</li><li>과거의 유사한 실수와 반복 패턴을 빠르게 추천</li><li>분석 결과를 바로 적용할 수 있는 행동 가이드 및 체크리스트 제공</li></ul></div>
+      <div class="card ins"><h3>INSIGHTS</h3><p>기록 자체보다 과거 경험에서 다음 행동에 필요한 의미를 얼마나 빠르게 발견할 수 있는지가 중요하다. 단순히 기억을 저장하는 것보다 실수 → 분석 → 개선으로 이어지는 경험이 서비스의 핵심 가치가 됨.</p></div>
+    </div>
+    <div class="jg" data-k="1">
+      <div class="card"><h3>이용 전</h3><ul><li>직접 기록하지 않아도 자신의 생활 패턴을 알고 싶음</li><li>컨디션이 좋았던 날의 공통점을 찾아 일상에 적용하길 기대함</li></ul></div>
+      <div class="card"><h3>이용 중</h3><ul><li>기억 조각이 너무 많아 어떤 기준으로 골랐는지 파악하기 어려움</li><li>분석 결과의 근거를 확인하려면 조각을 하나씩 열어 봐야 해 번거로움</li><li>감정이 반대인 날이 잘못 분류돼 있어 결과 전체를 의심하게 됨</li></ul></div>
+      <div class="card"><h3>이용 후</h3><ul><li>몰랐던 자신의 패턴을 발견하고 일정을 바꾸며 만족감을 느낌</li><li>잘못된 분류를 고친 뒤에도 다음 분석에 반영될지 확신이 없음</li></ul></div>
+      <div class="card"><h3>상황</h3><p>마감이 몰린 한 달을 보내고 지친 상태. 정해진 일과가 없어 어떤 날 컨디션이 좋았는지 스스로 알기 어렵고, 따로 기록하는 습관도 없음.</p></div>
+      <div class="card"><h3>행동</h3><p>“최근 석 달 동안 내가 제일 편안해 보였던 순간들 보여줘”라고 검색한다. 떠오른 조각의 공통점을 확인하고, 그중 하나에 들어가 당시 장소와 음악을 다시 본다. 잘못 분류된 날을 직접 수정한 뒤 다음 달 일정을 조정함.</p></div>
+      <div class="card"><h3>생각 &amp; 감정</h3><ul><li>“내가 혼자 있을 때 더 편했구나. 이건 몰랐네.”</li><li>“친구랑 싸운 날이 즐거운 날이라고? 이건 좀 아닌데.”</li></ul></div>
+      <div class="card"><h3>자주 쓰는 기능</h3><ul><li>기억 검색</li><li>패턴 분석 요약</li><li>분류 수정</li></ul></div>
+      <div class="card"><h3>개선 방향</h3><ul><li>분석 결과마다 근거가 된 데이터 함께 표시</li><li>공통점을 한눈에 보여 주는 패턴 요약 화면</li><li>사용자가 고친 분류를 다음 분석에 반영</li><li>분석 결과를 일정·루틴 추천으로 연결</li></ul></div>
+      <div class="card ins"><h3>INSIGHTS</h3><p>기록은 AI에 맡기되 해석은 직접 확인하고 싶어 하며, 분석 근거가 보이고 틀린 부분을 고칠 수 있어야 결과를 신뢰함.</p></div>
+    </div>
+    <div class="jg" data-k="2">
+      <div class="card"><h3>이용 전</h3><ul><li>친구들과의 소중한 순간을 단순 사진이 아닌 생생한 공간으로 남기고 싶음</li><li>플랫폼 변경 시 공들여 모은 추억이 유실될까 우려함</li></ul></div>
+      <div class="card"><h3>이용 중</h3><ul><li>3D 공간으로 구성하는 과정에서 피로감 느낌</li><li>친구들과 공동 아카이브를 편집·공유할 때 각자의 기억 우선순위나 비공개 장면 조율에 신경 쓰임</li><li>재구성된 공간이 실제 기억의 현장감·공기감과 미묘하게 다를 때 아쉬움 발생</li></ul></div>
+      <div class="card"><h3>이용 후</h3><ul><li>멀리 떨어진 친구들과 당시 공간에 동시 접속해 추억을 나눌 때 깊은 정서적 충만감 체감</li><li>세월이 지나도 변질 없이 꺼내 볼 수 있는 온전한 공동 기록이 완성되어 만족함</li></ul></div>
+      <div class="card"><h3>상황</h3><p>바쁜 업무로 일상이 공허해지거나, 메신저 단톡방 대화가 뜸해져 친구들과 함께하던 때가 문득 그리워질 때.</p></div>
+      <div class="card"><h3>행동</h3><p>복원된 3D 해변 산책로를 거닐며 떠 있는 사진·영상·대화 조각을 확인하고, 동시 접속한 친구와 함께 당시의 추억을 이야기함.</p></div>
+      <div class="card"><h3>생각 &amp; 감정</h3><ul><li>“평면 사진 한 장 보는 건 아쉬운데, 그때 우리가 함께 웃고 떠들던 그 장소의 공기 속에 다시 서 있는 기분이라 뭉클하다.”</li><li>“몸은 멀리 있어도 이렇게 같은 공간에 접속해 이야기하니까 그때로 돌아간 것 같아 든든하다.”</li></ul></div>
+      <div class="card"><h3>자주 쓰는 기능</h3><ul><li>공간 아카이브 모드</li><li>다중 미디어 3D 융합 복원</li><li>실시간 동시 접속 및 공동 편집/감상 모드</li></ul></div>
+      <div class="card"><h3>개선 방향</h3><ul><li>여러 메신저 및 클라우드 링크를 통한 원클릭 공동 데이터 수집/동기화 지원</li><li>공동 아카이브 공유 시 개인별 미디어 공개 범위 및 블러 설정 등 프라이버시 조율 옵션 제공</li><li>당시의 현장 소리, 날씨, 배경음악 등 감각적 디테일(공기감) 재현의 정확도 강화</li></ul></div>
+      <div class="card ins"><h3>INSIGHTS</h3><p>단순 시각 기록 보존보다, 사람과 사람을 잇는 ‘공간의 현장감’과 ‘공동 재체험(유대감 회복)’이 핵심 가치로 작용함.</p></div>
+    </div>
+    <div class="jg" data-k="3">
+      <div class="card"><h3>이용 전</h3><ul><li>텅 빈 집의 적막감에 숨 막힘을 느낌</li><li>사진이나 영상 등 직접적인 시각 자극은 회피하려 함</li></ul></div>
+      <div class="card"><h3>이용 중</h3><ul><li>시각 위주의 하이라이트 추천이 뜨면 부담감을 느낌</li><li>시각 필터를 끄고 환경/음향 데이터 중심으로 탐색함</li><li>특정 시간대의 백색소음(주방 소리 등)을 공간에 재생함</li></ul></div>
+      <div class="card"><h3>이용 후</h3><ul><li>익숙한 소리로 공간이 채워지며 깊은 안정감을 느낌</li><li>무심한 로그 데이터 속에서 배려를 발견하고 죄책감을 덜어 냄</li></ul></div>
+      <div class="card"><h3>상황</h3><p>늦은 퇴근 후 텅 빈 집으로 귀가한 상태. 숨 막히는 적막을 깨고 싶지만, 너무 생생한 추억(시각)을 대면하기는 두려워 망설이는 중.</p></div>
+      <div class="card"><h3>행동</h3><p>앱 진입 후 시각 위주의 하이라이트 알림을 즉시 끄고, 스마트홈 센서에 자동 축적된 환경 데이터(온도, 일상 소음) 중심으로 과거의 특정 시점을 검색해 앰비언트 모드로 틀어 둠.</p></div>
+      <div class="card"><h3>생각 &amp; 감정</h3><ul><li>“환하게 웃는 얼굴은 아직 감당하기 힘들어. 그냥 특별할 것 없던 작년 일요일 아침, 도마 소리와 TV 소리만 배경처럼 들려줘.”</li></ul></div>
+      <div class="card"><h3>자주 쓰는 기능</h3><ul><li>감각(시각/청각/촉각) 데이터 필터링</li><li>앰비언트 재생 모드 (백그라운드 재생)</li><li>IoT 환경 로그(온도, 조명 등) 동기화</li></ul></div>
+      <div class="card"><h3>개선 방향</h3><ul><li>감정 민감도를 고려한 ‘안전 모드(시각 데이터 원천 차단)’ 도입</li><li>장시간 틀어 두어도 이질감 없는 공간 음향 믹싱 기술</li><li>수치형 데이터(온도/문 닫힘 등)의 감성적 해석 제공</li></ul></div>
+      <div class="card ins"><h3>INSIGHTS</h3><p>상실감을 겪는 사용자에게는 화려하게 편집된 추억보다, 무의식적으로 축적된 ‘일상의 여백(백색소음)’이 감정적 부담 없이 더 안전하고 깊은 위로를 제공함.</p></div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 TRACE -->
+<section class="sl" id="s10" data-nav="TRACE" data-meta="INDEX 10 · BRAND 01">
+  <div class="wrap bv">
+    <figure class="bimg g3 fr" id="trace3d"><canvas class="c3d" aria-hidden="true"></canvas>
+      <img class="orig" src="img/trace.jpg" alt="TRACE 브랜드 콘셉트 이미지. 사진과 기록 조각이 연결망으로 떠 있다.">
+      <figcaption class="lay"><span><i class="l1"></i>실제 기록</span><span><i class="l2"></i>직접 남긴 기억</span><span><i class="l3"></i>AI 추정</span></figcaption></figure>
+    <div>
+      <p class="eb fr">Brand 01<span>의미 탐색형 · 라이프 분석형</span></p>
+      <h2 class="bname fr">TRACE<small>MEMORY INTELLIGENCE</small></h2>
+      <p class="btag fr">“기억을 저장하는 것이 아니라, 기억에서 의미를 찾는다.”</p>
+      <p class="bdesc fr">개인의 사진, 메모, 업무 기록, 메시지 등을 하나의 <b>Memory Intelligence</b>로 연결한다. 김도윤 같은 사용자에게는 과거 프로젝트를 분석해 반복되는 실수를 찾아 주고, 일반 사용자에게는 “나는 어떤 음악을 좋아했는가”, “언제 가장 행복했는가” 같은 생활 패턴을 발견하게 해 준다.</p>
+      <p class="bdesc fr">중요한 건 AI가 마음대로 기억을 만들어 내는 게 아니라, <b>실제 기록 / 사용자가 직접 남긴 기억 / AI가 추정한 부분</b>을 명확히 구분한다는 것.</p>
+      <div class="conf fr">
+        <p class="bar"><i style="width:62%;background:#111214"></i><i style="width:24%;background:#2350F5"></i><i style="width:14%;background:repeating-linear-gradient(90deg,#A3A6AD 0 3px,transparent 3px 6px)"></i></p>
+        <p class="lg"><span style="--c:#111214">실제 기록 62%</span><span style="--c:#2350F5">직접 남긴 기억 24%</span><span style="--c:#A3A6AD">AI 추정 14%</span></p>
+        <p class="tot">AI RECONSTRUCTION CONFIDENCE<b>87%</b></p>
+      </div>
+      <div class="feat fr"><span>Memory Highlight</span><span>Pattern Finder</span><span>Past Context Search</span><span>AI Reconstruction Confidence</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 Echo Room -->
+<section class="sl" id="s11" data-nav="Echo Room" data-meta="INDEX 11 · BRAND 02">
+  <div class="wrap bv">
+    <figure class="bimg fr"><img src="img/echo.jpg" alt="어두운 거실 소파에 앉아 있는 사람. 주방 온도와 주방 소리 정보가 떠 있다.">
+      <div class="amb"><span><small>KITCHEN TEMPERATURE</small>24.5℃</span><span><small>AMBIENT SOUND</small>Cooking · TV</span><span><small>TIME</small>11:32 AM</span></div></figure>
+    <div>
+      <p class="eb fr">Brand 02<span>일상 아카이브형</span></p>
+      <h2 class="bname fr">Echo Room<small>에코 룸 · AMBIENT THERAPY</small></h2>
+      <p class="btag fr">“보이지 않는 기억이 당신의 오늘을 따뜻하게.”</p>
+      <p class="bdesc fr">‘보이지 않는 기억’을 다루는 멘탈 헬스케어 및 공간 제어 브랜드. 화려하고 자극적인 시각 데이터(사진, 홀로그램) 대신, 스마트홈 기기가 무의식적으로 수집해 온 <b>환경 데이터</b>(보일러 온도 변화, 문이 닫히는 속도, 가전제품의 백색소음)에 집중한다.</p>
+      <p class="bdesc fr">부재하는 가족의 얼굴을 억지로 들이밀지 않고, 주방에서 들려오던 도마 소리와 거실 바닥의 따뜻한 온도만을 재현해 정적을 밀어낸다. 슬픔을 강요하지 않고 일상 속에서 천천히 애도할 수 있는 <b>안전지대</b>를 만든다.</p>
+      <ul class="need fr"><li><b>설립 목적</b> · 시각적 자극을 배제하고, 일상의 온도와 질감만을 복원해 안전하고 점진적인 상실감 치유를 돕는다</li><li><b>타깃 니즈</b> · 직접적인 시각적 추억 회피, 정적이 주는 숨 막힘 해소, 무의식적 일상의 복원</li></ul>
+    </div>
+  </div>
+</section>
+
+<!-- 12 EMBER -->
+<section class="sl" id="em" data-nav="EMBER" data-meta="INDEX 12 · BRAND 03" data-steps="4">
+  <div class="wrap bv">
+    <figure class="bimg g3 fr" id="emImg" data-k="0"><canvas class="c3d" aria-hidden="true"></canvas>
+      <img class="orig" src="img/ember.jpg" alt="EMBER 브랜드 콘셉트 이미지. 아버지와의 저녁 식사 장면이 재구성된 집 안.">
+      <figcaption class="emcap"><b>Dinner with Dad</b>2031년 11월 14일 · <span id="emState">공간만 복원됨</span></figcaption></figure>
+    <div>
+      <p class="eb fr">Brand 03<span>상실과 애도</span></p>
+      <h2 class="bname fr">EMBER<small>WARMTH REMAINS</small></h2>
+      <p class="btag fr">“기억 속에 남아 있는 작은 온기를 다시 발견하다.”</p>
+      <p class="bdesc fr">떠난 사람을 AI로 되살려 대화하는 서비스가 아니라, <b>함께했던 실제 일상의 흔적</b>을 안전하게 다시 경험하는 서비스. “아버지와 마지막으로 같이 저녁을 먹었던 날”을 검색하면, 그날의 사진, 집의 구조, TV 소리, 자주 듣던 음악, 식탁의 위치, 메시지 같은 실제 데이터로 그날의 공간과 분위기를 복원한다.</p>
+      <ol class="path fr" id="emPath">
+        <li data-k="0"><span>01</span><b>목소리 없이 공간만 보기<small>SPACE ONLY</small></b></li>
+        <li data-k="1"><span>02</span><b>일상의 물건 보기<small>FAMILIAR OBJECTS</small></b></li>
+        <li data-k="2"><span>03</span><b>사진 보기<small>PHOTOS &amp; AUDIO</small></b></li>
+        <li data-k="3"><span>04</span><b>기억 공간 체험<small>FULL MEMORY SPACE</small></b></li>
+      </ol>
+      <div class="solve fr"><span>직접적인 시각적 추억 회피</span><span>완벽한 정적이 주는 부담</span><span>특별한 기록이 없다는 죄책감</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 마무리 -->
+<section class="sl" id="s13" data-nav="마무리" data-meta="INDEX 13 · END">
+  <div class="wrap">
+    <p class="eb fr">Memory Archive</p>
+    <p class="end fr" style="margin-top:22px">기억을 보여 주는 데서 끝나지 않는다.<br><em>그 기억으로 지금의 감정과 삶의 방향을</em><br>다시 이해하도록 돕는다.</p>
+    <div class="b3 fr">
+      <div>TRACE<small>기억에서 의미를 찾는다</small></div>
+      <div>Echo Room<small>보이지 않는 기억의 온기</small></div>
+      <div>EMBER<small>남아 있는 작은 온기</small></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav id="tl" aria-label="슬라이드 이동"><span id="count">00 / 13</span><div class="rail" id="rail"></div>
+  <div class="ctl"><button id="prev" aria-label="이전">←</button><button id="next" aria-label="다음">→</button><button id="fs" aria-label="전체화면">⤢</button></div></nav>
+
+<script>
+(function(){
+  var S = [].slice.call(document.querySelectorAll('.sl')), cur = 0, step = 0;
+  var rail = document.getElementById('rail'), cnt = document.getElementById('count');
+  var mVal = document.getElementById('mVal'), mBar = document.getElementById('mBar'), mLab = document.getElementById('mLab'), mMeta = document.getElementById('mMeta');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var pad = function(n){ return (n < 10 ? '0' : '') + n; };
+
+  /* 조각마다 등장 순서 */
+  S.forEach(function(s){ [].slice.call(s.querySelectorAll('.fr')).forEach(function(e, i){ e.style.setProperty('--i', i); }); });
+
+  /* 기억 조각 타일: 흩어진 조각 → 하나의 장면 */
+  function buildTiles(el){
+    var C = 9, R = 5, src = el.dataset.src;
+    for (var r = 0; r < R; r++) for (var c = 0; c < C; c++){
+      var t = document.createElement('i'); t.className = 'tile';
+      t.style.cssText = 'left:' + (c * 100 / C) + '%;top:' + (r * 100 / R) + '%;width:' + (100 / C + .05) + '%;height:' + (100 / R + .05) + '%;background-image:url(' + src + ');background-size:' + (C * 100) + '% ' + (R * 100) + '%;background-position:' + (c * 100 / (C - 1)) + '% ' + (r * 100 / (R - 1)) + '%';
+      var dx = (c - (C - 1) / 2), dy = (r - (R - 1) / 2);
+      t.style.setProperty('--tx', (dx * 20 + (Math.random() - .5) * 70) + 'px');
+      t.style.setProperty('--ty', (dy * 22 + (Math.random() - .5) * 60) + 'px');
+      t.style.setProperty('--tz', (Math.random() * 260 - 200) + 'px');
+      t.style.setProperty('--ry', ((Math.random() - .5) * 50) + 'deg');
+      t.style.setProperty('--r', ((Math.random() - .5) * 16) + 'deg');
+      t.style.setProperty('--o', (.25 + Math.random() * .55).toFixed(2));
+      t.style.setProperty('--b', (Math.random() * 3).toFixed(1) + 'px');
+      t.style.setProperty('--d', (Math.random() * .6).toFixed(2) + 's');
+      el.insertBefore(t, el.firstChild);
+    }
+  }
+  [].slice.call(document.querySelectorAll('.tiles')).forEach(buildTiles);
+
+  /* 타임라인 */
+  S.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.style.left = (S.length > 1 ? i / (S.length - 1) * 100 : 0) + '%';
+    b.innerHTML = '<i></i><span>' + s.dataset.nav + '</span>'; b.setAttribute('aria-label', s.dataset.nav);
+    b.addEventListener('click', function(){ go(i, 0); }); rail.appendChild(b);
+  });
+  var ticks = [].slice.call(rail.children);
+
+  /* 재구성 계기판 */
+  var mt = null;
+  function meter(){
+    if (mt) cancelAnimationFrame(mt);
+    var t0 = performance.now(), dur = reduce ? 1 : 1300, from = 18 + Math.random() * 20;
+    mLab.textContent = 'RECONSTRUCTING';
+    (function f(t){
+      var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3), v = from + (100 - from) * e;
+      mVal.textContent = pad(Math.floor(v)).padStart(3, '0') + '%'; mBar.style.transform = 'scaleX(' + (v / 100) + ')';
+      if (k < 1) mt = requestAnimationFrame(f); else mLab.textContent = 'RECONSTRUCTED';
+    })(t0);
+  }
+
+  function nSteps(i){ return +(S[i].dataset.steps || 1); }
+  function render(){
+    var s = S[cur];
+    /* 개념: 01 떠 있는 조각 → 02 재구성 → 03 함께 감상 */
+    if (s.id === 's2'){
+      var T = document.getElementById('cTiles');
+      T.classList.toggle('float', step === 0); T.classList.toggle('done', step >= 1); T.classList.toggle('shared', step === 2);
+      T.dataset.step = step;
+      document.getElementById('cCap').textContent = step === 0 ? 'FRAGMENTS · 1,284' : (step === 1 ? 'MEMORY SPACE · ENTERED' : 'SHARED · 3 VIEWERS');
+      s.querySelectorAll('.steps3 li').forEach(function(li){ li.classList.toggle('cur', +li.dataset.k === step); });
+    }
+    if (s.id === 's3'){
+      s.querySelectorAll('.beat').forEach(function(b){ b.classList.toggle('cur', +b.dataset.k === step); });
+      var sc = document.getElementById('scene'); sc.dataset.k = step;
+      document.getElementById('sLbl').textContent = step < 3 ? 'LIVING ROOM · 20:4' + Math.min(step * 1 + 0, 3) : 'SUMMER, 2036 · UNIVERSITY 2ND YEAR';
+      sc.querySelectorAll('.pop').forEach(function(p){ p.classList.toggle('on', +p.dataset.on === step); });
+      var d = document.getElementById('sDots'); if (!d.children.length) for (var k = 0; k < 8; k++) d.appendChild(document.createElement('i'));
+      [].forEach.call(d.children, function(x, k){ x.classList.toggle('on', k <= step); });
+    }
+    if (s.id === 's4'){
+      var ti = document.getElementById('tinfo'); ti.classList.toggle('sel', step > 0);
+      s.querySelectorAll('[data-k]').forEach(function(e){ e.classList.toggle('on', step > 0 && +e.dataset.k === step); });
+    }
+    if (s.querySelector('.panes')){
+      s.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('cur', +p.dataset.k === step); });
+      s.querySelectorAll('.ptab span').forEach(function(p){ p.classList.toggle('on', +p.dataset.k === step); });
+    }
+    if (s.id === 's9'){
+      s.querySelectorAll('.jg').forEach(function(p){ p.classList.toggle('cur', +p.dataset.k === step); });
+      s.querySelectorAll('.jtab button').forEach(function(p){ p.classList.toggle('on', +p.dataset.k === step); });
+    }
+    if (s.id === 'em'){
+      document.getElementById('emImg').dataset.k = step;
+      document.getElementById('emState').textContent = ['공간만 복원됨', '일상의 물건 복원', '사진 · 소리 복원', '기억 공간 전체'][step];
+      s.querySelectorAll('.path li').forEach(function(li){ var k = +li.dataset.k; li.classList.toggle('cur', k === step); li.classList.toggle('done', k < step); });
+    }
+  }
+  function go(i, st){
+    if (i < 0 || i >= S.length) return;
+    var changed = i !== cur || !S[i].classList.contains('on');
+    S.forEach(function(s, k){ s.classList.toggle('on', k === i); });
+    cur = i; step = st < 0 ? nSteps(i) - 1 : st;
+    ticks.forEach(function(b, k){ b.classList.toggle('on', k === i); });
+    cnt.textContent = pad(i) + ' / ' + pad(S.length - 1);
+    mMeta.textContent = S[i].dataset.meta || '';
+    if (changed){
+      meter();
+      S[i].scrollTop = 0;
+      var t = S[i].querySelector('.tiles[data-auto]');
+      if (t){ t.classList.remove('done'); t.classList.add('float'); setTimeout(function(){ t.classList.remove('float'); t.classList.add('done'); }, reduce ? 0 : 700); }
+      try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+    }
+    render();
+  }
+  function move(d){
+    if (d > 0 && step < nSteps(cur) - 1){ step++; render(); return; }
+    if (d < 0 && step > 0){ step--; render(); return; }
+    go(cur + d, d > 0 ? 0 : -1);
+  }
+  addEventListener('keydown', function(e){
+    if (['ArrowRight','ArrowDown','PageDown',' '].indexOf(e.key) >= 0){ e.preventDefault(); move(1); }
+    else if (['ArrowLeft','ArrowUp','PageUp'].indexOf(e.key) >= 0){ e.preventDefault(); move(-1); }
+    else if (e.key === 'Home') go(0, 0); else if (e.key === 'End') go(S.length - 1, 0);
+  });
+  document.getElementById('next').addEventListener('click', function(){ move(1); });
+  document.getElementById('prev').addEventListener('click', function(){ move(-1); });
+  document.getElementById('fs').addEventListener('click', function(){ if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(function(){}); });
+  /* 클릭으로도 단계·슬라이드 이동 (탭 버튼은 해당 단계로) */
+  document.querySelectorAll('.jtab button').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); step = +b.dataset.k; render(); }); });
+  document.querySelectorAll('.ptab span,.steps3 li,.path li,.tinfo li').forEach(function(b){ b.style.cursor = 'pointer'; b.addEventListener('click', function(e){ e.stopPropagation(); step = +b.dataset.k; render(); }); });
+  var h = parseInt(location.hash.slice(1), 10);
+  go(h > 0 && h <= S.length ? h - 1 : 0, 0);
+})();
+</script>
+<script type="module" src="assets/mem3d.js"></script>
+<script type="module" src="assets/scenes.js"></script>
+</body>
+</html>
