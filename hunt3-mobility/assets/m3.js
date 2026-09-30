@@ -21,6 +21,10 @@ catch (e) {
   fb.textContent = '이 기기에서는 3D 장면을 표시할 수 없어 단계 설명만 보여 드립니다.';
   stage.appendChild(fb);
 }
+// GPU가 초기화돼 WebGL 화면이 검게 멈추면(context lost) 잠깐 기다렸다가 안 돌아올 때 페이지를 다시 불러 복구
+if (renderer) canvas.addEventListener('webglcontextlost', () => {
+  setTimeout(() => { if (renderer.getContext().isContextLost()) location.reload(); }, 1500);
+});
 if (renderer) init();
 
 function init() {
