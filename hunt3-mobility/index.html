@@ -492,6 +492,24 @@ main{padding-top:38px}
 .also{row-gap:10px}
 
 /* 02 왜 이동인가 */
+.fx{margin-top:clamp(20px,3vh,32px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:18px;align-items:stretch}
+.fx .card{padding:22px 26px}
+.fx .n,.fxb .n{font-size:12px;font-weight:800;color:var(--ink-3);letter-spacing:.06em}
+.fx .fx3 .n{color:var(--blu)}
+.fx .fx3{outline:2px solid var(--blu);outline-offset:-2px}
+.fx h3{font-size:clamp(19px,1.8vw,24px);font-weight:800;letter-spacing:-.03em;margin-top:4px}
+.fx ol{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+.fx li{font-size:15px;color:var(--ink);font-weight:600;display:flex;gap:12px;align-items:baseline}
+.fx li b{font-size:12px;color:var(--ink-3);font-weight:800;font-variant-numeric:tabular-nums}
+.fx .fx3 li b{color:var(--blu)}
+.fx .stop{margin-top:14px;font-size:13.5px;color:var(--red);font-weight:600}
+.fxa{align-self:center;font-style:normal;font-size:28px;color:var(--blu);font-weight:800}
+.fxb{margin-top:14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.fxb .card{padding:18px 24px}
+.fxb p{font-size:14.5px;color:var(--ink-2);margin-top:4px;line-height:1.55}
+.fxb .mvt{margin-top:10px!important;padding-top:0}
+@media(max-width:1000px){.fx,.fxb{grid-template-columns:1fr}.fxa{transform:rotate(90deg);justify-self:center}}
+
 #mv .mv3{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
 #mv .mv3 .card{display:flex;flex-direction:column;padding:24px 26px}
 #mv .mv3 .card>p{font-size:15px}
@@ -541,6 +559,15 @@ main{padding-top:38px}
 .first figcaption{margin-top:14px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
 .first figcaption b{display:block;font-size:14px;color:var(--blu);margin-bottom:2px}
 @media(max-width:900px){#s2 .hero2{grid-template-columns:1fr}}
+
+.svc dd.us{color:var(--blu);font-weight:700}
+#s4 .svc .card{padding:18px 22px}
+#s4 .svc dt{margin-top:8px}
+#s4 .svc dd{font-size:14px;line-height:1.5}
+#s4 .svc .src{margin-top:10px}
+#s4 .also{margin-top:10px;padding:14px 22px}
+#s4 .key{margin-top:14px}
+#s4 .h2{margin-bottom:0}
 
 /* 06 3D 폰 */
 .pf{margin-top:clamp(18px,3vh,30px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(28px,6vw,96px);align-items:center}
@@ -640,14 +667,22 @@ main{padding-top:38px}
 <!-- 02 왜 이동인가 -->
 <section class="sec" id="mv" data-nav="왜 이동인가">
   <div class="wrap">
-    <p class="eb rv">02 · Why Mobility<span>왜 이동인가</span></p>
-    <h2 class="h2 rv d1">2차의 여러 장면 중에 이동을 고른 이유</h2>
-    <div class="crit mv3">
-      <div class="card rv d2"><span class="n">이유 1</span><h3>1차에서 이어진다</h3>
-        <p>1차에서는 버스 표를 예매하는 장면까지 만들었다. 실제로는 표를 산 뒤에도 역까지 가고, 내려서 집까지 가야 한다. 이번엔 그 뒤를 이어서 설계했다.</p>
-        <p class="mvc"><span>1차 · 버스 예매</span><i>→</i><span class="on">3차 · 집 앞까지</span></p></div>
-      <div class="card rv d3"><span class="n">이유 2</span><h3>맡길 범위가 한 번에 다 나온다</h3>
-        <p>길 찾기는 틀려도 다시 하면 되지만, 결제는 돈이 나가고 택시는 실제로 차가 온다. 이동 한 번 안에 AI에게 맡겨도 되는 일과 아닌 일이 섞여 있다.</p>
+    <p class="eb rv">02 · Why Mobility<span>1차에서 이어서</span></p>
+    <h2 class="h2 rv d1">1차 Future Experience에서 이동 전체로</h2>
+    <div class="fx rv d2">
+      <div class="card fx1"><span class="n">1차 · Future Experience</span><h3>시외버스 예매 AI 에이전트</h3>
+        <ol><li><b>01</b>목적만 말하면 된다</li><li><b>02</b>오류가 나도 처음으로 돌아가지 않는다</li><li><b>03</b>예매 성공</li></ol>
+        <p class="stop">여기서 끝났다. 표를 산 뒤의 이동은 다루지 않았다.</p></div>
+      <i class="fxa" aria-hidden="true">→</i>
+      <div class="card fx3"><span class="n">3차 · Mobility AI</span><h3>예매 앱에서 이동 앱으로</h3>
+        <ol><li><b>01</b>역까지 탈 택시</li><li><b>02</b>기차 · 버스 예매</li><li><b>03</b>가는 중에 막히면 다시 짜기</li><li><b>04</b>내려서 집까지</li></ol></div>
+    </div>
+    <div class="fxb">
+      <div class="card rv d3"><span class="n">1차에서 찾은 경험</span>
+        <p>불편했던 경험 셋, 좋았던 경험 하나가 모두 이동이었다.</p>
+        <p class="mvt"><span>버스 도착 정보</span><span>주차 정보</span><span>예매 결제 오류</span><span>보행자 신호 잔여시간</span></p></div>
+      <div class="card rv d4"><span class="n">맡길 범위가 한 번에 나온다</span>
+        <p>이동 한 번 안에 AI에게 맡겨도 되는 일과 아닌 일이 섞여 있다.</p>
         <p class="mvt"><span>길 찾기 · 틀려도 괜찮다</span><span class="r">결제 · 돈이 나간다</span><span class="r">택시 호출 · 차가 온다</span><span class="a">지연 대응 · 시간이 없다</span></p></div>
     </div>
   </div>
@@ -724,29 +759,32 @@ main{padding-top:38px}
 <!-- 04 기존 서비스 -->
 <section class="sec" id="s4" data-nav="기존 서비스">
   <div class="wrap">
-    <p class="eb rv">05 · Existing Service<span>국내 이동 서비스</span></p>
+    <p class="eb rv">05 · Existing Service<span>영감을 얻은 기존 서비스</span></p>
     <h2 class="h2 rv d1">통합 앱은 있지만, 내가 계획한다</h2>
     <div class="svc">
       <div class="card rv d2">
-        <div class="top"><span class="org">카카오모빌리티</span><span class="pill">통합 앱</span></div>
-        <h3>카카오 T</h3>
-        <dl><dt>되는 것</dt><dd>기차 예매, 시외버스, 택시를 한 앱에서 쓴다.</dd>
-        <dt>한계</dt><dd class="lim">택시에서 기차로 갈아타는 순서는 알아서 계획하지 않는다. 고속버스는 서비스 페이지에 없다.</dd></dl>
-        <p class="src">kakaomobility.com 서비스 페이지 · 2026-09-30 확인</p>
+        <div class="top"><span class="org">네이버</span><span class="pill">영감 1</span></div>
+        <h3>네이버 지도</h3>
+        <dl><dt>가져온 기능</dt><dd>길찾기 화면에서 기차역·정류장의 지연과 운행 중단을 실시간으로 보여 준다.</dd>
+        <dt>우리 앱에서는</dt><dd class="us">지연이 뜨면 남은 길을 다시 짜서 먼저 알려 준다.</dd>
+        <dt>아쉬운 점</dt><dd class="lim">다른 길을 다시 추천하는 기능은 소개돼 있지 않다.</dd></dl>
+        <p class="src">ZDNet Korea 2026-03-13</p>
       </div>
       <div class="card rv d3">
-        <div class="top"><span class="org">티머니모빌리티</span><span class="pill">통합 앱</span></div>
-        <h3>티머니GO</h3>
-        <dl><dt>되는 것</dt><dd>고속·시외버스, 택시, 따릉이, 항공, SRT를 예매한다.</dd>
-        <dt>한계</dt><dd class="lim">KTX(코레일) 예매는 목록에 없다.</dd></dl>
-        <p class="src">tmoneymobility.co.kr · 2026-09-30 확인</p>
+        <div class="top"><span class="org">코레일+ · 티머니GO</span><span class="pill">영감 2</span></div>
+        <h3>예매 앱</h3>
+        <dl><dt>가져온 기능</dt><dd>코레일+는 KTX와 SRT를, 티머니GO는 고속·시외버스와 SRT를 한 앱에서 예매한다.</dd>
+        <dt>우리 앱에서는</dt><dd class="us">기차와 버스 예매를 한 화면에 모아 금액을 합쳐 보여 준다.</dd>
+        <dt>아쉬운 점</dt><dd class="lim">코레일+엔 버스가, 티머니GO엔 KTX가 없다.</dd></dl>
+        <p class="src">한국일보 2026-08-02 · tmoneymobility.co.kr 2026-09-30 확인</p>
       </div>
       <div class="card rv d4">
-        <div class="top"><span class="org">한국철도</span><span class="pill">2026.08 출시</span></div>
-        <h3>코레일+</h3>
-        <dl><dt>되는 것</dt><dd>KTX와 SRT를 한 번에 예매하고, 렌터카와 숙박도 연결된다.</dd>
-        <dt>한계</dt><dd class="lim">역까지 탈 택시 호출은 소개돼 있지 않다.</dd></dl>
-        <p class="src">한국일보 2026-08-02 · 핀포인트뉴스 2026-09-28</p>
+        <div class="top"><span class="org">카카오모빌리티</span><span class="pill">영감 3</span></div>
+        <h3>카카오 T</h3>
+        <dl><dt>가져온 기능</dt><dd>택시 호출, 기차 예매, 시외버스를 한 앱에서 쓴다.</dd>
+        <dt>우리 앱에서는</dt><dd class="us">기차 시간에 맞춰 역까지 탈 택시 호출 시간을 잡는다.</dd>
+        <dt>아쉬운 점</dt><dd class="lim">택시에서 기차로 갈아타는 순서는 알아서 계획하지 않는다.</dd></dl>
+        <p class="src">kakaomobility.com 서비스 페이지 · 2026-09-30 확인</p>
       </div>
     </div>
     <div class="card also rv d5"><span class="t">말로 부탁하는<br>이동</span>
@@ -871,6 +909,7 @@ main{padding-top:38px}
       <li><b>카카오모빌리티</b> 카카오 T 기차 · 버스 서비스 페이지 · 2026-09-30 확인<br><a href="https://www.kakaomobility.com/service-kakaot/train" target="_blank" rel="noopener">기차</a> · <a href="https://www.kakaomobility.com/service-kakaot/bus" target="_blank" rel="noopener">버스</a></li>
       <li><b>티머니모빌리티</b> 티머니GO 서비스 페이지 · 2026-09-30 확인<br><a href="https://tmoneymobility.co.kr/sub/business/tmoneygo.html" target="_blank" rel="noopener">tmoneymobility.co.kr</a></li>
       <li><b>핀포인트뉴스</b> 코레일+ 연계 서비스 · 2026-09-28<br><a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=490775" target="_blank" rel="noopener">pinpointnews.co.kr</a></li>
+      <li><b>ZDNet Korea</b> 네이버 지도 실시간 지연 정보 · 2026-03-13<br><a href="https://zdnet.co.kr/view/?no=20260313103302" target="_blank" rel="noopener">zdnet.co.kr</a></li>
       <li><b>MBC</b> 금요일 승차권 주말 위약금 기준 · 2025<br><a href="https://imnews.imbc.com/news/2025/econo/article/6710593_36737.html" target="_blank" rel="noopener">imnews.imbc.com</a></li>
       <li><b>이데일리</b> 114 택시 대신 불러주기 · 2026-08-10<br><a href="https://www.edaily.co.kr/News/Read?newsId=02558406645546008&amp;mediaCodeNo=257" target="_blank" rel="noopener">edaily.co.kr</a></li>
       <li><b>아시아경제</b> ChatGPT for Kakao 카카오 툴즈 · 2026-01-30<br><a href="https://view.asiae.co.kr/article/2026013008191832603" target="_blank" rel="noopener">asiae.co.kr</a></li>
