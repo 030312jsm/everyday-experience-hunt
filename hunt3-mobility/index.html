@@ -488,6 +488,25 @@ main{padding-top:38px}
 .app .two .go2{background:var(--blu);color:#fff}
 @media(max-width:900px){.phones{grid-template-columns:1fr}}
 
+/* 02 왜 이동인가 */
+#mv .mv3{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+#mv .mv3 .card{display:flex;flex-direction:column;padding:24px 26px}
+#mv .mv3 .card>p{font-size:15px}
+.mvc{margin-top:auto!important;padding-top:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mvc span{font-size:12.5px;font-weight:800;border-radius:9px;padding:6px 11px;background:#EEF1F6;color:var(--ink-2)}
+.mvc span.on{background:var(--soft);color:var(--blu)}
+.mvc i{font-style:normal;color:var(--ink-3)}
+.mvt{margin-top:auto!important;padding-top:18px;display:flex;flex-wrap:wrap;gap:6px}
+.mvt span{font-size:12px;font-weight:800;border-radius:99px;padding:5px 11px;background:var(--soft);color:var(--blu)}
+.mvt span.r{background:var(--red-s);color:var(--red)}
+.mvt span.a{background:#FFF3E0;color:#C77700}
+.mvn{margin:14px 0 0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-items:baseline}
+.mvn dt{font-size:clamp(22px,2vw,28px);font-weight:900;color:var(--blu);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.mvn dt.r{color:var(--red)}
+.mvn dd{margin:0;font-size:13.5px;color:var(--ink-2)}
+#mv .mv3 p.src{margin-top:auto;padding-top:14px;font-size:11.5px;color:var(--ink-3);line-height:1.5}
+@media(max-width:1000px){#mv .mv3{grid-template-columns:1fr}}
+
 /* 02 1차 화면 */
 #s2 .hero2{grid-template-columns:minmax(0,1.5fr) auto;align-items:center}
 #s2 .say{font-size:clamp(40px,5.6vw,84px)}
@@ -615,10 +634,30 @@ main{padding-top:38px}
   </div>
 </section>
 
+<!-- 02 왜 이동인가 -->
+<section class="sec" id="mv" data-nav="왜 이동인가">
+  <div class="wrap">
+    <p class="eb rv">02 · Why Mobility<span>왜 이동인가</span></p>
+    <h2 class="h2 rv d1">2차의 여러 장면 중에 이동을 고른 이유</h2>
+    <div class="crit mv3">
+      <div class="card rv d2"><span class="n">이유 1</span><h3>1차에서 이어진다</h3>
+        <p>1차에서는 버스 표를 예매하는 장면까지 만들었다. 실제로는 표를 산 뒤에도 역까지 가고, 내려서 집까지 가야 한다. 이번엔 그 뒤를 이어서 설계했다.</p>
+        <p class="mvc"><span>1차 · 버스 예매</span><i>→</i><span class="on">3차 · 집 앞까지</span></p></div>
+      <div class="card rv d3"><span class="n">이유 2</span><h3>맡길 범위가 한 번에 다 나온다</h3>
+        <p>길 찾기는 틀려도 다시 하면 되지만, 결제는 돈이 나가고 택시는 실제로 차가 온다. 이동 한 번 안에 AI에게 맡겨도 되는 일과 아닌 일이 섞여 있다.</p>
+        <p class="mvt"><span>길 찾기 · 틀려도 괜찮다</span><span class="r">결제 · 돈이 나간다</span><span class="r">택시 호출 · 차가 온다</span><span class="a">지연 대응 · 시간이 없다</span></p></div>
+      <div class="card rv d4"><span class="n">이유 3</span><h3>불편이 숫자로 보인다</h3>
+        <p>표는 구하기 어렵고, 말로 대신 부탁하는 사람도 이미 많다.</p>
+        <dl class="mvn"><dt>92.7%</dt><dd>2026 추석 KTX 예매율</dd><dt class="r">43.3%</dt><dd>명절 승차권 취소·반환 비율</dd><dt>월 2만 건</dt><dd>114 택시 대신 불러주기 이용</dd></dl>
+        <p class="src">연합뉴스 2026-09-11 · 서울신문 2025-01-31 · 이데일리 2026-08-10</p></div>
+    </div>
+  </div>
+</section>
+
 <!-- 02 시나리오 -->
 <section class="sec" id="s2" data-nav="시나리오">
   <div class="wrap">
-    <p class="eb rv">02 · Scenario<span>이번 발표에서 따라갈 장면</span></p>
+    <p class="eb rv">03 · Scenario<span>이번 발표에서 따라갈 장면</span></p>
     <div class="hero2">
       <div>
         <p class="say rv d1">“금요일 저녁에<br><b>집에 갈래.</b>”</p>
@@ -665,7 +704,7 @@ main{padding-top:38px}
 <!-- 03 지금의 경험 -->
 <section class="sec" id="s3" data-nav="지금의 경험">
   <div class="wrap">
-    <p class="eb rv">03 · Current Experience<span>지금은 이렇게 간다</span></p>
+    <p class="eb rv">04 · Current Experience<span>지금은 이렇게 간다</span></p>
     <h2 class="h2 rv d1">본가 한 번 가는데 앱을 여러 개 켠다</h2>
     <div class="journey rv d2">
       <div class="step"><span class="n">1 · 목적</span><h3>집에 가야지</h3><p>무엇을 탈지부터 정해야 한다</p></div>
@@ -687,7 +726,7 @@ main{padding-top:38px}
 <!-- 04 기존 서비스 -->
 <section class="sec" id="s4" data-nav="기존 서비스">
   <div class="wrap">
-    <p class="eb rv">04 · Existing Service<span>국내 이동 서비스</span></p>
+    <p class="eb rv">05 · Existing Service<span>국내 이동 서비스</span></p>
     <h2 class="h2 rv d1">통합 앱은 있지만, 내가 계획한다</h2>
     <div class="svc">
       <div class="card rv d2">
@@ -724,7 +763,7 @@ main{padding-top:38px}
 <!-- 05 Mobility AI 경험 (3D) -->
 <section class="sec" id="s5" data-nav="Mobility AI">
   <div class="wrap">
-    <p class="eb rv">05 · Mobility AI<span>우리가 제안하는 앱</span></p>
+    <p class="eb rv">06 · Mobility AI<span>우리가 제안하는 앱</span></p>
     <h2 class="h2 rv d1">“집에 갈래”라고 말하면…</h2>
     <div class="m3 rv d2">
       <div class="m3stage" id="m3">
@@ -749,7 +788,7 @@ main{padding-top:38px}
 <!-- 06 화면 흐름 -->
 <section class="sec" id="s6" data-nav="화면 흐름">
   <div class="wrap">
-    <p class="eb rv">06 · Screen Flow<span>1차 화면을 이어서</span></p>
+    <p class="eb rv">07 · Screen Flow<span>1차 화면을 이어서</span></p>
     <h2 class="h2 rv d1">폰에서는 이렇게 보인다</h2>
     <div class="pf">
       <div class="steps pfs rv d2">
@@ -769,7 +808,7 @@ main{padding-top:38px}
 <!-- 07 어디까지 맡길까 -->
 <section class="sec" id="s7" data-nav="맡길 범위">
   <div class="wrap">
-    <p class="eb rv">07 · Our Answer<span>2차 기준으로 다시 보기</span></p>
+    <p class="eb rv">08 · Our Answer<span>2차 기준으로 다시 보기</span></p>
     <h2 class="h2 rv d1">어디까지 AI에게 맡길까</h2>
     <div class="spec rv d2">
       <div class="axl"><span>사용자가 확정</span><span>AI가 제안, 사용자가 확인</span><span>AI가 알아서</span></div>
@@ -795,7 +834,7 @@ main{padding-top:38px}
 <!-- 08 장점과 한계 -->
 <section class="sec" id="s8" data-nav="장점 · 한계">
   <div class="wrap">
-    <p class="eb rv">08 · Good / Limit<span>한계는 이렇게 줄인다</span></p>
+    <p class="eb rv">09 · Good / Limit<span>한계는 이렇게 줄인다</span></p>
     <h2 class="h2 rv d1">장점과 한계</h2>
     <div class="gl">
       <div class="card good rv d2"><h3>장점</h3>
@@ -817,7 +856,7 @@ main{padding-top:38px}
 <!-- 09 마무리 -->
 <section class="sec" id="end" data-nav="질문">
   <div class="wrap">
-    <p class="eb rv">09 · Future Question</p>
+    <p class="eb rv">10 · Future Question</p>
     <p class="q2 rv d1">AI가 이동을 대신 계획하고 실행한다면,<br>어디까지 <b>AI에게 맡기고</b><br>어디부터 <b>사용자가 결정해야</b> 할까?</p>
     <div class="flow rv d2"><span>App</span><i>→</i><span>Wearable</span><i>→</i><span>IoT</span><i>→</i><span>Connected Mobility</span></div>
     <p class="sign rv d3">사용자경험디자인 · 3차 발표 · 장승민 박진섭 최민준</p>
