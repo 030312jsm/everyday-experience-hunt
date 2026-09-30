@@ -21,9 +21,13 @@ catch (e) {
   fb.textContent = '이 기기에서는 3D 장면을 표시할 수 없어 단계 설명만 보여 드립니다.';
   stage.appendChild(fb);
 }
-// GPU가 초기화돼 WebGL 화면이 검게 멈추면(context lost) 잠깐 기다렸다가 안 돌아올 때 페이지를 다시 불러 복구
-if (renderer) canvas.addEventListener('webglcontextlost', () => {
-  setTimeout(() => { if (renderer.getContext().isContextLost()) location.reload(); }, 1500);
+// GPU가 초기화되거나 다른 탭의 3D가 많아 WebGL이 끊기면(context lost) 검게 멈춘다.
+// 이 탭이 보이는 상태에서만 다시 불러와 복구한다(숨은 탭끼리 서로 끊어 먹지 않게).
+if (renderer) canvas.addEventListener('webglcontextlost', (e) => {
+  e.preventDefault();
+  const retry = () => { if (document.visibilityState === 'visible' && renderer.getContext().isContextLost()) location.reload(); };
+  setTimeout(retry, 1500);
+  document.addEventListener('visibilitychange', retry);
 });
 if (renderer) init();
 

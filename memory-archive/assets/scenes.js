@@ -8,19 +8,28 @@ addEventListener('pointermove', (e) => { mouse.x = e.clientX / innerWidth - 0.5;
 let seed = 3;
 const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 
+// 크롬은 WebGL을 동시에 약 16개까지만 유지한다. 슬라이드마다 계속 켜 두면 다른 탭의 3D가 끊기므로
+// 자기 슬라이드가 보일 때만 렌더러를 만들고, 벗어나면 반납한다(같은 캔버스는 재사용할 수 없어 새 캔버스로 바꾼다).
 function stage(canvas, slide, build) {
-  let R;
-  try { R = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { return; }
-  R.setPixelRatio(Math.min(devicePixelRatio, 2));
-  R.outputColorSpace = THREE.SRGBColorSpace;
-  const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(35, 1, 0.1, 200);
-  const tick = build(scene, cam, R);
-  const size = () => { const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); };
-  new ResizeObserver(size).observe(canvas); size();
+  const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(35, 1, 0.1, 200), rc = {};
+  const tick = build(scene, cam, rc);
+  let R = null, ro = null;
+  const size = () => { const w = canvas.clientWidth, h = canvas.clientHeight; if (!R || !w || !h) return; R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); };
+  const make = () => {
+    const c = canvas.cloneNode(false); canvas.replaceWith(c); canvas = c;
+    try { R = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { R = null; return; }
+    R.setPixelRatio(Math.min(devicePixelRatio, 2));
+    R.outputColorSpace = THREE.SRGBColorSpace;
+    if (rc.shadow) { R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFShadowMap; }
+    if (rc.tone) { R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = rc.tone; }
+    ro = new ResizeObserver(size); ro.observe(canvas); size();
+  };
+  const kill = () => { if (!R) return; ro.disconnect(); R.dispose(); R.forceContextLoss(); R = null; };
   const clock = new THREE.Clock();
   (function loop() {
     requestAnimationFrame(loop);
-    if (!slide.classList.contains('on')) return;
+    if (!slide.classList.contains('on')) { kill(); return; }
+    if (!R) { make(); if (!R) return; }
     tick(clock.getElapsedTime());
     R.render(scene, cam);
   })();
@@ -132,9 +141,8 @@ function trace(imgs) {
 function ember(imgs) {
   const fig = document.getElementById('emImg'), slide = document.getElementById('em');
   if (!fig || !slide) return;
-  stage(fig.querySelector('canvas'), slide, (scene, cam, R) => {
-    R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFShadowMap;
-    R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05;
+  stage(fig.querySelector('canvas'), slide, (scene, cam, rc) => {
+    rc.shadow = true; rc.tone = 1.05;
     cam.position.set(7.2, 5.4, 8.6); cam.lookAt(0, 1.1, 0);
     scene.background = new THREE.Color(0xF6F6F4);
     const hemi = new THREE.HemisphereLight(0xffffff, 0xDCD7CF, 1.6); scene.add(hemi);

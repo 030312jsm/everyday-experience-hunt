@@ -5,14 +5,21 @@ import * as THREE from './vendor/three.module.js';
 const wrap = document.getElementById('cTiles');
 const canvas = document.getElementById('mem3d');
 const slide = document.getElementById('s2');
-let R = null;
-try { R = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); } catch (e) { R = null; }
-if (R && wrap && slide) init();
+// WebGL 지원 여부만 확인하고 곧바로 반납한다. 실제 렌더러는 이 슬라이드가 보일 때만 만든다.
+const glOK = (() => { try { const c = document.createElement('canvas'), gl = c.getContext('webgl2') || c.getContext('webgl');
+  if (!gl) return false; const x = gl.getExtension('WEBGL_lose_context'); if (x) x.loseContext(); return true; } catch (e) { return false; } })();
+if (glOK && wrap && slide) init();
 
 function init() {
   wrap.classList.add('gl');
-  R.setPixelRatio(Math.min(devicePixelRatio, 2));
-  R.outputColorSpace = THREE.SRGBColorSpace;
+  let R = null, ro = null, cv = canvas;
+  const make = () => {
+    const c = cv.cloneNode(false); cv.replaceWith(c); cv = c;
+    try { R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true }); } catch (e) { R = null; return; }
+    R.setPixelRatio(Math.min(devicePixelRatio, 2)); R.outputColorSpace = THREE.SRGBColorSpace;
+    ro = new ResizeObserver(size); ro.observe(cv); size();
+  };
+  const kill = () => { if (!R) return; ro.disconnect(); R.dispose(); R.forceContextLoss(); R = null; };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const scene = new THREE.Scene();
@@ -60,11 +67,10 @@ function init() {
   ring.scale.set(1.08, 1.12, 1); hit.add(ring);
 
   function size() {
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    if (!w || !h) return;
+    const w = cv.clientWidth, h = cv.clientHeight;
+    if (!R || !w || !h) return;
     R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix();
   }
-  new ResizeObserver(size).observe(canvas); size();
 
   const mouse = { x: 0, y: 0 };
   addEventListener('pointermove', (e) => { mouse.x = e.clientX / innerWidth - 0.5; mouse.y = e.clientY / innerHeight - 0.5; });
@@ -76,7 +82,8 @@ function init() {
 
   function frame() {
     requestAnimationFrame(frame);
-    if (!slide.classList.contains('on')) return;
+    if (!slide.classList.contains('on')) { kill(); return; }
+    if (!R) { make(); if (!R) return; }
     const t = clock.getElapsedTime(), step = +(wrap.dataset.step || 0);
     const target = step >= 1 ? 1 : 0;
     p += (target - p) * (reduce ? 1 : 0.035);
