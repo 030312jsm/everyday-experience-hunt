@@ -488,6 +488,9 @@ main{padding-top:38px}
 .app .two .go2{background:var(--blu);color:#fff}
 @media(max-width:900px){.phones{grid-template-columns:1fr}}
 
+.also .src{grid-column:2;margin-top:0}
+.also{row-gap:10px}
+
 /* 02 왜 이동인가 */
 #mv .mv3{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
 #mv .mv3 .card{display:flex;flex-direction:column;padding:24px 26px}
@@ -784,19 +787,18 @@ main{padding-top:38px}
 <section class="sec" id="s6" data-nav="화면 흐름">
   <div class="wrap">
     <p class="eb rv">07 · Screen Flow<span>1차 화면을 이어서</span></p>
-    <h2 class="h2 rv d1">폰에서는 이렇게 보인다</h2>
+    <h2 class="h2 rv d1">앱에서는 이렇게 제공한다</h2>
     <div class="pf">
       <div class="steps pfs rv d2">
         <button class="st on" data-i="0"><span class="tm">① 비교</span><h3>도착 시간으로 고르기</h3>
-          <p>KTX로 가면 20:10 도착에 31,400원, 고속버스로 가면 21:30 도착에 14,450원. 1시간 20분 빨리 가는 데 16,950원이 더 드는 셈이다.</p></button>
-        <button class="st" data-i="1"><span class="tm">② 확인</span><h3>결제는 내가 누른다</h3>
+          <p>KTX로 가면 20:10 도착에 31,400원, 고속버스로 가면 21:30 도착에 14,450원.<br>1시간 20분 빨리 가는 데 16,950원이 더 드는 셈이다.</p></button>
+        <button class="st" data-i="1"><span class="tm">② 확인</span><h3>결제는 내가</h3>
           <p>택시 부를 시간, 좌석, 도착 시간, 합계, 지금 취소하면 내는 수수료를 한 화면에 보여 준다. Face ID로 확인해야 결제된다.</p></button>
         <button class="st" data-i="2"><span class="tm">③ 다시 짜기</span><h3>바꾸기 전에 한 번 묻는다</h3>
-          <p>18:17, 택시로 가면 18:44에 역에 도착해서 18:40 열차를 놓친다. 택시에서 내려 지하철로 갈아타면 18:31에 도착하고 1,950원도 덜 든다.</p></button>
+          <p>18:17, 택시로 가면 18:44에 역에 도착해서 18:40 열차를 놓친다.<br>택시에서 내려 지하철로 갈아타면 18:31에 도착하고 1,950원도 덜 든다.</p></button>
       </div>
       <div class="pslot" id="pslot"></div>
     </div>
-    <p class="src" style="margin-top:14px">화면 속 시간 · 경로 · 금액 · 수수료는 서울 → 대전 기준 예시(KTX 21,600원 · 고속버스 일반 11,400원). 금요일 표도 주말 위약금 기준이 적용된다(MBC 2025).</p>
   </div>
 </section>
 
@@ -809,7 +811,7 @@ main{padding-top:38px}
       <div class="axl"><span>사용자가 확정</span><span>AI가 제안, 사용자가 확인</span><span>AI가 알아서</span></div>
       <div class="axis"></div>
       <div class="dots">
-        <div class="dot x" style="left:7%;--stem:30px;transition-delay:.2s"><em></em><b>예매 · 결제</b><small>돈이 걸린다</small></div>
+        <div class="dot x" style="left:7%;--stem:30px;transition-delay:.2s"><em></em><b>예매 · 결제</b><small>실물 자산이 걸린다</small></div>
         <div class="dot x" style="left:22%;--stem:86px;transition-delay:.35s"><em></em><b>택시 호출</b><small>잘못 부르면 엉뚱한 곳으로 간다</small></div>
         <div class="dot" style="left:50%;--stem:30px;transition-delay:.5s"><em></em><b>지연 시 경로 바꾸기</b><small>바꾸기 전에 묻는다</small></div>
         <div class="dot" style="left:72%;--stem:86px;transition-delay:.65s"><em></em><b>취소표 대기 · 알림</b><small>표가 나오면 알려 준다</small></div>
