@@ -273,6 +273,10 @@ ul,ol{padding:0;list-style:none}
 .mr{transition:background .5s ease,padding .5s cubic-bezier(.22,.61,.36,1),opacity .45s ease,border-color .4s}
 @media(max-width:900px){.md{grid-template-columns:1fr;grid-column:auto}}
 
+/* 줄바꿈 정돈 */
+p,li,dd,td,small,figcaption,.bdesc,.lead,.psc p{text-wrap:pretty}
+h1,h2,h3,.h,.ptitle,.pq,.btag,.ask,.tdl,.end,.q2,.beat q,.idx b,.tt b,.tdn{text-wrap:balance}
+
 /* 부드러운 전환 공통 */
 .mc .mh2{font-size:11.5px;font-weight:800;color:var(--ink3);margin-bottom:3px}
 .tt,.td,.steps3 li,.path li,.ptab span,.jtab button,.st,.ml,.tags span,#tl button,.ctl button{transition:all .45s cubic-bezier(.22,.61,.36,1)}
@@ -430,7 +434,7 @@ ul,ol{padding:0;list-style:none}
       <h2 class="h fr">2045년, 사진은 <em>정리하지 않는다</em></h2>
       <p class="lead fr">AI가 사용자의 평생 기록을 자동으로 분석해 ‘기억’ 자체를<br>하나의 디지털 공간으로 만들어 준다.<br>사용자가 이렇게 말하면,</p>
       <p class="ask fr">“스무 살 때 친구들이랑<br>가장 행복했던 순간을 보여줘.”</p>
-      <p class="lead fr" style="margin-top:12px">AI가 사진, 영상, 메시지, 음악, 위치 기록 등을 조합해 당시 순간을 3D 공간으로 재구성한다.</p>
+      <p class="lead fr" style="margin-top:12px">AI가 사진, 영상, 메시지, 음악, 위치 기록 등을 조합해 당시 순간을<br>3D 공간으로 재구성한다.</p>
       <ol class="steps3 fr">
         <li data-k="0"><span>01</span><div><b>기억 검색</b><small>공중에 떠 있는 수많은 기억 조각</small></div></li>
         <li data-k="1"><span>02</span><div><b>기억 공간 진입</b><small>과거의 장소가 AI에 의해 재구성됨</small></div></li>
@@ -450,7 +454,7 @@ ul,ol{padding:0;list-style:none}
       <p class="eb fr">03 · Scenario<span>2048년, 32세 직장인 민준의 하루</span></p>
       <div class="beats fr">
         <div class="beat" data-k="0"><p class="t">20:40 · 귀가</p>
-          <p>민준은 퇴근 후 집으로 돌아온다.<br>오늘은 유난히 마음이 공허하다.<br>반복되는 업무와 빠르게 흘러가는 일상 속에서, 문득 <b>자신이 예전보다 덜 웃고 있다</b>는 생각이 들었다.</p></div>
+          <p>민준은 퇴근 후 집으로 돌아온다.<br>오늘은 유난히 마음이 공허하다.<br>반복되는 업무와 빠르게 흘러가는 일상 속에서,<br>문득 <b>자신이 예전보다 덜 웃고 있다</b>는 생각이 들었다.</p></div>
         <div class="beat" data-k="1"><p class="t">20:42 · 감지</p>
           <p>집에 들어오자 거실 벽면의 인터페이스가 조용히 켜진다.<br>개인 AI는 민준의 표정과 목소리, 최근 수면 데이터와 활동량을 분석해 <b>낮은 정서 상태</b>를 감지한다.</p>
           <q class="ai">“오늘은 조금 지쳐 보이네요.<br>기분을 환기할 수 있도록, 예전에 당신이 가장 즐거워했던 순간들을 함께 보시겠어요?”</q></div>
