@@ -227,27 +227,31 @@ ul,ol{padding:0;list-style:none}
 @media(max-width:900px){.tw{grid-template-columns:1fr}.tdet{min-height:300px}}
 
 /* 09 여정 지도: 서비스 블루프린트(스윔레인) — 사용자 / 앱 기능 / AI 개선을 가로 레인으로 */
-#s9 .jg.bp.cur{display:grid;grid-template-columns:76px repeat(3,minmax(0,1fr));column-gap:14px;row-gap:10px;margin-top:18px;align-items:start}
-.bp .bl{font-size:12px;font-weight:800;color:var(--ink);padding-top:6px}
-.bp .bl.sm{font-size:11px;color:var(--ink3);font-weight:700;padding-top:3px}
-.bp .bl.ctx{padding-top:14px;color:var(--ink3)}
-.bp .bs{display:flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:10px;padding:8px 12px;font-size:14px;font-weight:800}
-.bp .bs i{font-style:normal;width:20px;height:20px;border-radius:50%;background:#fff;color:var(--ink);display:grid;place-items:center;font-size:11px}
-.bp .bc{background:#F6F6F4;border-radius:12px;padding:12px 14px;display:grid;gap:6px;align-self:stretch;align-content:start}
-.bp .bc li,.bp .bi li{font-size:13.2px;line-height:1.5;color:var(--ink2);padding-left:11px;position:relative}
+#s9 .jg.bp.cur{display:grid;grid-template-columns:76px repeat(3,minmax(0,1fr));column-gap:clamp(20px,2.4vw,36px);row-gap:12px;margin-top:18px;align-items:start}
+.bp .bl{font-size:11.5px;font-weight:700;color:var(--ink3);letter-spacing:.04em;padding-top:2px}
+.bp .bl.sm{font-size:11px;padding-top:1px}
+.bp .bl.ctx{padding-top:12px}
+/* 단계: 무거운 검은 바 대신 번호 + 가는 선 */
+.bp .bs{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:var(--ink);padding-bottom:9px;border-bottom:2px solid var(--ink)}
+.bp .bs i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:11px}
+/* 사용자 레인: 회색 상자 없이 글만, 칸 사이는 여백으로 */
+.bp .bc{display:grid;gap:6px;align-content:start}
+.bp .bc li,.bp .bi li{font-size:13.4px;line-height:1.55;color:var(--ink);padding-left:11px;position:relative}
 .bp .bc li::before,.bp .bi li::before{content:"";position:absolute;left:0;top:.66em;width:4px;height:4px;border-radius:50%;background:var(--ink3)}
-.bp .bq{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px 14px}
-.bp .bq span{font-size:13px;color:var(--ink);line-height:1.5}
-.bp .bsep{grid-column:1/-1;position:relative;height:16px;margin-top:4px}
-.bp .bsep::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line2)}
-.bp .bsep.dash::before{background:repeating-linear-gradient(90deg,var(--line2) 0 6px,transparent 6px 11px)}
-.bp .bsep span{position:absolute;right:0;top:50%;transform:translateY(-50%);background:#fff;padding-left:10px;font-size:10.5px;font-weight:700;color:var(--ink3);letter-spacing:.04em}
+.bp .bq{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:4px 16px}
+.bp .bq span{font-size:13px;color:var(--ink2);line-height:1.5}
+/* 레인 구분선: 보이는 선(실선) · 보이지 않는 선(점선), 이름은 왼쪽 레인 칸에 */
+.bp .bsep{grid-column:1/-1;position:relative;height:12px;margin-top:6px}
+.bp .bsep::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
+.bp .bsep.dash::before{background:repeating-linear-gradient(90deg,var(--line2) 0 5px,transparent 5px 10px)}
+.bp .bsep span{display:none}
 .bp .bf{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px}
-.bp .bf span{font-size:13px;font-weight:700;background:#fff;border:1.5px solid var(--ink);border-radius:99px;padding:5px 13px}
-.bp .bi{grid-column:2/-1;border:1.5px dashed var(--line2);border-radius:12px;padding:10px 14px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 22px}
-.bp .bx{font-size:12.6px;line-height:1.6;color:var(--ink2);border-top:2px solid var(--ink);padding-top:10px;margin-top:6px}
-.bp .bx b{display:block;font-size:11.5px;color:var(--ink);margin-bottom:3px}
-.bp .bx.ins{border-top-color:var(--amb);color:var(--ink);font-weight:600}
+.bp .bf span{font-size:13px;font-weight:600;background:#F2F2EF;border-radius:99px;padding:5px 13px;color:var(--ink)}
+.bp .bi{grid-column:2/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 28px}
+/* 맥락 */
+.bp .bx{font-size:12.8px;line-height:1.6;color:var(--ink2);margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
+.bp .bx b{display:block;font-size:11.5px;color:var(--ink3);margin-bottom:3px}
+.bp .bx.ins{border-top:2px solid var(--amb);color:var(--ink);font-weight:600}
 .bp .bx.ins b{color:var(--amb)}
 @media(max-width:900px){#s9 .jg.bp.cur{grid-template-columns:1fr}.bp .bq,.bp .bf,.bp .bi{grid-column:auto}.bp .bi{grid-template-columns:1fr}}
 
