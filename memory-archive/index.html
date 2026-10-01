@@ -166,7 +166,7 @@ ul,ol{padding:0;list-style:none}
 .scene .msg small{color:rgba(255,255,255,.75)}
 
 /* 04 유형 지도 */
-#s4 .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,60px);align-items:center}
+#s4 .wrap{display:block}
 .quad{position:relative;aspect-ratio:1/1;max-height:62vh;margin:0 auto;width:100%}
 .quad .ax{position:absolute;background:var(--line2)}
 .quad .ax.x{left:0;right:0;top:50%;height:1px}.quad .ax.y{top:0;bottom:0;left:50%;width:1px}
@@ -185,6 +185,42 @@ ul,ol{padding:0;list-style:none}
 .tinfo b{font-size:14.5px;font-weight:700;grid-row:span 3}
 .tinfo span{font-size:13px;color:var(--ink2);line-height:1.5}
 .tinfo span em{font-style:normal;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--ink3);margin-right:8px}
+
+/* 04 유형 지도 (정돈) */
+.tw{margin-top:clamp(20px,3.4vh,34px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,3.6vw,56px);align-items:center}
+.tmap{position:relative;padding:30px 34px}
+.tmap .ax{position:absolute;font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:.02em;white-space:nowrap}
+.tmap .ax-t{top:0;left:50%;transform:translateX(-50%)}
+.tmap .ax-b{bottom:0;left:50%;transform:translateX(-50%)}
+.tmap .ax-l{left:0;top:50%;transform:translate(-50%,-50%) rotate(-90deg)}
+.tmap .ax-r{right:0;top:50%;transform:translate(50%,-50%) rotate(90deg)}
+.tmap .ax-t::before{content:"↑ "}.tmap .ax-b::after{content:" ↓"}.tmap .ax-l::before{content:"← "}.tmap .ax-r::after{content:" →"}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tt{position:relative;background:#F6F6F4;border-radius:18px;padding:20px 22px 18px;min-height:clamp(150px,21vh,196px);display:flex;flex-direction:column;cursor:pointer;
+  transition:background .35s,box-shadow .35s,opacity .35s,transform .35s}
+.tg.sel .tt{opacity:.38}
+.tg .tt.on{opacity:1;background:#fff;box-shadow:0 0 0 1.5px var(--ink),0 22px 40px -26px rgba(17,18,20,.5);transform:translateY(-2px)}
+.tt .tn{font-size:13px;font-weight:700;color:var(--amb)}
+.tt b{display:block;margin-top:2px;font-size:clamp(18px,1.55vw,22px);font-weight:800;letter-spacing:-.03em}
+.tt small{display:block;margin-top:4px;font-size:13.5px;color:var(--ink2);line-height:1.5}
+.tt .who{margin-top:auto;padding-top:14px;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.tt .who img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.tdet{position:relative;min-height:330px}
+.td{position:absolute;inset:0 0 auto 0;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .45s;pointer-events:none}
+.td.on{opacity:1;transform:none;pointer-events:auto}
+.tdh{display:flex;align-items:center;gap:16px}
+.tdh img{width:76px;height:76px;border-radius:50%;object-fit:cover;box-shadow:0 14px 28px -18px rgba(17,18,20,.6)}
+.tdn{font-size:clamp(22px,2vw,30px);font-weight:800;letter-spacing:-.035em}
+.tdw{margin-top:4px;font-size:15px;font-weight:700}
+.tdw span{font-weight:500;color:var(--ink3);margin-left:6px}
+.tdl{margin-top:18px;font-size:clamp(16px,1.35vw,19px);font-weight:600;color:var(--amb)}
+.td dl{margin-top:16px;display:grid;grid-template-columns:auto 1fr;gap:0}
+.td dt,.td dd{padding:13px 0;border-top:1px solid var(--line);font-size:14.5px}
+.td dt{font-weight:700;color:var(--ink3);padding-right:22px;font-size:13px}
+.td dd{margin:0;color:var(--ink);line-height:1.55}
+.td dl.axes dd{color:var(--ink2)}
+.td dl.axes dd b{color:var(--ink)}
+@media(max-width:900px){.tw{grid-template-columns:1fr}.tdet{min-height:300px}}
 
 /* 05~08 페르소나 */
 .pv{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);gap:clamp(22px,3.4vw,54px);align-items:start}
@@ -403,27 +439,51 @@ ul,ol{padding:0;list-style:none}
 <!-- 04 유형 지도 -->
 <section class="sl" id="s4" data-nav="유형" data-meta="INDEX 04 · USER TYPES" data-steps="5">
   <div class="wrap">
-    <div>
-      <p class="eb fr">04 · User Types<span>기억을 대하는 네 가지 방식</span></p>
-      <h2 class="h fr">어떻게 <em>남기고</em>, 어떻게 <em>꺼내 쓰는가</em></h2>
-      <ul class="tinfo fr" id="tinfo">
-        <li data-k="1"><b>① 의미 탐색형</b><span><em>인물</em>실수와 업무 과정을 기록하는 직장인</span><span><em>기록</em>중요한 사건을 직접 선택해 기록</span><span><em>활용</em>원인 분석, 개선, 자기계발</span></li>
-        <li data-k="2"><b>② 라이프 분석형</b><span><em>인물</em>일상을 살아가며 자신을 알아가는 사람</span><span><em>기록</em>생활 데이터가 자연스럽게 자동 축적</span><span><em>활용</em>취향·습관·감정 패턴 발견</span></li>
-        <li data-k="3"><b>③ 추억 보관형</b><span><em>인물</em>친구들과 여행을 즐기는 사람</span><span><em>기록</em>특별한 순간을 직접 기록</span><span><em>활용</em>소중한 순간을 오래 보존</span></li>
-        <li data-k="4"><b>④ 일상 아카이브형</b><span><em>인물</em>평범한 일상을 기록해 두었다가 잃어버린 사람을 회상하는 사람</span><span><em>기록</em>평소 의식하지 않아도 일상이 자동 축적</span><span><em>활용</em>시간이 지난 뒤 기억을 찾아 회상</span></li>
-      </ul>
-    </div>
-    <div class="quad fr" id="quad">
-      <i class="ax x"></i><i class="ax y"></i>
-      <span class="al t">분석 · 활용</span><span class="al b">기록 · 보존</span><span class="al l">선택적 기록</span><span class="al r">자동 축적</span>
-      <span class="zn" data-k="1" style="left:0;top:0">① 의미 탐색형</span>
-      <span class="zn" data-k="2" style="left:50%;top:0">② 라이프 분석형</span>
-      <span class="zn" data-k="3" style="left:0;top:50%">③ 추억 보관형</span>
-      <span class="zn" data-k="4" style="left:50%;top:50%">④ 일상 아카이브형</span>
-      <i class="pin" data-k="1" style="left:12%;top:16%;background-image:url(img/p1.jpg)"><b>김도윤</b></i>
-      <i class="pin" data-k="2" style="left:88%;top:8%;background-image:url(img/p2.jpg)"><b>장민소</b></i>
-      <i class="pin" data-k="3" style="left:14%;top:88%;background-image:url(img/p3.jpg)"><b>이다희</b></i>
-      <i class="pin" data-k="4" style="left:88%;top:86%;background-image:url(img/p4.jpg)"><b>강서윤</b></i>
+    <p class="eb fr">04 · User Types<span>기억을 대하는 네 가지 방식</span></p>
+    <h2 class="h fr">어떻게 <em>남기고</em>, 어떻게 <em>꺼내 쓰는가</em></h2>
+    <div class="tw">
+      <div class="tmap fr">
+        <p class="ax ax-t">분석 · 활용</p><p class="ax ax-b">기록 · 보존</p>
+        <p class="ax ax-l">선택적 기록</p><p class="ax ax-r">자동 축적</p>
+        <ul class="tg">
+          <li class="tt" data-k="1"><span class="tn">①</span><b>의미 탐색형</b><small>실수에서 답을 찾는다</small>
+            <span class="who"><img src="img/p1.jpg" alt="">김도윤</span></li>
+          <li class="tt" data-k="2"><span class="tn">②</span><b>라이프 분석형</b><small>일상 데이터로 나를 알아간다</small>
+            <span class="who"><img src="img/p2.jpg" alt="">장민소</span></li>
+          <li class="tt" data-k="3"><span class="tn">③</span><b>추억 보관형</b><small>소중한 순간을 오래 남긴다</small>
+            <span class="who"><img src="img/p3.jpg" alt="">이다희</span></li>
+          <li class="tt" data-k="4"><span class="tn">④</span><b>일상 아카이브형</b><small>무의식의 일상에서 온기를 찾는다</small>
+            <span class="who"><img src="img/p4.jpg" alt="">강서윤</span></li>
+        </ul>
+      </div>
+      <div class="tdet fr">
+        <div class="td on" data-k="0">
+          <p class="tdn">두 가지 기준으로 나눴다</p>
+          <dl class="axes"><dt>가로</dt><dd><b>기록 방식</b> — 중요한 순간을 직접 고르는가(선택적 기록), 생활 데이터가 저절로 쌓이는가(자동 축적)</dd>
+          <dt>세로</dt><dd><b>기억 활용</b> — 남겨 두고 다시 보는가(기록·보존), 분석해서 지금에 쓰는가(분석·활용)</dd></dl>
+          <p class="tdl" style="margin-top:18px">→ 를 누르면 유형별로 볼 수 있다</p>
+        </div>
+        <div class="td" data-k="1">
+          <div class="tdh"><img src="img/p1.jpg" alt="김도윤"><div><p class="tdn">① 의미 탐색형</p><p class="tdw">김도윤 <span>34 · 직장인</span></p></div></div>
+          <p class="tdl">“실수에서 답을 찾는다”</p>
+          <dl><dt>인물</dt><dd>실수와 업무 과정을 기록하는 직장인</dd><dt>기록 방식</dt><dd>중요한 사건을 직접 선택해 기록</dd><dt>기억 활용</dt><dd>원인 분석, 개선, 자기계발</dd></dl>
+        </div>
+        <div class="td" data-k="2">
+          <div class="tdh"><img src="img/p2.jpg" alt="장민소"><div><p class="tdn">② 라이프 분석형</p><p class="tdw">장민소 <span>25 · 프리랜서</span></p></div></div>
+          <p class="tdl">“일상 데이터로 나를 알아간다”</p>
+          <dl><dt>인물</dt><dd>일상을 살아가며 자신을 알아가는 사람</dd><dt>기록 방식</dt><dd>생활 데이터가 자연스럽게 자동 축적</dd><dt>기억 활용</dt><dd>취향·습관·감정 패턴 발견</dd></dl>
+        </div>
+        <div class="td" data-k="3">
+          <div class="tdh"><img src="img/p3.jpg" alt="이다희"><div><p class="tdn">③ 추억 보관형</p><p class="tdw">이다희 <span>26 · 공간 브랜딩 에이전시</span></p></div></div>
+          <p class="tdl">“소중한 순간을 오래 남긴다”</p>
+          <dl><dt>인물</dt><dd>친구들과 여행을 즐기는 사람</dd><dt>기록 방식</dt><dd>특별한 순간을 직접 기록</dd><dt>기억 활용</dt><dd>소중한 순간을 오래 보존</dd></dl>
+        </div>
+        <div class="td" data-k="4">
+          <div class="tdh"><img src="img/p4.jpg" alt="강서윤"><div><p class="tdn">④ 일상 아카이브형</p><p class="tdw">강서윤 <span>36 · 데이터 분석가</span></p></div></div>
+          <p class="tdl">“무의식의 일상에서 온기를 찾는다”</p>
+          <dl><dt>인물</dt><dd>평범한 일상을 기록해 두었다가 잃어버린 사람을 회상하는 사람</dd><dt>기록 방식</dt><dd>평소 의식하지 않아도 일상이 자동 축적</dd><dt>기억 활용</dt><dd>시간이 지난 뒤 기억을 찾아 회상</dd></dl>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -764,8 +824,9 @@ ul,ol{padding:0;list-style:none}
       [].forEach.call(d.children, function(x, k){ x.classList.toggle('on', k <= step); });
     }
     if (s.id === 's4'){
-      var ti = document.getElementById('tinfo'); ti.classList.toggle('sel', step > 0);
-      s.querySelectorAll('[data-k]').forEach(function(e){ e.classList.toggle('on', step > 0 && +e.dataset.k === step); });
+      s.querySelector('.tg').classList.toggle('sel', step > 0);
+      s.querySelectorAll('.tt').forEach(function(e){ e.classList.toggle('on', +e.dataset.k === step); });
+      s.querySelectorAll('.td').forEach(function(e){ e.classList.toggle('on', +e.dataset.k === step); });
     }
     if (s.querySelector('.panes')){
       s.querySelectorAll('.pane').forEach(function(p){ p.classList.toggle('cur', +p.dataset.k === step); });
@@ -813,7 +874,7 @@ ul,ol{padding:0;list-style:none}
   document.getElementById('fs').addEventListener('click', function(){ if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(function(){}); });
   /* 클릭으로도 단계·슬라이드 이동 (탭 버튼은 해당 단계로) */
   document.querySelectorAll('.jtab button').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); step = +b.dataset.k; render(); }); });
-  document.querySelectorAll('.ptab span,.steps3 li,.path li,.tinfo li').forEach(function(b){ b.style.cursor = 'pointer'; b.addEventListener('click', function(e){ e.stopPropagation(); step = +b.dataset.k; render(); }); });
+  document.querySelectorAll('.ptab span,.steps3 li,.path li,.tt').forEach(function(b){ b.style.cursor = 'pointer'; b.addEventListener('click', function(e){ e.stopPropagation(); step = +b.dataset.k; render(); }); });
   var h = parseInt(location.hash.slice(1), 10);
   go(h > 0 && h <= S.length ? h - 1 : 0, 0);
 })();
