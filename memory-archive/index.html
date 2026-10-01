@@ -244,15 +244,11 @@ ul,ol{padding:0;list-style:none}
 .ml i{font-style:normal;margin-left:auto;margin-right:10px;color:var(--ink3);font-size:16px}
 .mc{cursor:pointer;min-width:0}
 .ms{font-size:13px;line-height:1.6;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.mf,.md{display:none}
 .mx.sel .mr:not(.open):not(.mh){opacity:.42}
 .mr.open{background:#F6F6F4;border-radius:14px;border-top-color:transparent;padding:16px 0 18px}
 .mr.open+.mr{border-top-color:transparent}
 .mr.open .ml{padding-left:14px}
 .mr.open .ml i{transform:rotate(45deg)}
-.mr.open .ms{display:none}
-.mr.open .mf{display:grid;gap:6px;animation:dev .45s ease}
-.mr.open .md{display:grid;grid-column:2/-1;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:clamp(18px,2vw,30px);row-gap:14px;margin-top:16px;padding:16px 16px 0 0;border-top:1px solid var(--line2);animation:dev .5s ease}
 .mf li,.md li,.md p{font-size:13px;line-height:1.6;color:var(--ink)}
 .mf li,.md ul:not(.q) li{padding-left:10px;position:relative}
 .mf li::before,.md ul:not(.q) li::before{content:"";position:absolute;left:0;top:.68em;width:4px;height:4px;border-radius:50%;background:var(--ink3)}
@@ -263,17 +259,24 @@ ul,ol{padding:0;list-style:none}
 .md .ch span{font-size:12px;font-weight:600;background:#fff;border-radius:99px;padding:4px 10px}
 .md .mi p{color:var(--amb);font-weight:700}
 .md .mi .mh2{color:var(--amb)}
-.mr.open .mf{display:none}
-.mr.open .ms{display:none}
-.mr.open .md{margin-top:6px;border-top:0;padding-top:0}
-.mr.open .mc{display:none}
-.mr.open .md{grid-column:2/-1}
 @media(max-width:900px){.mr{grid-template-columns:1fr}.mr.open .md{grid-template-columns:1fr;grid-column:auto}}
+
+/* 여정 지도 펼침: 요약은 접히고 상세는 높이가 자라며 부드럽게 (display 전환 없이) */
+:root{interpolate-size:allow-keywords}
+.mf{display:none}
+.mc{height:auto;overflow:hidden;transition:height .55s cubic-bezier(.22,.61,.36,1),opacity .35s ease}
+.mr.open .mc{height:0;opacity:0}
+.md{display:grid;grid-column:2/-1;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:clamp(18px,2vw,30px);row-gap:14px;
+  height:0;overflow:hidden;opacity:0;transform:translateY(-6px);padding:0 16px 0 0;
+  transition:height .6s cubic-bezier(.22,.61,.36,1),opacity .5s ease .1s,transform .6s cubic-bezier(.16,1,.3,1)}
+.mr.open .md{height:auto;opacity:1;transform:none}
+.mr{transition:background .5s ease,padding .5s cubic-bezier(.22,.61,.36,1),opacity .45s ease,border-color .4s}
+@media(max-width:900px){.md{grid-template-columns:1fr;grid-column:auto}}
 
 /* 부드러운 전환 공통 */
 .mc .mh2{font-size:11.5px;font-weight:800;color:var(--ink3);margin-bottom:3px}
-.mr,.tt,.td,.steps3 li,.path li,.ptab span,.jtab button,.st,.ml,.tags span,#tl button,.ctl button{transition:all .45s cubic-bezier(.22,.61,.36,1)}
-.pane.cur,.mr.open .md,.td.on{animation:dev .6s cubic-bezier(.16,1,.3,1) both}
+.tt,.td,.steps3 li,.path li,.ptab span,.jtab button,.st,.ml,.tags span,#tl button,.ctl button{transition:all .45s cubic-bezier(.22,.61,.36,1)}
+.pane.cur,.td.on{animation:dev .6s cubic-bezier(.16,1,.3,1) both}
 .bimg img,.scene img,.pp img,.kv img{transition:filter 1.2s ease,transform 1.4s cubic-bezier(.16,1,.3,1),opacity .8s ease}
 .sl.on .pp img,.sl.on .bimg>img:not(.orig),.sl.on .kv img{animation:imgin 1.4s cubic-bezier(.16,1,.3,1) both .15s}
 @keyframes imgin{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
