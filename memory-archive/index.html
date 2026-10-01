@@ -226,6 +226,31 @@ ul,ol{padding:0;list-style:none}
 .td dl.axes dd b{color:var(--ink)}
 @media(max-width:900px){.tw{grid-template-columns:1fr}.tdet{min-height:300px}}
 
+/* 09 여정 지도 (정돈) */
+#s9 .jg.cur{display:grid;grid-template-columns:minmax(0,.78fr) minmax(0,2.22fr);gap:clamp(24px,3vw,48px);margin-top:22px}
+#s9 .jh{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:var(--ink3)}
+.jl{border-right:1px solid var(--line);padding-right:clamp(18px,2.4vw,36px)}
+.jl .jt{margin:6px 0 18px;font-size:13.8px;line-height:1.7;color:var(--ink2)}
+.ji{background:var(--amb);color:#fff;border-radius:16px;padding:16px 18px}
+.ji .jh{color:rgba(255,255,255,.7)}
+.ji p:last-child{color:#fff;margin-top:6px;font-size:13.8px;line-height:1.65;font-weight:600}
+.jline{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.jline::before{content:"";position:absolute;left:12px;right:12px;top:12px;height:2px;background:var(--line)}
+.js{position:relative}
+.jn{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800}
+.jn i{font-style:normal;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:12px;box-shadow:0 0 0 5px #fff}
+.js ul{margin-top:12px;display:grid;gap:8px}
+.js li,.jb li{font-size:13.6px;line-height:1.55;color:var(--ink2);padding-left:12px;position:relative}
+.js li::before,.jb li::before{content:"";position:absolute;left:0;top:.68em;width:4px;height:4px;border-radius:50%;background:var(--ink3)}
+.jq{margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+.jq div{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+.jq q{quotes:none;font-size:13.8px;line-height:1.5;color:var(--ink);background:#F6F6F4;border-radius:14px 14px 14px 4px;padding:9px 13px;max-width:100%}
+.jb{margin-top:22px;padding-top:20px;border-top:1px solid var(--line);display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px}
+.jc{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
+.jc span{font-size:12.8px;font-weight:600;border:1px solid var(--line2);border-radius:99px;padding:5px 12px}
+.jb ul{margin-top:10px;display:grid;gap:7px}
+@media(max-width:900px){#s9 .jg.cur,.jline,.jb{grid-template-columns:1fr}.jl{border-right:0;padding-right:0}}
+
 /* 05~08 페르소나 */
 .pv{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);gap:clamp(22px,3.4vw,54px);align-items:start}
 .pp{position:relative}
@@ -271,14 +296,6 @@ ul,ol{padding:0;list-style:none}
 .jtab button.on{border-color:var(--amb);color:var(--ink);background:var(--warm)}
 .jg{margin-top:16px;display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .jg.cur{display:grid;animation:dev .8s ease}
-.jg .card{padding:14px 16px}
-.jg h3{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--ink3);font-weight:500}
-.jg li,.jg p{font-size:12.8px;line-height:1.55;color:var(--ink2);margin-top:6px}
-.jg li{padding-left:12px;position:relative}
-.jg li::before{content:"";position:absolute;left:0;top:.7em;width:4px;height:1px;background:var(--amb)}
-.jg .ins{border-color:rgba(35,80,245,.5);background:var(--warm)}
-.jg .ins p{color:var(--amb2);font-family:var(--serif);font-size:13.5px;line-height:1.65}
-.jg .ins h3{color:var(--amb)}
 
 /* 10~12 브랜드 */
 .bv{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:clamp(22px,3.6vw,56px);align-items:center}
@@ -630,48 +647,52 @@ ul,ol{padding:0;list-style:none}
     </div>
     <div class="fr">
     <div class="jg" data-k="0">
-      <div class="card"><h3>이용 전</h3><ul><li>같은 실수를 반복하지 않기 위해 중요한 업무 경험을 남기고 싶어 함</li><li>과거의 유사한 상황과 판단 과정을 빠르게 찾아볼 수 있길 기대함</li></ul></div>
-      <div class="card"><h3>이용 중</h3><ul><li>회의 기록, 메신저, 일정표 등 흩어진 자료를 하나로 정리함</li><li>과거의 유사한 실수와 반복되는 판단 패턴을 확인함</li><li>AI 분석을 통해 놓쳤던 위험 요소와 원인을 발견함</li></ul></div>
-      <div class="card"><h3>이용 후</h3><ul><li>자신의 판단 습관과 반복되는 실수의 원인을 구체적으로 이해함</li><li>분석 결과를 체크리스트로 정리해 다음 프로젝트에 바로 적용함</li></ul></div>
-      <div class="card"><h3>상황</h3><p>8년 차 프로젝트 매니저로 여러 팀의 일정과 의사결정을 관리함. 빠른 판단이 필요한 업무가 많아 중요한 맥락이나 피드백을 놓치기도 함. 업무 성장과 자기관리에 관심이 많아 중요한 경험은 따로 기록하는 편임.</p></div>
-      <div class="card"><h3>행동</h3><p>프로젝트 진행 중 중요한 실수나 판단이 발생하면 직접 기록한다. 관련 회의, 메시지, 문서와 함께 하나의 기억으로 정리하고, 비슷한 과거 사례를 찾아 반복되는 패턴을 다음 업무에 반영함.</p></div>
-      <div class="card"><h3>생각 &amp; 감정</h3><ul><li>“이번 실수도 그냥 지나가면 다음에 또 반복할 것 같은데.”</li><li>“예전에 비슷한 상황이 있었는지 바로 확인할 수 있으면 좋겠다.”</li><li>“내가 반복하는 판단 방식이 보이니까 다음에는 더 잘할 수 있을 것 같아.”</li></ul></div>
-      <div class="card"><h3>자주 쓰는 기능</h3><ul><li>중요 기억 직접 저장</li><li>유사 사례 검색</li><li>개선 체크리스트 생성</li></ul></div>
-      <div class="card"><h3>개선 방향</h3><ul><li>회의·메신저·문서 등 흩어진 업무 기록의 자동 연결</li><li>과거의 유사한 실수와 반복 패턴을 빠르게 추천</li><li>분석 결과를 바로 적용할 수 있는 행동 가이드 및 체크리스트 제공</li></ul></div>
-      <div class="card ins"><h3>INSIGHTS</h3><p>기록 자체보다 과거 경험에서 다음 행동에 필요한 의미를 얼마나 빠르게 발견할 수 있는지가 중요하다. 단순히 기억을 저장하는 것보다 실수 → 분석 → 개선으로 이어지는 경험이 서비스의 핵심 가치가 됨.</p></div>
+      <aside class="jl">
+        <p class="jh">상황</p><p class="jt">8년 차 프로젝트 매니저로 여러 팀의 일정과 의사결정을 관리함. 빠른 판단이 필요한 업무가 많아 중요한 맥락이나 피드백을 놓치기도 함. 업무 성장과 자기관리에 관심이 많아 중요한 경험은 따로 기록하는 편임.</p>
+        <p class="jh">행동</p><p class="jt">프로젝트 진행 중 중요한 실수나 판단이 발생하면 직접 기록한다. 관련 회의, 메시지, 문서와 함께 하나의 기억으로 정리하고, 비슷한 과거 사례를 찾아 반복되는 패턴을 다음 업무에 반영함.</p>
+        <div class="ji"><p class="jh">Insight</p><p>기록 자체보다 과거 경험에서 다음 행동에 필요한 의미를 얼마나 빠르게 발견할 수 있는지가 중요하다. 단순히 기억을 저장하는 것보다 실수 → 분석 → 개선으로 이어지는 경험이 서비스의 핵심 가치가 됨.</p></div>
+      </aside>
+      <div class="jr">
+        <div class="jline"><div class="js"><p class="jn"><i>1</i>이용 전</p><ul><li>같은 실수를 반복하지 않기 위해 중요한 업무 경험을 남기고 싶어 함</li><li>과거의 유사한 상황과 판단 과정을 빠르게 찾아볼 수 있길 기대함</li></ul></div><div class="js"><p class="jn"><i>2</i>이용 중</p><ul><li>회의 기록, 메신저, 일정표 등 흩어진 자료를 하나로 정리함</li><li>과거의 유사한 실수와 반복되는 판단 패턴을 확인함</li><li>AI 분석을 통해 놓쳤던 위험 요소와 원인을 발견함</li></ul></div><div class="js"><p class="jn"><i>3</i>이용 후</p><ul><li>자신의 판단 습관과 반복되는 실수의 원인을 구체적으로 이해함</li><li>분석 결과를 체크리스트로 정리해 다음 프로젝트에 바로 적용함</li></ul></div></div>
+        <div class="jq"><p class="jh">생각 &amp; 감정</p><div><q>이번 실수도 그냥 지나가면 다음에 또 반복할 것 같은데.</q><q>예전에 비슷한 상황이 있었는지 바로 확인할 수 있으면 좋겠다.</q><q>내가 반복하는 판단 방식이 보이니까 다음에는 더 잘할 수 있을 것 같아.</q></div></div>
+        <div class="jb"><div><p class="jh">자주 쓰는 기능</p><p class="jc"><span>중요 기억 직접 저장</span><span>유사 사례 검색</span><span>개선 체크리스트 생성</span></p></div><div><p class="jh">개선 방향</p><ul><li>회의·메신저·문서 등 흩어진 업무 기록의 자동 연결</li><li>과거의 유사한 실수와 반복 패턴을 빠르게 추천</li><li>분석 결과를 바로 적용할 수 있는 행동 가이드 및 체크리스트 제공</li></ul></div></div>
+      </div>
     </div>
     <div class="jg" data-k="1">
-      <div class="card"><h3>이용 전</h3><ul><li>직접 기록하지 않아도 자신의 생활 패턴을 알고 싶음</li><li>컨디션이 좋았던 날의 공통점을 찾아 일상에 적용하길 기대함</li></ul></div>
-      <div class="card"><h3>이용 중</h3><ul><li>기억 조각이 너무 많아 어떤 기준으로 골랐는지 파악하기 어려움</li><li>분석 결과의 근거를 확인하려면 조각을 하나씩 열어 봐야 해 번거로움</li><li>감정이 반대인 날이 잘못 분류돼 있어 결과 전체를 의심하게 됨</li></ul></div>
-      <div class="card"><h3>이용 후</h3><ul><li>몰랐던 자신의 패턴을 발견하고 일정을 바꾸며 만족감을 느낌</li><li>잘못된 분류를 고친 뒤에도 다음 분석에 반영될지 확신이 없음</li></ul></div>
-      <div class="card"><h3>상황</h3><p>마감이 몰린 한 달을 보내고 지친 상태. 정해진 일과가 없어 어떤 날 컨디션이 좋았는지 스스로 알기 어렵고, 따로 기록하는 습관도 없음.</p></div>
-      <div class="card"><h3>행동</h3><p>“최근 석 달 동안 내가 제일 편안해 보였던 순간들 보여줘”라고 검색한다. 떠오른 조각의 공통점을 확인하고, 그중 하나에 들어가 당시 장소와 음악을 다시 본다. 잘못 분류된 날을 직접 수정한 뒤 다음 달 일정을 조정함.</p></div>
-      <div class="card"><h3>생각 &amp; 감정</h3><ul><li>“내가 혼자 있을 때 더 편했구나. 이건 몰랐네.”</li><li>“친구랑 싸운 날이 즐거운 날이라고? 이건 좀 아닌데.”</li></ul></div>
-      <div class="card"><h3>자주 쓰는 기능</h3><ul><li>기억 검색</li><li>패턴 분석 요약</li><li>분류 수정</li></ul></div>
-      <div class="card"><h3>개선 방향</h3><ul><li>분석 결과마다 근거가 된 데이터 함께 표시</li><li>공통점을 한눈에 보여 주는 패턴 요약 화면</li><li>사용자가 고친 분류를 다음 분석에 반영</li><li>분석 결과를 일정·루틴 추천으로 연결</li></ul></div>
-      <div class="card ins"><h3>INSIGHTS</h3><p>기록은 AI에 맡기되 해석은 직접 확인하고 싶어 하며, 분석 근거가 보이고 틀린 부분을 고칠 수 있어야 결과를 신뢰함.</p></div>
+      <aside class="jl">
+        <p class="jh">상황</p><p class="jt">마감이 몰린 한 달을 보내고 지친 상태. 정해진 일과가 없어 어떤 날 컨디션이 좋았는지 스스로 알기 어렵고, 따로 기록하는 습관도 없음.</p>
+        <p class="jh">행동</p><p class="jt">“최근 석 달 동안 내가 제일 편안해 보였던 순간들 보여줘”라고 검색한다. 떠오른 조각의 공통점을 확인하고, 그중 하나에 들어가 당시 장소와 음악을 다시 본다. 잘못 분류된 날을 직접 수정한 뒤 다음 달 일정을 조정함.</p>
+        <div class="ji"><p class="jh">Insight</p><p>기록은 AI에 맡기되 해석은 직접 확인하고 싶어 하며, 분석 근거가 보이고 틀린 부분을 고칠 수 있어야 결과를 신뢰함.</p></div>
+      </aside>
+      <div class="jr">
+        <div class="jline"><div class="js"><p class="jn"><i>1</i>이용 전</p><ul><li>직접 기록하지 않아도 자신의 생활 패턴을 알고 싶음</li><li>컨디션이 좋았던 날의 공통점을 찾아 일상에 적용하길 기대함</li></ul></div><div class="js"><p class="jn"><i>2</i>이용 중</p><ul><li>기억 조각이 너무 많아 어떤 기준으로 골랐는지 파악하기 어려움</li><li>분석 결과의 근거를 확인하려면 조각을 하나씩 열어 봐야 해 번거로움</li><li>감정이 반대인 날이 잘못 분류돼 있어 결과 전체를 의심하게 됨</li></ul></div><div class="js"><p class="jn"><i>3</i>이용 후</p><ul><li>몰랐던 자신의 패턴을 발견하고 일정을 바꾸며 만족감을 느낌</li><li>잘못된 분류를 고친 뒤에도 다음 분석에 반영될지 확신이 없음</li></ul></div></div>
+        <div class="jq"><p class="jh">생각 &amp; 감정</p><div><q>내가 혼자 있을 때 더 편했구나. 이건 몰랐네.</q><q>친구랑 싸운 날이 즐거운 날이라고? 이건 좀 아닌데.</q></div></div>
+        <div class="jb"><div><p class="jh">자주 쓰는 기능</p><p class="jc"><span>기억 검색</span><span>패턴 분석 요약</span><span>분류 수정</span></p></div><div><p class="jh">개선 방향</p><ul><li>분석 결과마다 근거가 된 데이터 함께 표시</li><li>공통점을 한눈에 보여 주는 패턴 요약 화면</li><li>사용자가 고친 분류를 다음 분석에 반영</li><li>분석 결과를 일정·루틴 추천으로 연결</li></ul></div></div>
+      </div>
     </div>
     <div class="jg" data-k="2">
-      <div class="card"><h3>이용 전</h3><ul><li>친구들과의 소중한 순간을 단순 사진이 아닌 생생한 공간으로 남기고 싶음</li><li>플랫폼 변경 시 공들여 모은 추억이 유실될까 우려함</li></ul></div>
-      <div class="card"><h3>이용 중</h3><ul><li>3D 공간으로 구성하는 과정에서 피로감 느낌</li><li>친구들과 공동 아카이브를 편집·공유할 때 각자의 기억 우선순위나 비공개 장면 조율에 신경 쓰임</li><li>재구성된 공간이 실제 기억의 현장감·공기감과 미묘하게 다를 때 아쉬움 발생</li></ul></div>
-      <div class="card"><h3>이용 후</h3><ul><li>멀리 떨어진 친구들과 당시 공간에 동시 접속해 추억을 나눌 때 깊은 정서적 충만감 체감</li><li>세월이 지나도 변질 없이 꺼내 볼 수 있는 온전한 공동 기록이 완성되어 만족함</li></ul></div>
-      <div class="card"><h3>상황</h3><p>바쁜 업무로 일상이 공허해지거나, 메신저 단톡방 대화가 뜸해져 친구들과 함께하던 때가 문득 그리워질 때.</p></div>
-      <div class="card"><h3>행동</h3><p>복원된 3D 해변 산책로를 거닐며 떠 있는 사진·영상·대화 조각을 확인하고, 동시 접속한 친구와 함께 당시의 추억을 이야기함.</p></div>
-      <div class="card"><h3>생각 &amp; 감정</h3><ul><li>“평면 사진 한 장 보는 건 아쉬운데, 그때 우리가 함께 웃고 떠들던 그 장소의 공기 속에 다시 서 있는 기분이라 뭉클하다.”</li><li>“몸은 멀리 있어도 이렇게 같은 공간에 접속해 이야기하니까 그때로 돌아간 것 같아 든든하다.”</li></ul></div>
-      <div class="card"><h3>자주 쓰는 기능</h3><ul><li>공간 아카이브 모드</li><li>다중 미디어 3D 융합 복원</li><li>실시간 동시 접속 및 공동 편집/감상 모드</li></ul></div>
-      <div class="card"><h3>개선 방향</h3><ul><li>여러 메신저 및 클라우드 링크를 통한 원클릭 공동 데이터 수집/동기화 지원</li><li>공동 아카이브 공유 시 개인별 미디어 공개 범위 및 블러 설정 등 프라이버시 조율 옵션 제공</li><li>당시의 현장 소리, 날씨, 배경음악 등 감각적 디테일(공기감) 재현의 정확도 강화</li></ul></div>
-      <div class="card ins"><h3>INSIGHTS</h3><p>단순 시각 기록 보존보다, 사람과 사람을 잇는 ‘공간의 현장감’과 ‘공동 재체험(유대감 회복)’이 핵심 가치로 작용함.</p></div>
+      <aside class="jl">
+        <p class="jh">상황</p><p class="jt">바쁜 업무로 일상이 공허해지거나, 메신저 단톡방 대화가 뜸해져 친구들과 함께하던 때가 문득 그리워질 때.</p>
+        <p class="jh">행동</p><p class="jt">복원된 3D 해변 산책로를 거닐며 떠 있는 사진·영상·대화 조각을 확인하고, 동시 접속한 친구와 함께 당시의 추억을 이야기함.</p>
+        <div class="ji"><p class="jh">Insight</p><p>단순 시각 기록 보존보다, 사람과 사람을 잇는 ‘공간의 현장감’과 ‘공동 재체험(유대감 회복)’이 핵심 가치로 작용함.</p></div>
+      </aside>
+      <div class="jr">
+        <div class="jline"><div class="js"><p class="jn"><i>1</i>이용 전</p><ul><li>친구들과의 소중한 순간을 단순 사진이 아닌 생생한 공간으로 남기고 싶음</li><li>플랫폼 변경 시 공들여 모은 추억이 유실될까 우려함</li></ul></div><div class="js"><p class="jn"><i>2</i>이용 중</p><ul><li>3D 공간으로 구성하는 과정에서 피로감 느낌</li><li>친구들과 공동 아카이브를 편집·공유할 때 각자의 기억 우선순위나 비공개 장면 조율에 신경 쓰임</li><li>재구성된 공간이 실제 기억의 현장감·공기감과 미묘하게 다를 때 아쉬움 발생</li></ul></div><div class="js"><p class="jn"><i>3</i>이용 후</p><ul><li>멀리 떨어진 친구들과 당시 공간에 동시 접속해 추억을 나눌 때 깊은 정서적 충만감 체감</li><li>세월이 지나도 변질 없이 꺼내 볼 수 있는 온전한 공동 기록이 완성되어 만족함</li></ul></div></div>
+        <div class="jq"><p class="jh">생각 &amp; 감정</p><div><q>평면 사진 한 장 보는 건 아쉬운데, 그때 우리가 함께 웃고 떠들던 그 장소의 공기 속에 다시 서 있는 기분이라 뭉클하다.</q><q>몸은 멀리 있어도 이렇게 같은 공간에 접속해 이야기하니까 그때로 돌아간 것 같아 든든하다.</q></div></div>
+        <div class="jb"><div><p class="jh">자주 쓰는 기능</p><p class="jc"><span>공간 아카이브 모드</span><span>다중 미디어 3D 융합 복원</span><span>실시간 동시 접속 및 공동 편집/감상 모드</span></p></div><div><p class="jh">개선 방향</p><ul><li>여러 메신저 및 클라우드 링크를 통한 원클릭 공동 데이터 수집/동기화 지원</li><li>공동 아카이브 공유 시 개인별 미디어 공개 범위 및 블러 설정 등 프라이버시 조율 옵션 제공</li><li>당시의 현장 소리, 날씨, 배경음악 등 감각적 디테일(공기감) 재현의 정확도 강화</li></ul></div></div>
+      </div>
     </div>
     <div class="jg" data-k="3">
-      <div class="card"><h3>이용 전</h3><ul><li>텅 빈 집의 적막감에 숨 막힘을 느낌</li><li>사진이나 영상 등 직접적인 시각 자극은 회피하려 함</li></ul></div>
-      <div class="card"><h3>이용 중</h3><ul><li>시각 위주의 하이라이트 추천이 뜨면 부담감을 느낌</li><li>시각 필터를 끄고 환경/음향 데이터 중심으로 탐색함</li><li>특정 시간대의 백색소음(주방 소리 등)을 공간에 재생함</li></ul></div>
-      <div class="card"><h3>이용 후</h3><ul><li>익숙한 소리로 공간이 채워지며 깊은 안정감을 느낌</li><li>무심한 로그 데이터 속에서 배려를 발견하고 죄책감을 덜어 냄</li></ul></div>
-      <div class="card"><h3>상황</h3><p>늦은 퇴근 후 텅 빈 집으로 귀가한 상태. 숨 막히는 적막을 깨고 싶지만, 너무 생생한 추억(시각)을 대면하기는 두려워 망설이는 중.</p></div>
-      <div class="card"><h3>행동</h3><p>앱 진입 후 시각 위주의 하이라이트 알림을 즉시 끄고, 스마트홈 센서에 자동 축적된 환경 데이터(온도, 일상 소음) 중심으로 과거의 특정 시점을 검색해 앰비언트 모드로 틀어 둠.</p></div>
-      <div class="card"><h3>생각 &amp; 감정</h3><ul><li>“환하게 웃는 얼굴은 아직 감당하기 힘들어. 그냥 특별할 것 없던 작년 일요일 아침, 도마 소리와 TV 소리만 배경처럼 들려줘.”</li></ul></div>
-      <div class="card"><h3>자주 쓰는 기능</h3><ul><li>감각(시각/청각/촉각) 데이터 필터링</li><li>앰비언트 재생 모드 (백그라운드 재생)</li><li>IoT 환경 로그(온도, 조명 등) 동기화</li></ul></div>
-      <div class="card"><h3>개선 방향</h3><ul><li>감정 민감도를 고려한 ‘안전 모드(시각 데이터 원천 차단)’ 도입</li><li>장시간 틀어 두어도 이질감 없는 공간 음향 믹싱 기술</li><li>수치형 데이터(온도/문 닫힘 등)의 감성적 해석 제공</li></ul></div>
-      <div class="card ins"><h3>INSIGHTS</h3><p>상실감을 겪는 사용자에게는 화려하게 편집된 추억보다, 무의식적으로 축적된 ‘일상의 여백(백색소음)’이 감정적 부담 없이 더 안전하고 깊은 위로를 제공함.</p></div>
+      <aside class="jl">
+        <p class="jh">상황</p><p class="jt">늦은 퇴근 후 텅 빈 집으로 귀가한 상태. 숨 막히는 적막을 깨고 싶지만, 너무 생생한 추억(시각)을 대면하기는 두려워 망설이는 중.</p>
+        <p class="jh">행동</p><p class="jt">앱 진입 후 시각 위주의 하이라이트 알림을 즉시 끄고, 스마트홈 센서에 자동 축적된 환경 데이터(온도, 일상 소음) 중심으로 과거의 특정 시점을 검색해 앰비언트 모드로 틀어 둠.</p>
+        <div class="ji"><p class="jh">Insight</p><p>상실감을 겪는 사용자에게는 화려하게 편집된 추억보다, 무의식적으로 축적된 ‘일상의 여백(백색소음)’이 감정적 부담 없이 더 안전하고 깊은 위로를 제공함.</p></div>
+      </aside>
+      <div class="jr">
+        <div class="jline"><div class="js"><p class="jn"><i>1</i>이용 전</p><ul><li>텅 빈 집의 적막감에 숨 막힘을 느낌</li><li>사진이나 영상 등 직접적인 시각 자극은 회피하려 함</li></ul></div><div class="js"><p class="jn"><i>2</i>이용 중</p><ul><li>시각 위주의 하이라이트 추천이 뜨면 부담감을 느낌</li><li>시각 필터를 끄고 환경/음향 데이터 중심으로 탐색함</li><li>특정 시간대의 백색소음(주방 소리 등)을 공간에 재생함</li></ul></div><div class="js"><p class="jn"><i>3</i>이용 후</p><ul><li>익숙한 소리로 공간이 채워지며 깊은 안정감을 느낌</li><li>무심한 로그 데이터 속에서 배려를 발견하고 죄책감을 덜어 냄</li></ul></div></div>
+        <div class="jq"><p class="jh">생각 &amp; 감정</p><div><q>환하게 웃는 얼굴은 아직 감당하기 힘들어. 그냥 특별할 것 없던 작년 일요일 아침, 도마 소리와 TV 소리만 배경처럼 들려줘.</q></div></div>
+        <div class="jb"><div><p class="jh">자주 쓰는 기능</p><p class="jc"><span>감각(시각/청각/촉각) 데이터 필터링</span><span>앰비언트 재생 모드 (백그라운드 재생)</span><span>IoT 환경 로그(온도, 조명 등) 동기화</span></p></div><div><p class="jh">개선 방향</p><ul><li>감정 민감도를 고려한 ‘안전 모드(시각 데이터 원천 차단)’ 도입</li><li>장시간 틀어 두어도 이질감 없는 공간 음향 믹싱 기술</li><li>수치형 데이터(온도/문 닫힘 등)의 감성적 해석 제공</li></ul></div></div>
+      </div>
     </div>
     </div>
   </div>
