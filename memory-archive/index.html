@@ -206,7 +206,9 @@ ul,ol{padding:0;list-style:none}
 .tg .tt.on{opacity:1;background:#fff;box-shadow:0 0 0 1.5px var(--ink),0 22px 40px -26px rgba(17,18,20,.5);transform:translateY(-2px)}
 .tt .tn{font-size:13px;font-weight:700;color:var(--amb)}
 .tt b{display:block;margin-top:2px;font-size:clamp(18px,1.55vw,22px);font-weight:800;letter-spacing:-.03em}
-.tt small{display:block;margin-top:4px;font-size:13.5px;color:var(--ink2);line-height:1.5}
+.tt small.pre{display:block;margin-top:6px;font-size:13px;font-weight:600;color:var(--ink2);line-height:1.4}
+.tt small.pre+b{margin-top:1px}
+.tdn small.pre{display:block;font-size:14px;font-weight:600;color:var(--ink2);letter-spacing:-.01em;margin-bottom:2px}
 .tt .who{margin-top:auto;padding-top:14px;display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink2)}
 .tt .who img{width:28px;height:28px;border-radius:50%;object-fit:cover}
 .tdet{position:relative;min-height:330px}
@@ -264,6 +266,9 @@ ul,ol{padding:0;list-style:none}
 @media(max-width:900px){.mr{grid-template-columns:1fr}.mr.open .md{grid-template-columns:1fr;grid-column:auto}}
 
 /* 05~08 페르소나 */
+.ptitle{font-size:clamp(26px,2.6vw,40px);font-weight:800;letter-spacing:-.04em;line-height:1.25}
+.pwho{margin-top:8px;font-size:14px;color:var(--ink3)}
+.pwho b{color:var(--ink);font-size:16px;margin-right:10px}
 .pv{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);gap:clamp(22px,3.4vw,54px);align-items:start}
 .pp{position:relative}
 .pp img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:10px;display:block;filter:saturate(.85)}
@@ -479,13 +484,13 @@ ul,ol{padding:0;list-style:none}
         <p class="ax ax-t">분석 · 활용</p><p class="ax ax-b">기록 · 보존</p>
         <p class="ax ax-l">선택적 기록</p><p class="ax ax-r">자동 축적</p>
         <ul class="tg">
-          <li class="tt" data-k="1"><span class="tn">①</span><b>의미 탐색형</b><small>실수에서 답을 찾는다</small>
+          <li class="tt" data-k="1"><span class="tn">①</span><small class="pre">실수에서 답을 찾는</small><b>의미 탐색형</b>
             <span class="who"><img src="img/p1.jpg" alt="">김도윤</span></li>
-          <li class="tt" data-k="2"><span class="tn">②</span><b>라이프 분석형</b><small>일상 데이터로 나를 알아간다</small>
+          <li class="tt" data-k="2"><span class="tn">②</span><small class="pre">일상 데이터로 나를 알아가는</small><b>라이프 분석형</b>
             <span class="who"><img src="img/p2.jpg" alt="">장민소</span></li>
-          <li class="tt" data-k="3"><span class="tn">③</span><b>추억 보관형</b><small>소중한 순간을 오래 남긴다</small>
+          <li class="tt" data-k="3"><span class="tn">③</span><small class="pre">소중한 순간을 영구 보존하는</small><b>추억 보관형</b>
             <span class="who"><img src="img/p3.jpg" alt="">이다희</span></li>
-          <li class="tt" data-k="4"><span class="tn">④</span><b>일상 아카이브형</b><small>무의식의 일상에서 온기를 찾는다</small>
+          <li class="tt" data-k="4"><span class="tn">④</span><small class="pre">&nbsp;</small><b>일상 아카이브형</b>
             <span class="who"><img src="img/p4.jpg" alt="">강서윤</span></li>
         </ul>
       </div>
@@ -497,23 +502,23 @@ ul,ol{padding:0;list-style:none}
           <p class="tdl" style="margin-top:18px">→ 를 누르면 유형별로 볼 수 있다</p>
         </div>
         <div class="td" data-k="1">
-          <div class="tdh"><img src="img/p1.jpg" alt="김도윤"><div><p class="tdn">① 의미 탐색형</p><p class="tdw">김도윤 <span>34 · 직장인</span></p></div></div>
-          <p class="tdl">“실수에서 답을 찾는다”</p>
+          <div class="tdh"><img src="img/p1.jpg" alt="김도윤"><div><p class="tdn"><small class="pre">실수에서 답을 찾는</small>① 의미 탐색형</p><p class="tdw">김도윤 <span>34 · 직장인</span></p></div></div>
+          
           <dl><dt>인물</dt><dd>실수와 업무 과정을 기록하는 직장인</dd><dt>기록 방식</dt><dd>중요한 사건을 직접 선택해 기록</dd><dt>기억 활용</dt><dd>원인 분석, 개선, 자기계발</dd></dl>
         </div>
         <div class="td" data-k="2">
-          <div class="tdh"><img src="img/p2.jpg" alt="장민소"><div><p class="tdn">② 라이프 분석형</p><p class="tdw">장민소 <span>25 · 프리랜서</span></p></div></div>
-          <p class="tdl">“일상 데이터로 나를 알아간다”</p>
+          <div class="tdh"><img src="img/p2.jpg" alt="장민소"><div><p class="tdn"><small class="pre">일상 데이터로 나를 알아가는</small>② 라이프 분석형</p><p class="tdw">장민소 <span>25 · 프리랜서</span></p></div></div>
+          
           <dl><dt>인물</dt><dd>일상을 살아가며 자신을 알아가는 사람</dd><dt>기록 방식</dt><dd>생활 데이터가 자연스럽게 자동 축적</dd><dt>기억 활용</dt><dd>취향·습관·감정 패턴 발견</dd></dl>
         </div>
         <div class="td" data-k="3">
-          <div class="tdh"><img src="img/p3.jpg" alt="이다희"><div><p class="tdn">③ 추억 보관형</p><p class="tdw">이다희 <span>26 · 공간 브랜딩 에이전시</span></p></div></div>
-          <p class="tdl">“소중한 순간을 오래 남긴다”</p>
+          <div class="tdh"><img src="img/p3.jpg" alt="이다희"><div><p class="tdn"><small class="pre">소중한 순간을 영구 보존하는</small>③ 추억 보관형</p><p class="tdw">이다희 <span>26 · 공간 브랜딩 에이전시</span></p></div></div>
+          
           <dl><dt>인물</dt><dd>친구들과 여행을 즐기는 사람</dd><dt>기록 방식</dt><dd>특별한 순간을 직접 기록</dd><dt>기억 활용</dt><dd>소중한 순간을 오래 보존</dd></dl>
         </div>
         <div class="td" data-k="4">
           <div class="tdh"><img src="img/p4.jpg" alt="강서윤"><div><p class="tdn">④ 일상 아카이브형</p><p class="tdw">강서윤 <span>36 · 데이터 분석가</span></p></div></div>
-          <p class="tdl">“무의식의 일상에서 온기를 찾는다”</p>
+          
           <dl><dt>인물</dt><dd>평범한 일상을 기록해 두었다가 잃어버린 사람을 회상하는 사람</dd><dt>기록 방식</dt><dd>평소 의식하지 않아도 일상이 자동 축적</dd><dt>기억 활용</dt><dd>시간이 지난 뒤 기억을 찾아 회상</dd></dl>
         </div>
       </div>
@@ -530,8 +535,8 @@ ul,ol{padding:0;list-style:none}
       <div class="beh"><p class="r"><span class="hi">선택적 기록</span><b><i style="left:10%"></i></b><span>자동 축적</span></p><p class="r"><span class="hi">분석·활용</span><b><i style="left:15%"></i></b><span>기록·보존</span></p></div>
     </div>
     <div>
-      <p class="ptype fr">① 의미 탐색형 · 실수에서 답을 찾는</p>
-      <h2 class="pname fr">김도윤<small>Profile 01</small></h2>
+      <h2 class="ptitle fr">① 실수에서 답을 찾는 의미 탐색형</h2>
+      <p class="pwho fr"><b>김도윤</b>Profile 01</p>
       <p class="pq fr">“같은 실수를 반복하지 않을 수 있다면 기록해 두고 다시 돌아볼 가치가 있지”</p>
       <div class="tags fr"><span>#분석</span><span>#회고</span><span>#업무 개선</span><span>#자기계발</span></div>
       <div class="ptab fr"><span data-k="0">PAIN · NEEDS</span><span data-k="1">SCENARIO</span></div>
@@ -562,8 +567,8 @@ ul,ol{padding:0;list-style:none}
       <div class="beh"><p class="r"><span>선택적 기록</span><b><i style="left:92%"></i></b><span class="hi">자동 축적</span></p><p class="r"><span class="hi">분석·활용</span><b><i style="left:5%"></i></b><span>기록·보존</span></p></div>
     </div>
     <div>
-      <p class="ptype fr">② 라이프 분석형 · 일상 데이터로 나를 알아가는</p>
-      <h2 class="pname fr">장민소<small>Profile 02</small></h2>
+      <h2 class="ptitle fr">② 일상 데이터로 나를 알아가는 라이프 분석형</h2>
+      <p class="pwho fr"><b>장민소</b>Profile 02</p>
       <p class="pq fr">“기록은 AI가 알아서 해 줘. 난 그걸 보고 내가 어떤 사람인지 알고 싶어”</p>
       <div class="tags fr"><span>#나를 알아가는 중</span><span>#일상 데이터</span><span>#패턴 발견</span><span>#나만의 루틴</span></div>
       <div class="ptab fr"><span data-k="0">PAIN · NEEDS</span><span data-k="1">SCENARIO</span></div>
@@ -594,8 +599,8 @@ ul,ol{padding:0;list-style:none}
       <div class="beh"><p class="r"><span class="hi">선택적 기록</span><b><i style="left:12%"></i></b><span>자동 축적</span></p><p class="r"><span>분석·활용</span><b><i style="left:92%"></i></b><span class="hi">기록·보존</span></p></div>
     </div>
     <div>
-      <p class="ptype fr">③ 추억 보관형 · 소중한 순간을 영구 보존하는</p>
-      <h2 class="pname fr">이다희<small>Profile 03</small></h2>
+      <h2 class="ptitle fr">③ 소중한 순간을 영구 보존하는 추억 보관형</h2>
+      <p class="pwho fr"><b>이다희</b>Profile 03</p>
       <p class="pq fr">“단순히 사진 한 장 넘겨 보는 건 아쉬워요. 우리가 함께 웃고 떠들던 그 장소의 공기 자체를 남기고 싶어요.”</p>
       <div class="tags fr"><span>#추억 보관</span><span>#공간 재체험</span><span>#함께하는 시간</span><span>#공기 감정</span></div>
       <div class="ptab fr"><span data-k="0">PAIN · NEEDS</span><span data-k="1">SCENARIO</span></div>
@@ -625,8 +630,8 @@ ul,ol{padding:0;list-style:none}
       <div class="beh"><p class="r"><span>선택적 기록</span><b><i style="left:92%"></i></b><span class="hi">자동 축적</span></p><p class="r"><span>분석·활용</span><b><i style="left:90%"></i></b><span class="hi">기록·보존</span></p></div>
     </div>
     <div>
-      <p class="ptype fr">④ 일상 아카이브형 · 무의식의 일상에서 온기를 찾는</p>
-      <h2 class="pname fr">강서윤<small>Profile 04</small></h2>
+      <h2 class="ptitle fr">④ 일상 아카이브형</h2>
+      <p class="pwho fr"><b>강서윤</b>Profile 04</p>
       <p class="pq fr">“사진 속 활짝 웃는 얼굴보다, 거실을 채우던 따뜻한 온도와 무심한 도마 소리가 더 그리울 때가 있어.”</p>
       <div class="tags fr"><span>#상실감 극복</span><span>#무의식적 기록</span><span>#공감각적 회상</span><span>#백색소음</span></div>
       <div class="ptab fr"><span data-k="0">PAIN · NEEDS</span><span data-k="1">SCENARIO</span></div>
