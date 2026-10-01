@@ -226,34 +226,40 @@ ul,ol{padding:0;list-style:none}
 .td dl.axes dd b{color:var(--ink)}
 @media(max-width:900px){.tw{grid-template-columns:1fr}.tdet{min-height:300px}}
 
-/* 09 여정 지도: 서비스 블루프린트(스윔레인) — 사용자 / 앱 기능 / AI 개선을 가로 레인으로 */
-#s9 .jg.bp.cur{display:grid;grid-template-columns:76px repeat(3,minmax(0,1fr));column-gap:clamp(20px,2.4vw,36px);row-gap:12px;margin-top:18px;align-items:start}
-.bp .bl{font-size:11.5px;font-weight:700;color:var(--ink3);letter-spacing:.04em;padding-top:2px}
-.bp .bl.sm{font-size:11px;padding-top:1px}
-.bp .bl.ctx{padding-top:12px}
-/* 단계: 무거운 검은 바 대신 번호 + 가는 선 */
-.bp .bs{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;color:var(--ink);padding-bottom:9px;border-bottom:2px solid var(--ink)}
-.bp .bs i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:11px}
-/* 사용자 레인: 회색 상자 없이 글만, 칸 사이는 여백으로 */
-.bp .bc{display:grid;gap:6px;align-content:start}
-.bp .bc li,.bp .bi li{font-size:13.4px;line-height:1.55;color:var(--ink);padding-left:11px;position:relative}
-.bp .bc li::before,.bp .bi li::before{content:"";position:absolute;left:0;top:.66em;width:4px;height:4px;border-radius:50%;background:var(--ink3)}
-.bp .bq{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:4px 16px}
-.bp .bq span{font-size:13px;color:var(--ink2);line-height:1.5}
-/* 레인 구분선: 보이는 선(실선) · 보이지 않는 선(점선), 이름은 왼쪽 레인 칸에 */
-.bp .bsep{grid-column:1/-1;position:relative;height:12px;margin-top:6px}
-.bp .bsep::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
-.bp .bsep.dash::before{background:repeating-linear-gradient(90deg,var(--line2) 0 5px,transparent 5px 10px)}
-.bp .bsep span{display:none}
-.bp .bf{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px}
-.bp .bf span{font-size:13px;font-weight:600;background:#F2F2EF;border-radius:99px;padding:5px 13px;color:var(--ink)}
-.bp .bi{grid-column:2/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 28px}
-/* 맥락 */
-.bp .bx{font-size:12.8px;line-height:1.6;color:var(--ink2);margin-top:8px;padding-top:12px;border-top:1px solid var(--line)}
-.bp .bx b{display:block;font-size:11.5px;color:var(--ink3);margin-bottom:3px}
-.bp .bx.ins{border-top:2px solid var(--amb);color:var(--ink);font-weight:600}
-.bp .bx.ins b{color:var(--amb)}
-@media(max-width:900px){#s9 .jg.bp.cur{grid-template-columns:1fr}.bp .bq,.bp .bf,.bp .bi{grid-column:auto}.bp .bi{grid-template-columns:1fr}}
+/* 09 여정 지도: 4인 비교 매트릭스 — 처음엔 한 줄 요약, 항목을 고르면 그 줄만 펼쳐 전체 내용 */
+.mhint{margin-top:10px;font-size:13px;color:var(--ink3)}
+.mx{margin-top:16px}
+.mr{display:grid;grid-template-columns:118px repeat(4,minmax(0,1fr));column-gap:clamp(14px,1.6vw,24px);align-items:start;border-top:1px solid var(--line);padding:9px 0;transition:background .3s}
+.mr.mh{border-top:0;padding:0 0 10px;align-items:end}
+.mr[data-g]{border-top:1.5px solid var(--ink2)}
+.mx{position:relative}
+.mp{display:flex;align-items:center;gap:9px;font-size:14.5px}
+.mp img{width:34px;height:34px;border-radius:50%;object-fit:cover}
+.mp b{font-weight:800}
+.mp small{font-size:12px;color:var(--ink3);font-weight:500}
+.ml{appearance:none;border:0;background:none;font:inherit;text-align:left;cursor:pointer;padding:2px 0;font-size:13px;font-weight:700;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.ml::after{content:"+";font-size:13px;color:var(--ink3);font-weight:500}
+.ml:hover{color:var(--ink)}
+.mc{cursor:pointer;min-width:0}
+.ms{font-size:13px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.6}
+.mf{display:none}
+.mx.sel .mr:not(.open):not(.mh) .ms{color:var(--ink3)}
+.mr.open{background:#F6F6F4;border-radius:12px;padding:14px 0;border-top-color:transparent}
+.mr.open+.mr{border-top-color:transparent}
+.mr.open .ml{color:var(--amb);padding-left:12px}
+.mr.open .ml::after{content:"−";color:var(--amb)}
+.mr.open .ms{display:none}
+.mr.open .mf{display:block;animation:dev .45s ease}
+.mf p,.mf li{font-size:13.4px;line-height:1.6;color:var(--ink)}
+.mf ul{display:grid;gap:6px}
+.mf li{padding-left:11px;position:relative}
+.mf li::before{content:"";position:absolute;left:0;top:.68em;width:4px;height:4px;border-radius:50%;background:var(--ink3)}
+.mf ul.q li{padding-left:0}.mf ul.q li::before{display:none}
+.mf .ch{display:flex;flex-wrap:wrap;gap:5px}
+.mf .ch span{font-size:12.5px;font-weight:600;background:#fff;border-radius:99px;padding:4px 11px}
+.mr.ins .ms{color:var(--amb);font-weight:600}
+.mr.ins.open .mf p{color:var(--amb);font-weight:700}
+@media(max-width:900px){.mr{grid-template-columns:90px repeat(4,minmax(140px,1fr))}.mx{overflow-x:auto}}
 
 /* 05~08 페르소나 */
 .pv{display:grid;grid-template-columns:minmax(0,.62fr) minmax(0,1.38fr);gap:clamp(22px,3.4vw,54px);align-items:start}
@@ -640,57 +646,21 @@ ul,ol{padding:0;list-style:none}
 </section>
 
 <!-- 09 여정 지도 -->
-<section class="sl" id="s9" data-nav="여정 지도" data-meta="INDEX 09 · JOURNEY MAP" data-steps="4">
+<section class="sl" id="s9" data-nav="여정 지도" data-meta="INDEX 09 · JOURNEY MAP" data-steps="10">
   <div class="wrap">
     <p class="eb fr">09 · Journey Map<span>네 사람이 Memory Archive를 쓰는 과정</span></p>
-    <div class="jtab fr">
-      <button data-k="0"><img src="img/p1.jpg" alt="">김도윤 · 의미 탐색형</button>
-      <button data-k="1"><img src="img/p2.jpg" alt="">장민소 · 라이프 분석형</button>
-      <button data-k="2"><img src="img/p3.jpg" alt="">이다희 · 추억 보관형</button>
-      <button data-k="3"><img src="img/p4.jpg" alt="">강서윤 · 일상 아카이브형</button>
-    </div>
-    <div class="fr">
-    <div class="jg bp" data-k="0">
-      <div class="bl"></div><p class="bs"><i>1</i>이용 전</p><p class="bs"><i>2</i>이용 중</p><p class="bs"><i>3</i>이용 후</p>
-      <p class="bl">사용자</p><ul class="bc"><li>같은 실수를 반복하지 않기 위해 중요한 업무 경험을 남기고 싶어 함</li><li>과거의 유사한 상황과 판단 과정을 빠르게 찾아볼 수 있길 기대함</li></ul><ul class="bc"><li>회의 기록, 메신저, 일정표 등 흩어진 자료를 하나로 정리함</li><li>과거의 유사한 실수와 반복되는 판단 패턴을 확인함</li><li>AI 분석을 통해 놓쳤던 위험 요소와 원인을 발견함</li></ul><ul class="bc"><li>자신의 판단 습관과 반복되는 실수의 원인을 구체적으로 이해함</li><li>분석 결과를 체크리스트로 정리해 다음 프로젝트에 바로 적용함</li></ul>
-      <p class="bl sm">생각·감정</p><p class="bq"><span>“이번 실수도 그냥 지나가면 다음에 또 반복할 것 같은데.”</span><span>“예전에 비슷한 상황이 있었는지 바로 확인할 수 있으면 좋겠다.”</span><span>“내가 반복하는 판단 방식이 보이니까 다음에는 더 잘할 수 있을 것 같아.”</span></p>
-      <div class="bsep"><span>화면에 보이는 서비스</span></div>
-      <p class="bl">앱 기능</p><p class="bf"><span>중요 기억 직접 저장</span><span>유사 사례 검색</span><span>개선 체크리스트 생성</span></p>
-      <div class="bsep dash"><span>보이지 않는 곳에서 AI가 할 일</span></div>
-      <p class="bl">AI 개선</p><ul class="bi"><li>회의·메신저·문서 등 흩어진 업무 기록의 자동 연결</li><li>과거의 유사한 실수와 반복 패턴을 빠르게 추천</li><li>분석 결과를 바로 적용할 수 있는 행동 가이드 및 체크리스트 제공</li></ul>
-      <p class="bl ctx">맥락</p><div class="bx"><b>상황</b>8년 차 프로젝트 매니저로 여러 팀의 일정과 의사결정을 관리함. 빠른 판단이 필요한 업무가 많아 중요한 맥락이나 피드백을 놓치기도 함. 업무 성장과 자기관리에 관심이 많아 중요한 경험은 따로 기록하는 편임.</div><div class="bx"><b>행동</b>프로젝트 진행 중 중요한 실수나 판단이 발생하면 직접 기록한다. 관련 회의, 메시지, 문서와 함께 하나의 기억으로 정리하고, 비슷한 과거 사례를 찾아 반복되는 패턴을 다음 업무에 반영함.</div><div class="bx ins"><b>Insight</b>기록 자체보다 과거 경험에서 다음 행동에 필요한 의미를 얼마나 빠르게 발견할 수 있는지가 중요하다. 단순히 기억을 저장하는 것보다 실수 → 분석 → 개선으로 이어지는 경험이 서비스의 핵심 가치가 됨.</div>
-    </div>
-    <div class="jg bp" data-k="1">
-      <div class="bl"></div><p class="bs"><i>1</i>이용 전</p><p class="bs"><i>2</i>이용 중</p><p class="bs"><i>3</i>이용 후</p>
-      <p class="bl">사용자</p><ul class="bc"><li>직접 기록하지 않아도 자신의 생활 패턴을 알고 싶음</li><li>컨디션이 좋았던 날의 공통점을 찾아 일상에 적용하길 기대함</li></ul><ul class="bc"><li>기억 조각이 너무 많아 어떤 기준으로 골랐는지 파악하기 어려움</li><li>분석 결과의 근거를 확인하려면 조각을 하나씩 열어 봐야 해 번거로움</li><li>감정이 반대인 날이 잘못 분류돼 있어 결과 전체를 의심하게 됨</li></ul><ul class="bc"><li>몰랐던 자신의 패턴을 발견하고 일정을 바꾸며 만족감을 느낌</li><li>잘못된 분류를 고친 뒤에도 다음 분석에 반영될지 확신이 없음</li></ul>
-      <p class="bl sm">생각·감정</p><p class="bq"><span>“내가 혼자 있을 때 더 편했구나. 이건 몰랐네.”</span><span>“친구랑 싸운 날이 즐거운 날이라고? 이건 좀 아닌데.”</span></p>
-      <div class="bsep"><span>화면에 보이는 서비스</span></div>
-      <p class="bl">앱 기능</p><p class="bf"><span>기억 검색</span><span>패턴 분석 요약</span><span>분류 수정</span></p>
-      <div class="bsep dash"><span>보이지 않는 곳에서 AI가 할 일</span></div>
-      <p class="bl">AI 개선</p><ul class="bi"><li>분석 결과마다 근거가 된 데이터 함께 표시</li><li>공통점을 한눈에 보여 주는 패턴 요약 화면</li><li>사용자가 고친 분류를 다음 분석에 반영</li><li>분석 결과를 일정·루틴 추천으로 연결</li></ul>
-      <p class="bl ctx">맥락</p><div class="bx"><b>상황</b>마감이 몰린 한 달을 보내고 지친 상태. 정해진 일과가 없어 어떤 날 컨디션이 좋았는지 스스로 알기 어렵고, 따로 기록하는 습관도 없음.</div><div class="bx"><b>행동</b>“최근 석 달 동안 내가 제일 편안해 보였던 순간들 보여줘”라고 검색한다. 떠오른 조각의 공통점을 확인하고, 그중 하나에 들어가 당시 장소와 음악을 다시 본다. 잘못 분류된 날을 직접 수정한 뒤 다음 달 일정을 조정함.</div><div class="bx ins"><b>Insight</b>기록은 AI에 맡기되 해석은 직접 확인하고 싶어 하며, 분석 근거가 보이고 틀린 부분을 고칠 수 있어야 결과를 신뢰함.</div>
-    </div>
-    <div class="jg bp" data-k="2">
-      <div class="bl"></div><p class="bs"><i>1</i>이용 전</p><p class="bs"><i>2</i>이용 중</p><p class="bs"><i>3</i>이용 후</p>
-      <p class="bl">사용자</p><ul class="bc"><li>친구들과의 소중한 순간을 단순 사진이 아닌 생생한 공간으로 남기고 싶음</li><li>플랫폼 변경 시 공들여 모은 추억이 유실될까 우려함</li></ul><ul class="bc"><li>3D 공간으로 구성하는 과정에서 피로감 느낌</li><li>친구들과 공동 아카이브를 편집·공유할 때 각자의 기억 우선순위나 비공개 장면 조율에 신경 쓰임</li><li>재구성된 공간이 실제 기억의 현장감·공기감과 미묘하게 다를 때 아쉬움 발생</li></ul><ul class="bc"><li>멀리 떨어진 친구들과 당시 공간에 동시 접속해 추억을 나눌 때 깊은 정서적 충만감 체감</li><li>세월이 지나도 변질 없이 꺼내 볼 수 있는 온전한 공동 기록이 완성되어 만족함</li></ul>
-      <p class="bl sm">생각·감정</p><p class="bq"><span>“평면 사진 한 장 보는 건 아쉬운데, 그때 우리가 함께 웃고 떠들던 그 장소의 공기 속에 다시 서 있는 기분이라 뭉클하다.”</span><span>“몸은 멀리 있어도 이렇게 같은 공간에 접속해 이야기하니까 그때로 돌아간 것 같아 든든하다.”</span></p>
-      <div class="bsep"><span>화면에 보이는 서비스</span></div>
-      <p class="bl">앱 기능</p><p class="bf"><span>공간 아카이브 모드</span><span>다중 미디어 3D 융합 복원</span><span>실시간 동시 접속 및 공동 편집/감상 모드</span></p>
-      <div class="bsep dash"><span>보이지 않는 곳에서 AI가 할 일</span></div>
-      <p class="bl">AI 개선</p><ul class="bi"><li>여러 메신저 및 클라우드 링크를 통한 원클릭 공동 데이터 수집/동기화 지원</li><li>공동 아카이브 공유 시 개인별 미디어 공개 범위 및 블러 설정 등 프라이버시 조율 옵션 제공</li><li>당시의 현장 소리, 날씨, 배경음악 등 감각적 디테일(공기감) 재현의 정확도 강화</li></ul>
-      <p class="bl ctx">맥락</p><div class="bx"><b>상황</b>바쁜 업무로 일상이 공허해지거나, 메신저 단톡방 대화가 뜸해져 친구들과 함께하던 때가 문득 그리워질 때.</div><div class="bx"><b>행동</b>복원된 3D 해변 산책로를 거닐며 떠 있는 사진·영상·대화 조각을 확인하고, 동시 접속한 친구와 함께 당시의 추억을 이야기함.</div><div class="bx ins"><b>Insight</b>단순 시각 기록 보존보다, 사람과 사람을 잇는 ‘공간의 현장감’과 ‘공동 재체험(유대감 회복)’이 핵심 가치로 작용함.</div>
-    </div>
-    <div class="jg bp" data-k="3">
-      <div class="bl"></div><p class="bs"><i>1</i>이용 전</p><p class="bs"><i>2</i>이용 중</p><p class="bs"><i>3</i>이용 후</p>
-      <p class="bl">사용자</p><ul class="bc"><li>텅 빈 집의 적막감에 숨 막힘을 느낌</li><li>사진이나 영상 등 직접적인 시각 자극은 회피하려 함</li></ul><ul class="bc"><li>시각 위주의 하이라이트 추천이 뜨면 부담감을 느낌</li><li>시각 필터를 끄고 환경/음향 데이터 중심으로 탐색함</li><li>특정 시간대의 백색소음(주방 소리 등)을 공간에 재생함</li></ul><ul class="bc"><li>익숙한 소리로 공간이 채워지며 깊은 안정감을 느낌</li><li>무심한 로그 데이터 속에서 배려를 발견하고 죄책감을 덜어 냄</li></ul>
-      <p class="bl sm">생각·감정</p><p class="bq"><span>“환하게 웃는 얼굴은 아직 감당하기 힘들어. 그냥 특별할 것 없던 작년 일요일 아침, 도마 소리와 TV 소리만 배경처럼 들려줘.”</span></p>
-      <div class="bsep"><span>화면에 보이는 서비스</span></div>
-      <p class="bl">앱 기능</p><p class="bf"><span>감각(시각/청각/촉각) 데이터 필터링</span><span>앰비언트 재생 모드 (백그라운드 재생)</span><span>IoT 환경 로그(온도, 조명 등) 동기화</span></p>
-      <div class="bsep dash"><span>보이지 않는 곳에서 AI가 할 일</span></div>
-      <p class="bl">AI 개선</p><ul class="bi"><li>감정 민감도를 고려한 ‘안전 모드(시각 데이터 원천 차단)’ 도입</li><li>장시간 틀어 두어도 이질감 없는 공간 음향 믹싱 기술</li><li>수치형 데이터(온도/문 닫힘 등)의 감성적 해석 제공</li></ul>
-      <p class="bl ctx">맥락</p><div class="bx"><b>상황</b>늦은 퇴근 후 텅 빈 집으로 귀가한 상태. 숨 막히는 적막을 깨고 싶지만, 너무 생생한 추억(시각)을 대면하기는 두려워 망설이는 중.</div><div class="bx"><b>행동</b>앱 진입 후 시각 위주의 하이라이트 알림을 즉시 끄고, 스마트홈 센서에 자동 축적된 환경 데이터(온도, 일상 소음) 중심으로 과거의 특정 시점을 검색해 앰비언트 모드로 틀어 둠.</div><div class="bx ins"><b>Insight</b>상실감을 겪는 사용자에게는 화려하게 편집된 추억보다, 무의식적으로 축적된 ‘일상의 여백(백색소음)’이 감정적 부담 없이 더 안전하고 깊은 위로를 제공함.</div>
-    </div>
-    </div>
+    <p class="mhint fr" id="mhint">항목을 고르면 네 사람의 전체 내용을 나란히 비교할 수 있다 · → 키 또는 항목 이름 클릭</p>
+    <div class="mx fr" id="mx">
+      <div class="mr mh"><span></span><p class="mp"><img src="img/p1.jpg" alt=""><b>김도윤</b><small>의미 탐색형</small></p><p class="mp"><img src="img/p2.jpg" alt=""><b>장민소</b><small>라이프 분석형</small></p><p class="mp"><img src="img/p3.jpg" alt=""><b>이다희</b><small>추억 보관형</small></p><p class="mp"><img src="img/p4.jpg" alt=""><b>강서윤</b><small>일상 아카이브형</small></p></div>
+      <div class="mr" data-k="1" data-g="맥락"><button class="ml">상황</button><div class="mc"><p class="ms">8년 차 프로젝트 매니저로 여러 팀의 일정과 의사결정을 관리함. 빠른 판단이 필요한 업무가 많아 중요한 맥락이나 피드백을 놓치기도 함. 업무 성장과 자기관리에 관심이 많아 중요한 경험은 따로 기록하는 편임.</p><div class="mf"><p>8년 차 프로젝트 매니저로 여러 팀의 일정과 의사결정을 관리함. 빠른 판단이 필요한 업무가 많아 중요한 맥락이나 피드백을 놓치기도 함. 업무 성장과 자기관리에 관심이 많아 중요한 경험은 따로 기록하는 편임.</p></div></div><div class="mc"><p class="ms">마감이 몰린 한 달을 보내고 지친 상태. 정해진 일과가 없어 어떤 날 컨디션이 좋았는지 스스로 알기 어렵고, 따로 기록하는 습관도 없음.</p><div class="mf"><p>마감이 몰린 한 달을 보내고 지친 상태. 정해진 일과가 없어 어떤 날 컨디션이 좋았는지 스스로 알기 어렵고, 따로 기록하는 습관도 없음.</p></div></div><div class="mc"><p class="ms">바쁜 업무로 일상이 공허해지거나, 메신저 단톡방 대화가 뜸해져 친구들과 함께하던 때가 문득 그리워질 때.</p><div class="mf"><p>바쁜 업무로 일상이 공허해지거나, 메신저 단톡방 대화가 뜸해져 친구들과 함께하던 때가 문득 그리워질 때.</p></div></div><div class="mc"><p class="ms">늦은 퇴근 후 텅 빈 집으로 귀가한 상태. 숨 막히는 적막을 깨고 싶지만, 너무 생생한 추억(시각)을 대면하기는 두려워 망설이는 중.</p><div class="mf"><p>늦은 퇴근 후 텅 빈 집으로 귀가한 상태. 숨 막히는 적막을 깨고 싶지만, 너무 생생한 추억(시각)을 대면하기는 두려워 망설이는 중.</p></div></div></div>
+      <div class="mr" data-k="2"><button class="ml">행동</button><div class="mc"><p class="ms">프로젝트 진행 중 중요한 실수나 판단이 발생하면 직접 기록한다. 관련 회의, 메시지, 문서와 함께 하나의 기억으로 정리하고, 비슷한 과거 사례를 찾아 반복되는 패턴을 다음 업무에 반영함.</p><div class="mf"><p>프로젝트 진행 중 중요한 실수나 판단이 발생하면 직접 기록한다. 관련 회의, 메시지, 문서와 함께 하나의 기억으로 정리하고, 비슷한 과거 사례를 찾아 반복되는 패턴을 다음 업무에 반영함.</p></div></div><div class="mc"><p class="ms">“최근 석 달 동안 내가 제일 편안해 보였던 순간들 보여줘”라고 검색한다. 떠오른 조각의 공통점을 확인하고, 그중 하나에 들어가 당시 장소와 음악을 다시 본다. 잘못 분류된 날을 직접 수정한 뒤 다음 달 일정을 조정함.</p><div class="mf"><p>“최근 석 달 동안 내가 제일 편안해 보였던 순간들 보여줘”라고 검색한다. 떠오른 조각의 공통점을 확인하고, 그중 하나에 들어가 당시 장소와 음악을 다시 본다. 잘못 분류된 날을 직접 수정한 뒤 다음 달 일정을 조정함.</p></div></div><div class="mc"><p class="ms">복원된 3D 해변 산책로를 거닐며 떠 있는 사진·영상·대화 조각을 확인하고, 동시 접속한 친구와 함께 당시의 추억을 이야기함.</p><div class="mf"><p>복원된 3D 해변 산책로를 거닐며 떠 있는 사진·영상·대화 조각을 확인하고, 동시 접속한 친구와 함께 당시의 추억을 이야기함.</p></div></div><div class="mc"><p class="ms">앱 진입 후 시각 위주의 하이라이트 알림을 즉시 끄고, 스마트홈 센서에 자동 축적된 환경 데이터(온도, 일상 소음) 중심으로 과거의 특정 시점을 검색해 앰비언트 모드로 틀어 둠.</p><div class="mf"><p>앱 진입 후 시각 위주의 하이라이트 알림을 즉시 끄고, 스마트홈 센서에 자동 축적된 환경 데이터(온도, 일상 소음) 중심으로 과거의 특정 시점을 검색해 앰비언트 모드로 틀어 둠.</p></div></div></div>
+      <div class="mr" data-k="3" data-g="여정"><button class="ml">이용 전</button><div class="mc"><p class="ms">같은 실수를 반복하지 않기 위해 중요한 업무 경험을 남기고 싶어 함 외 1</p><div class="mf"><ul><li>같은 실수를 반복하지 않기 위해 중요한 업무 경험을 남기고 싶어 함</li><li>과거의 유사한 상황과 판단 과정을 빠르게 찾아볼 수 있길 기대함</li></ul></div></div><div class="mc"><p class="ms">직접 기록하지 않아도 자신의 생활 패턴을 알고 싶음 외 1</p><div class="mf"><ul><li>직접 기록하지 않아도 자신의 생활 패턴을 알고 싶음</li><li>컨디션이 좋았던 날의 공통점을 찾아 일상에 적용하길 기대함</li></ul></div></div><div class="mc"><p class="ms">친구들과의 소중한 순간을 단순 사진이 아닌 생생한 공간으로 남기고 싶음 외 1</p><div class="mf"><ul><li>친구들과의 소중한 순간을 단순 사진이 아닌 생생한 공간으로 남기고 싶음</li><li>플랫폼 변경 시 공들여 모은 추억이 유실될까 우려함</li></ul></div></div><div class="mc"><p class="ms">텅 빈 집의 적막감에 숨 막힘을 느낌 외 1</p><div class="mf"><ul><li>텅 빈 집의 적막감에 숨 막힘을 느낌</li><li>사진이나 영상 등 직접적인 시각 자극은 회피하려 함</li></ul></div></div></div>
+      <div class="mr" data-k="4"><button class="ml">이용 중</button><div class="mc"><p class="ms">회의 기록, 메신저, 일정표 등 흩어진 자료를 하나로 정리함 외 2</p><div class="mf"><ul><li>회의 기록, 메신저, 일정표 등 흩어진 자료를 하나로 정리함</li><li>과거의 유사한 실수와 반복되는 판단 패턴을 확인함</li><li>AI 분석을 통해 놓쳤던 위험 요소와 원인을 발견함</li></ul></div></div><div class="mc"><p class="ms">기억 조각이 너무 많아 어떤 기준으로 골랐는지 파악하기 어려움 외 2</p><div class="mf"><ul><li>기억 조각이 너무 많아 어떤 기준으로 골랐는지 파악하기 어려움</li><li>분석 결과의 근거를 확인하려면 조각을 하나씩 열어 봐야 해 번거로움</li><li>감정이 반대인 날이 잘못 분류돼 있어 결과 전체를 의심하게 됨</li></ul></div></div><div class="mc"><p class="ms">3D 공간으로 구성하는 과정에서 피로감 느낌 외 2</p><div class="mf"><ul><li>3D 공간으로 구성하는 과정에서 피로감 느낌</li><li>친구들과 공동 아카이브를 편집·공유할 때 각자의 기억 우선순위나 비공개 장면 조율에 신경 쓰임</li><li>재구성된 공간이 실제 기억의 현장감·공기감과 미묘하게 다를 때 아쉬움 발생</li></ul></div></div><div class="mc"><p class="ms">시각 위주의 하이라이트 추천이 뜨면 부담감을 느낌 외 2</p><div class="mf"><ul><li>시각 위주의 하이라이트 추천이 뜨면 부담감을 느낌</li><li>시각 필터를 끄고 환경/음향 데이터 중심으로 탐색함</li><li>특정 시간대의 백색소음(주방 소리 등)을 공간에 재생함</li></ul></div></div></div>
+      <div class="mr" data-k="5"><button class="ml">이용 후</button><div class="mc"><p class="ms">자신의 판단 습관과 반복되는 실수의 원인을 구체적으로 이해함 외 1</p><div class="mf"><ul><li>자신의 판단 습관과 반복되는 실수의 원인을 구체적으로 이해함</li><li>분석 결과를 체크리스트로 정리해 다음 프로젝트에 바로 적용함</li></ul></div></div><div class="mc"><p class="ms">몰랐던 자신의 패턴을 발견하고 일정을 바꾸며 만족감을 느낌 외 1</p><div class="mf"><ul><li>몰랐던 자신의 패턴을 발견하고 일정을 바꾸며 만족감을 느낌</li><li>잘못된 분류를 고친 뒤에도 다음 분석에 반영될지 확신이 없음</li></ul></div></div><div class="mc"><p class="ms">멀리 떨어진 친구들과 당시 공간에 동시 접속해 추억을 나눌 때 깊은 정서적 충만감 체감 외 1</p><div class="mf"><ul><li>멀리 떨어진 친구들과 당시 공간에 동시 접속해 추억을 나눌 때 깊은 정서적 충만감 체감</li><li>세월이 지나도 변질 없이 꺼내 볼 수 있는 온전한 공동 기록이 완성되어 만족함</li></ul></div></div><div class="mc"><p class="ms">익숙한 소리로 공간이 채워지며 깊은 안정감을 느낌 외 1</p><div class="mf"><ul><li>익숙한 소리로 공간이 채워지며 깊은 안정감을 느낌</li><li>무심한 로그 데이터 속에서 배려를 발견하고 죄책감을 덜어 냄</li></ul></div></div></div>
+      <div class="mr" data-k="6" data-g="반응"><button class="ml">생각 · 감정</button><div class="mc"><p class="ms">“이번 실수도 그냥 지나가면 다음에 또 반복할 것 같은데.”</p><div class="mf"><ul class="q"><li>“이번 실수도 그냥 지나가면 다음에 또 반복할 것 같은데.”</li><li>“예전에 비슷한 상황이 있었는지 바로 확인할 수 있으면 좋겠다.”</li><li>“내가 반복하는 판단 방식이 보이니까 다음에는 더 잘할 수 있을 것 같아.”</li></ul></div></div><div class="mc"><p class="ms">“내가 혼자 있을 때 더 편했구나. 이건 몰랐네.”</p><div class="mf"><ul class="q"><li>“내가 혼자 있을 때 더 편했구나. 이건 몰랐네.”</li><li>“친구랑 싸운 날이 즐거운 날이라고? 이건 좀 아닌데.”</li></ul></div></div><div class="mc"><p class="ms">“평면 사진 한 장 보는 건 아쉬운데, 그때 우리가 함께 웃고 떠들던 그 장소의 공기 속에 다시 서 있는 기분이라 뭉클하다.”</p><div class="mf"><ul class="q"><li>“평면 사진 한 장 보는 건 아쉬운데, 그때 우리가 함께 웃고 떠들던 그 장소의 공기 속에 다시 서 있는 기분이라 뭉클하다.”</li><li>“몸은 멀리 있어도 이렇게 같은 공간에 접속해 이야기하니까 그때로 돌아간 것 같아 든든하다.”</li></ul></div></div><div class="mc"><p class="ms">“환하게 웃는 얼굴은 아직 감당하기 힘들어. 그냥 특별할 것 없던 작년 일요일 아침, 도마 소리와 TV 소리만 배경처럼 들려줘.”</p><div class="mf"><ul class="q"><li>“환하게 웃는 얼굴은 아직 감당하기 힘들어. 그냥 특별할 것 없던 작년 일요일 아침, 도마 소리와 TV 소리만 배경처럼 들려줘.”</li></ul></div></div></div>
+      <div class="mr" data-k="7" data-g="서비스"><button class="ml">자주 쓰는 기능</button><div class="mc"><p class="ms">중요 기억 직접 저장 · 유사 사례 검색 · 개선 체크리스트 생성</p><div class="mf"><p class="ch"><span>중요 기억 직접 저장</span><span>유사 사례 검색</span><span>개선 체크리스트 생성</span></p></div></div><div class="mc"><p class="ms">기억 검색 · 패턴 분석 요약 · 분류 수정</p><div class="mf"><p class="ch"><span>기억 검색</span><span>패턴 분석 요약</span><span>분류 수정</span></p></div></div><div class="mc"><p class="ms">공간 아카이브 모드 · 다중 미디어 3D 융합 복원 · 실시간 동시 접속 및 공동 편집/감상 모드</p><div class="mf"><p class="ch"><span>공간 아카이브 모드</span><span>다중 미디어 3D 융합 복원</span><span>실시간 동시 접속 및 공동 편집/감상 모드</span></p></div></div><div class="mc"><p class="ms">감각(시각/청각/촉각) 데이터 필터링 · 앰비언트 재생 모드 (백그라운드 재생) · IoT 환경 로그(온도, 조명 등) 동기화</p><div class="mf"><p class="ch"><span>감각(시각/청각/촉각) 데이터 필터링</span><span>앰비언트 재생 모드 (백그라운드 재생)</span><span>IoT 환경 로그(온도, 조명 등) 동기화</span></p></div></div></div>
+      <div class="mr" data-k="8"><button class="ml">개선 방향</button><div class="mc"><p class="ms">회의·메신저·문서 등 흩어진 업무 기록의 자동 연결 외 2</p><div class="mf"><ul><li>회의·메신저·문서 등 흩어진 업무 기록의 자동 연결</li><li>과거의 유사한 실수와 반복 패턴을 빠르게 추천</li><li>분석 결과를 바로 적용할 수 있는 행동 가이드 및 체크리스트 제공</li></ul></div></div><div class="mc"><p class="ms">분석 결과마다 근거가 된 데이터 함께 표시 외 3</p><div class="mf"><ul><li>분석 결과마다 근거가 된 데이터 함께 표시</li><li>공통점을 한눈에 보여 주는 패턴 요약 화면</li><li>사용자가 고친 분류를 다음 분석에 반영</li><li>분석 결과를 일정·루틴 추천으로 연결</li></ul></div></div><div class="mc"><p class="ms">여러 메신저 및 클라우드 링크를 통한 원클릭 공동 데이터 수집/동기화 지원 외 2</p><div class="mf"><ul><li>여러 메신저 및 클라우드 링크를 통한 원클릭 공동 데이터 수집/동기화 지원</li><li>공동 아카이브 공유 시 개인별 미디어 공개 범위 및 블러 설정 등 프라이버시 조율 옵션 제공</li><li>당시의 현장 소리, 날씨, 배경음악 등 감각적 디테일(공기감) 재현의 정확도 강화</li></ul></div></div><div class="mc"><p class="ms">감정 민감도를 고려한 ‘안전 모드(시각 데이터 원천 차단)’ 도입 외 2</p><div class="mf"><ul><li>감정 민감도를 고려한 ‘안전 모드(시각 데이터 원천 차단)’ 도입</li><li>장시간 틀어 두어도 이질감 없는 공간 음향 믹싱 기술</li><li>수치형 데이터(온도/문 닫힘 등)의 감성적 해석 제공</li></ul></div></div></div>
+      <div class="mr ins" data-k="9"><button class="ml">Insight</button><div class="mc"><p class="ms">기록 자체보다 과거 경험에서 다음 행동에 필요한 의미를 얼마나 빠르게 발견할 수 있는지가 중요하다. 단순히 기억을 저장하는 것보다 실수 → 분석 → 개선으로 이어지는 경험이 서비스의 핵심 가치가 됨.</p><div class="mf"><p>기록 자체보다 과거 경험에서 다음 행동에 필요한 의미를 얼마나 빠르게 발견할 수 있는지가 중요하다. 단순히 기억을 저장하는 것보다 실수 → 분석 → 개선으로 이어지는 경험이 서비스의 핵심 가치가 됨.</p></div></div><div class="mc"><p class="ms">기록은 AI에 맡기되 해석은 직접 확인하고 싶어 하며, 분석 근거가 보이고 틀린 부분을 고칠 수 있어야 결과를 신뢰함.</p><div class="mf"><p>기록은 AI에 맡기되 해석은 직접 확인하고 싶어 하며, 분석 근거가 보이고 틀린 부분을 고칠 수 있어야 결과를 신뢰함.</p></div></div><div class="mc"><p class="ms">단순 시각 기록 보존보다, 사람과 사람을 잇는 ‘공간의 현장감’과 ‘공동 재체험(유대감 회복)’이 핵심 가치로 작용함.</p><div class="mf"><p>단순 시각 기록 보존보다, 사람과 사람을 잇는 ‘공간의 현장감’과 ‘공동 재체험(유대감 회복)’이 핵심 가치로 작용함.</p></div></div><div class="mc"><p class="ms">상실감을 겪는 사용자에게는 화려하게 편집된 추억보다, 무의식적으로 축적된 ‘일상의 여백(백색소음)’이 감정적 부담 없이 더 안전하고 깊은 위로를 제공함.</p><div class="mf"><p>상실감을 겪는 사용자에게는 화려하게 편집된 추억보다, 무의식적으로 축적된 ‘일상의 여백(백색소음)’이 감정적 부담 없이 더 안전하고 깊은 위로를 제공함.</p></div></div></div>
     </div>
   </div>
 </section>
@@ -855,8 +825,8 @@ ul,ol{padding:0;list-style:none}
       s.querySelectorAll('.ptab span').forEach(function(p){ p.classList.toggle('on', +p.dataset.k === step); });
     }
     if (s.id === 's9'){
-      s.querySelectorAll('.jg').forEach(function(p){ p.classList.toggle('cur', +p.dataset.k === step); });
-      s.querySelectorAll('.jtab button').forEach(function(p){ p.classList.toggle('on', +p.dataset.k === step); });
+      document.getElementById('mx').classList.toggle('sel', step > 0);
+      s.querySelectorAll('.mr[data-k]').forEach(function(r){ r.classList.toggle('open', +r.dataset.k === step); });
     }
     if (s.id === 'em'){
       document.getElementById('emImg').dataset.k = step;
@@ -895,7 +865,7 @@ ul,ol{padding:0;list-style:none}
   document.getElementById('prev').addEventListener('click', function(){ move(-1); });
   document.getElementById('fs').addEventListener('click', function(){ if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(function(){}); });
   /* 클릭으로도 단계·슬라이드 이동 (탭 버튼은 해당 단계로) */
-  document.querySelectorAll('.jtab button').forEach(function(b){ b.addEventListener('click', function(e){ e.stopPropagation(); step = +b.dataset.k; render(); }); });
+  document.querySelectorAll('.mr[data-k]').forEach(function(r){ r.querySelector('.ml').addEventListener('click', function(e){ e.stopPropagation(); step = (step === +r.dataset.k) ? 0 : +r.dataset.k; render(); }); r.querySelectorAll('.mc').forEach(function(c){ c.addEventListener('click', function(e){ e.stopPropagation(); step = +r.dataset.k; render(); }); }); });
   document.querySelectorAll('.ptab span,.steps3 li,.path li,.tt').forEach(function(b){ b.style.cursor = 'pointer'; b.addEventListener('click', function(e){ e.stopPropagation(); step = +b.dataset.k; render(); }); });
   var h = parseInt(location.hash.slice(1), 10);
   go(h > 0 && h <= S.length ? h - 1 : 0, 0);
