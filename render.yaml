@@ -4,3 +4,8 @@ services:
     runtime: static
     staticPublishPath: .
     buildCommand: ""
+  - type: web
+    name: memory-archive
+    runtime: static
+    staticPublishPath: ./memory-archive
+    buildCommand: ""
