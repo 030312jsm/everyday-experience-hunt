@@ -188,15 +188,19 @@ ul,ol{padding:0;list-style:none}
 
 /* 04 유형 지도 (정돈) */
 .tw{margin-top:clamp(20px,3.4vh,34px);display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(24px,3.6vw,56px);align-items:center}
-.tmap{position:relative;padding:30px 0}
-.tmap .ax{position:absolute;font-size:12px;font-weight:700;color:var(--ink3);letter-spacing:.02em;white-space:nowrap}
-.tmap .ax-t{top:-2px;left:50%;transform:translateX(-50%)}
-.tmap .ax-b{bottom:0;left:50%;transform:translateX(-50%)}
-.tmap .ax-l{left:0;top:-2px}
-.tmap .ax-r{right:0;top:-2px}
+/* 십자 축: 카드 사이 틈으로 축선이 지나가고, 네 끝에 축 이름 */
+.tmap{position:relative;padding:40px 0}
+.tmap::before,.tmap::after{content:"";position:absolute;background:var(--line2);z-index:0}
+.tmap::before{left:50%;top:26px;bottom:26px;width:1px}
+.tmap::after{top:50%;left:0;right:0;height:1px}
+.tmap .ax{position:absolute;z-index:2;font-size:12px;font-weight:700;color:var(--ink2);white-space:nowrap;background:#fff;border:1px solid var(--line2);border-radius:99px;padding:4px 11px}
+.tmap .ax-t{top:12px;left:50%;transform:translateX(-50%)}
+.tmap .ax-b{bottom:12px;left:50%;transform:translateX(-50%)}
+.tmap .ax-l{left:0;top:50%;transform:translateY(-50%)}
+.tmap .ax-r{right:0;top:50%;transform:translateY(-50%)}
 .tmap .ax-t::before{content:"↑ "}.tmap .ax-b::after{content:" ↓"}.tmap .ax-l::before{content:"← "}.tmap .ax-r::after{content:" →"}
-.tg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.tt{position:relative;background:#F6F6F4;border-radius:18px;padding:20px 22px 18px;min-height:clamp(150px,21vh,196px);display:flex;flex-direction:column;cursor:pointer;
+.tg{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:34px}
+.tt{position:relative;background:#F6F6F4;border-radius:18px;padding:20px 22px 18px;min-height:clamp(132px,18vh,170px);display:flex;flex-direction:column;cursor:pointer;
   transition:background .35s,box-shadow .35s,opacity .35s,transform .35s}
 .tg.sel .tt{opacity:.38}
 .tg .tt.on{opacity:1;background:#fff;box-shadow:0 0 0 1.5px var(--ink),0 22px 40px -26px rgba(17,18,20,.5);transform:translateY(-2px)}
