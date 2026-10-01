@@ -9,3 +9,13 @@ services:
     runtime: static
     staticPublishPath: ./memory-archive
     buildCommand: ""
+  - type: web
+    name: experience-hunt-2
+    runtime: static
+    staticPublishPath: ./hunt2
+    buildCommand: ""
+  - type: web
+    name: experience-hunt-3-mobility
+    runtime: static
+    staticPublishPath: ./hunt3-mobility
+    buildCommand: ""
