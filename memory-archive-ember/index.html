@@ -44,17 +44,31 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
 #load p{font-size:13px;color:rgba(241,238,231,.6);letter-spacing:.04em}
 #load.off{opacity:0;pointer-events:none}
 html,body{touch-action:none;overscroll-behavior:none}
+#guide{display:none}
 /* 휴대폰: 글 폭을 화면에 맞추고 아래쪽을 가라앉힌다 */
 @media (max-width:820px){
   #scrim{background:linear-gradient(0deg,rgba(5,5,6,.78) 0,rgba(5,5,6,.45) 34%,rgba(5,5,6,0) 62%)}
   .st{left:6vw;right:6vw;width:auto;bottom:16vh}
   h1{font-size:23vw}
   .eb{font-size:19px}.eb span{font-size:12px;margin-left:9px}
-  h2{font-size:21px}.body{font-size:14.5px;line-height:1.7}.body br,h2 br{display:none}
+  /* 줄이 넘치면 낱말 단위로 끊고, 줄 길이를 고르게 나눈다 */
+  h2{font-size:clamp(19px,5.6vw,24px);line-height:1.4;word-break:keep-all;text-wrap:balance}
+  .body{font-size:clamp(13.5px,3.8vw,15.5px);line-height:1.7;word-break:keep-all;text-wrap:balance}
+  .body br,h2 br{display:none}
+  ol li{word-break:keep-all}
   ol li{font-size:15.5px;gap:12px;padding:11px 0;flex-wrap:wrap}ol small{font-size:10px}ol .no{font-size:19px;width:22px}
   ol li.cur::before{left:-13px}
   #nav{bottom:6.5vh}#nav i{width:32px}
   #hint{left:0;right:0;bottom:3vh;text-align:center;font-size:11.5px}#hint{display:none}
+  /* 첫 화면 도움말: 처음 한 번 누르거나 쓸면 사라진다 */
+  #guide{display:flex;position:fixed;inset:0;pointer-events:none;transition:opacity .7s}
+  #guide.off{opacity:0}
+  #guide span{flex:1;display:flex;align-items:flex-start;gap:10px;padding:68vh 5vw 0;font-size:13px;line-height:1.5;color:rgba(241,238,231,.85)}
+  #guide i{font-style:normal}
+  #guide .gl{border-right:1px dashed rgba(241,238,231,.22)}
+  #guide .gr{justify-content:flex-end;text-align:right}
+  #guide b{font-weight:400;font-size:30px;line-height:1.25}
+  #guide em{position:absolute;left:0;right:0;top:calc(68vh + 64px);text-align:center;font-style:normal;font-size:12px;color:rgba(241,238,231,.6)}
 }
 </style>
 </head>
@@ -68,8 +82,8 @@ html,body{touch-action:none;overscroll-behavior:none}
   <p class="tag">WARMTH REMAINS</p>
 </header>
 <section class="st" data-i="2">
-  <h2>“기억 속에 남아 있는<br>작은 온기를 다시 발견하다.”</h2>
-  <p class="body">떠난 사람을 AI로 되살려 대화하는 서비스가 아니라,<br>함께했던 실제 일상의 흔적을 안전하게 다시 경험하는 서비스.</p>
+  <h2>“기억 속에 남아 있는 <br>작은 온기를 다시 발견하다.”</h2>
+  <p class="body">떠난 사람을 AI로 되살려 대화하는 서비스가 아니라, <br>함께했던 실제 일상의 흔적을 안전하게 다시 경험하는 서비스.</p>
 </section>
 <section class="st" data-i="3">
   <p class="eb">Memory Path</p>
@@ -83,6 +97,7 @@ html,body{touch-action:none;overscroll-behavior:none}
 
 <nav id="nav"><button><i></i></button><button><i></i></button><button><i></i></button><button><i></i></button></nav>
 <p id="hint"><span class="pc">휠·방향키로 다음 자리, 식탁 앞에서는 다음 단계</span></p>
+<div id="guide" aria-hidden="true"><span class="gl"><b>‹</b><i>왼쪽을 누르면<br>뒤로</i></span><span class="gr"><i>오른쪽을 누르면<br>앞으로</i><b>›</b></span><em>화면을 잡고 끌거나 휴대폰을 기울이면 둘러볼 수 있어요</em></div>
 <div id="load"><p id="lp">방을 불러오는 중 0%</p></div>
 
 <script>
@@ -108,18 +123,29 @@ html,body{touch-action:none;overscroll-behavior:none}
 
   var arrived = false, tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = MOB ? .25 : .5, SPEED_IN = MOB ? .17 : .34;   // 문을 열고 들어가는 구간은 더 천천히
   var tp = 0, p = 0, mx = .5, my = .5, hx = .5, hy = .5;
-  addEventListener('pointermove', function(e){ mx = e.clientX / W; my = e.clientY / H; });
+  addEventListener('pointermove', function(e){ if (!MOB){ mx = e.clientX / W; my = e.clientY / H; } });
   // 휠 한 번 = 다음 자리까지 영상처럼 이어서 걷는다(휠 양만큼 끊어 넘기지 않는다)
   var wheelAt = 0;
   addEventListener('wheel', function(e){ var now = performance.now(); if (now - wheelAt < 650 || Math.abs(e.deltaY) < 4) return; wheelAt = now;
     step(e.deltaY > 0 ? 1 : -1); }, { passive: true });
-  // 휴대폰: 위·왼쪽으로 쓸면 앞으로, 아래·오른쪽으로 쓸면 뒤로
+  // 휴대폰: 누르면 이동, 끌면 둘러보기
   var t0 = null;
-  addEventListener('touchstart', function(e){ t0 = e.touches.length === 1 ? [e.touches[0].clientX, e.touches[0].clientY] : null; }, { passive: true });
-  addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], dx = c.clientX - t0[0], dy = c.clientY - t0[1]; t0 = null;
+  var guide = document.getElementById('guide');
+  addEventListener('touchstart', function(e){ guide.classList.add('off'); d0 = [dgx, dgy]; t0 = e.touches.length === 1 ? [e.touches[0].clientX, e.touches[0].clientY] : null; }, { passive: true });
+  // 휴대폰: 화면을 잡고 끌면 둘러본다(잡은 그림을 끄는 방향). 기울기 센서가 있으면 기울여서도 둘러본다
+  var dgx = 0, dgy = 0, d0 = [0, 0], gyx = 0, gyy = 0, g0 = null, gyroAsked = false;
+  function look(){ mx = Math.max(0, Math.min(1, .5 + dgx + gyx)); my = Math.max(0, Math.min(1, .5 + dgy + gyy)); }
+  addEventListener('touchmove', function(e){ if (!t0 || e.touches.length !== 1) return; var c = e.touches[0];
+    dgx = Math.max(-.5, Math.min(.5, d0[0] - (c.clientX - t0[0]) / (W * 1.6))); dgy = Math.max(-.5, Math.min(.5, d0[1] - (c.clientY - t0[1]) / (H * .9))); look(); }, { passive: true });
+  function onTilt(e){ if (e.gamma == null || e.beta == null) return; if (!g0) g0 = [e.gamma, e.beta];
+    gyx = Math.max(-.5, Math.min(.5, (e.gamma - g0[0]) / 44)); gyy = Math.max(-.5, Math.min(.5, (e.beta - g0[1]) / 50)); look(); }
+  function askGyro(){ if (gyroAsked || !MOB || !window.DeviceOrientationEvent) return; gyroAsked = true;
+    var D = DeviceOrientationEvent; if (typeof D.requestPermission === 'function') D.requestPermission().then(function(r){ if (r === 'granted') addEventListener('deviceorientation', onTilt); }).catch(function(){});
+    else addEventListener('deviceorientation', onTilt); }
+  addEventListener('touchend', function(e){ askGyro(); if (!t0) return; var c = e.changedTouches[0], dx = c.clientX - t0[0], dy = c.clientY - t0[1]; t0 = null;
     // 쓸지 않고 누르기만 했으면: 화면 오른쪽 절반은 앞으로, 왼쪽 절반은 뒤로(목록·아래 막대를 누른 건 제외)
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 12){ if (!e.target.closest('ol li,#nav button')) step(c.clientX < W / 2 ? -1 : 1); return; }
-    if (Math.max(Math.abs(dx), Math.abs(dy)) < 36) return; step((Math.abs(dy) > Math.abs(dx) ? dy : dx) < 0 ? 1 : -1); }, { passive: true });
+  }, { passive: true });
   // 앞으로/뒤로 한 칸: 식탁 앞에서는 01→04 단계를 차례로 넘기고, 그 밖에서는 다음 자리로 걷는다
   function step(d){
     if (arrived && tp === STOPS[STOPS.length - 1] && (d > 0 ? sel < 4 : sel > 1)){ pick(sel + d); return; }
@@ -134,11 +160,14 @@ html,body{touch-action:none;overscroll-behavior:none}
   navB.forEach(function(b, i){ b.addEventListener('click', function(){ tp = STOPS[i]; }); });
 
   // 한 장 그리기: 화면을 꽉 채우고, 고개를 돌린 만큼 살짝 밀린다
+  function view(){
+    var s = Math.max(W / FW, H / FH) * (MOB ? 1.16 : 1.04), w = FW * s, h = FH * s;
+    var rx = MOB ? (w - W) * .27 : W * .017, ry = MOB ? (h - H) * .46 : H * .014;
+    return { x: (W - w) / 2 - (hx - .5) * 2 * rx, y: (H - h) / 2 - (hy - .5) * 2 * ry, w: w, h: h };
+  }
   function draw(im, al){
     if (!im || !im.naturalWidth) return;
-    var s = Math.max(W / FW, H / FH) * 1.04 * dpr, w = FW * s, h = FH * s;
-    var x = (W * dpr - w) / 2 - (hx - .5) * W * dpr * .034, y = (H * dpr - h) / 2 - (hy - .5) * H * dpr * .028;
-    g.globalAlpha = al; g.drawImage(im, x, y, w, h); g.globalAlpha = 1;
+    var v = view(); g.globalAlpha = al; g.drawImage(im, v.x * dpr, v.y * dpr, v.w * dpr, v.h * dpr); g.globalAlpha = 1;
   }
   (function loop(){
     requestAnimationFrame(loop); if (!ready) return;
@@ -162,7 +191,7 @@ html,body{touch-action:none;overscroll-behavior:none}
     if (track && f < NI){
       // 문이 열리기 시작하면 제목은 그 순간의 자리에서 문을 떠난다(그 뒤로 문을 따라 커지지 않는다)
       var F0 = NI * .3, fd = Math.min(f, F0), ia = Math.min(NI - 1, Math.floor(fd)), ib = Math.min(NI - 1, ia + 1), u = fd - ia, A = track[ia], B = track[ib];
-      var s0 = Math.max(W / FW, H / FH) * 1.04, w = FW * s0, h = FH * s0, ox = (W - w) / 2 - (hx - .5) * W * .034, oy = (H - h) / 2 - (hy - .5) * H * .028;
+      var v = view(), w = v.w, h = v.h, ox = v.x, oy = v.y;
       var ds = (A[2] + (B[2] - A[2]) * u) * w * .6 / tw, dx = ox + (A[0] + (B[0] - A[0]) * u) * w - tw * ds / 2, dy = oy + (A[1] + (B[1] - A[1]) * u) * h - th * ds / 2;
       k = Math.max(0, Math.min(1, (f - F0) / (NI - 1 - F0))); k = k * k * k * (k * (k * 6 - 15) + 10);
       lx = dx + (cx - dx) * k; ly = dy + (cy - dy) * k; ls = ds + (1 - ds) * k;
