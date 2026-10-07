@@ -702,6 +702,7 @@ main{padding-top:38px}
 .tb thead th.me{color:var(--blu)}
 .tb td.me{color:var(--ink);font-weight:600}
 .tag4{display:inline-block;font-size:11px;font-weight:800;color:#fff;background:var(--blu);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:1px}
+.note4{margin-top:14px;font-size:14.5px;color:var(--ink-2);line-height:1.65}
 /* 화면 비교 폰 */
 .cmp{margin-top:clamp(16px,2.6vh,26px);display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:clamp(20px,3vw,48px);align-items:center}
 .cmp figure{align-self:start}.cmp figure{margin:0;width:min(250px,calc((100svh - 420px) / 2.1))}
@@ -927,7 +928,6 @@ main{padding-top:38px}
         <tr><th>4 최종 확인</th><td class="c0">결제 직전 예매 내용</td><td class="c1">예약 내용</td><td class="c2">예약 내용</td></tr>
       </tbody>
     </table>
-    <div class="key rv"><span class="k">POINT</span><p>서비스는 달라도 단계의 위치와 이름이 같다. 처음 쓰는 서비스에서도 지금 몇 번째 단계인지 안다.</p></div>
   </div>
 </section>
 
@@ -935,7 +935,7 @@ main{padding-top:38px}
 <section class="sec" id="f10" data-nav="서비스별 조건">
   <div class="wrap">
     <p class="eb rv">10 · Conditions<span>서비스마다 다른 조건을 다루는 방법</span></p>
-    <h2 class="h2 rv d1">익숙한 틀 안에, 그 서비스만의 조건을</h2>
+    <h2 class="h2 rv d1">서비스마다 다른 조건은 ‘확인하기’에서 보여 준다</h2>
     <div class="h4grid c3">
       <div class="card rv d2"><span class="n">순서는 같아도</span><h3>봐야 할 정보는 다르다</h3>
         <ul><li>시설 예약 · 인원, 이용 시간 단위</li><li>병원 예약 · 진료 시간, 대기 정도</li></ul></div>
@@ -961,11 +961,10 @@ main{padding-top:38px}
         <tr class="hl"><th>FAMILIAR</th><td>진행 순서</td><td>내가 하려는 단계에 맞춰 서비스의 순서를 자동으로 맞춘다</td></tr>
       </tbody>
     </table>
-    <div class="h4grid c3">
+    <div class="h4grid">
       <div class="card on rv d3"><span class="n">토스 대출 비교와 다른 점</span><p>토스 대출 비교는 제휴한 금융사를 <b>미리 묶어 둔</b> 플랫폼이다.<br>FAMILIAR는 사용자가 진행하려는 단계를 읽고, 서비스의 단계를 <b>자동으로 합친다.</b></p></div>
-      <div class="card rv d4"><span class="n">인터뷰에서</span><p>사용자는 결제 직전에 예매 내용을 직접 다시 확인했다.<br>FAMILIAR는 이 “직접 확인”을 남긴다.</p></div>
-      <div class="card rv d5"><span class="n">3차 피드백에서</span><p>“서비스를 합치는 것은 새롭지 않다”는 지적을 받았다.<br>FAMILIAR는 서비스를 합치지 않고 사용법을 가져간다.</p></div>
     </div>
+    <p class="note4 rv d4">3차에서 “서비스를 합치는 것은 새롭지 않다”는 지적을 받았다. 그래서 서비스는 그대로 두고 사용법만 옮기는 쪽으로 잡았다.</p>
     <p class="src" style="margin-top:10px">토스 대출 비교: 한 번의 조회로 여러 금융사의 신용대출 금리와 한도를 비교하는 서비스(2019년 8월 시작) · 토스피드</p>
   </div>
 </section>
@@ -974,7 +973,7 @@ main{padding-top:38px}
 <section class="sec" id="f11b" data-nav="화면 비교">
   <div class="wrap">
     <p class="eb rv">12 · Screens<span>토스 대출 비교와 FAMILIAR</span></p>
-    <h2 class="h2 rv d1">미리 묶어 둔 플랫폼과, 내 순서에 맞춰지는 것</h2>
+    <h2 class="h2 rv d1">토스 대출 비교와 FAMILIAR는 무엇이 다른가</h2>
     <div class="cmp">
       <figure class="rv d2"><div class="ph"><div class="scr">
         <div class="sb"><span>9:41</span><i>•••</i></div>
@@ -1001,7 +1000,7 @@ main{padding-top:38px}
         <figcaption><b>FAMILIAR</b>내가 익힌 순서에 서비스가 맞춰진다</figcaption></figure>
       <div class="h4grid">
         <div class="card rv d4"><span class="n">토스 대출 비교</span><ul><li>금융사마다 따로 하던 금리·한도 조회를 한 번에 한다</li><li>조회는 평균 20초 안팎이고, 신용점수에 영향이 없다</li><li>토스와 미리 제휴한 금융사 약 50곳의 상품 안에서 비교한다</li></ul></div>
-        <div class="card on rv d5"><span class="n">FAMILIAR</span><ul><li>사용자가 진행하려는 단계를 읽는다</li><li>서비스의 단계를 그 순서에 자동으로 합쳐 맞춘다</li><li>서비스만의 조건은 ‘확인하기’에 그대로 보여 준다</li></ul></div>
+        <div class="card on rv d5"><span class="n">FAMILIAR</span><ul><li>사용자가 진행하려는 단계를 읽는다</li><li>서비스의 단계를 그 순서에 자동으로 합쳐 맞춘다</li><li>서비스만의 조건은 ‘확인하기’에 그대로 보여 준다</li><li>마지막 확인은 사용자가 직접 한다. 인터뷰이도 결제 직전에 예매 내용을 다시 확인했다</li></ul></div>
       </div>
     </div>
     <p class="src" style="margin-top:12px">토스 대출 비교의 설명과 수치는 토스피드 · 한국경제(2022) 기준이다. 화면은 구조를 단순화한 그림이며 실제 토스 화면이 아니다. 금융사 이름은 예시다.</p>
