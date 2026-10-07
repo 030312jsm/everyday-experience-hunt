@@ -69,7 +69,7 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
 </section>
 
 <nav id="nav"><button><i></i></button><button><i></i></button><button><i></i></button><button><i></i></button></nav>
-<p id="hint">휠·방향키로 다음 자리까지 걷기 · 식탁 앞에서 1~4 단계 고르기</p>
+<p id="hint">휠·방향키로 다음 자리, 식탁 앞에서는 다음 단계</p>
 <div id="load"><p id="lp">방을 불러오는 중 0%</p></div>
 
 <script>
@@ -97,12 +97,16 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
   // 휠 한 번 = 다음 자리까지 영상처럼 이어서 걷는다(휠 양만큼 끊어 넘기지 않는다)
   var wheelAt = 0;
   addEventListener('wheel', function(e){ var now = performance.now(); if (now - wheelAt < 650 || Math.abs(e.deltaY) < 4) return; wheelAt = now;
-    tp = STOPS[Math.max(0, Math.min(STOPS.length - 1, stopIdx() + (e.deltaY > 0 ? 1 : -1)))]; }, { passive: true });
+    step(e.deltaY > 0 ? 1 : -1); }, { passive: true });
+  // 앞으로/뒤로 한 칸: 식탁 앞에서는 01→04 단계를 차례로 넘기고, 그 밖에서는 다음 자리로 걷는다
+  function step(d){
+    if (arrived && tp === STOPS[STOPS.length - 1] && (d > 0 ? sel < 4 : sel > 1)){ pick(sel + d); return; }
+    tp = STOPS[Math.max(0, Math.min(STOPS.length - 1, stopIdx() + d))]; }
   function stopIdx(){ var b = 0; STOPS.forEach(function(s, i){ if (Math.abs(s - tp) < Math.abs(STOPS[b] - tp)) b = i; }); return b; }
   addEventListener('keydown', function(e){
     if ('1234'.indexOf(e.key) > -1 && tp > END) pick(+e.key);
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') tp = STOPS[Math.min(STOPS.length - 1, stopIdx() + 1)];
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') tp = STOPS[Math.max(0, stopIdx() - 1)];
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') step(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step(-1);
   });
   var navB = [].slice.call(document.querySelectorAll('#nav button')), secs = [].slice.call(document.querySelectorAll('.st')), title = document.getElementById('title');
   navB.forEach(function(b, i){ b.addEventListener('click', function(){ tp = STOPS[i]; }); });
