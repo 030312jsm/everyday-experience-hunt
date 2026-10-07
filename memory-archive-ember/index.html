@@ -136,7 +136,7 @@ html,body{touch-action:none;overscroll-behavior:none}
   var dgx = 0, dgy = 0, d0 = [0, 0];
   function look(){ mx = .5 + dgx; my = .5 + dgy; }
   addEventListener('touchmove', function(e){ if (!t0 || e.touches.length !== 1) return; var c = e.touches[0];
-    dgx = Math.max(-.5, Math.min(.5, d0[0] - (c.clientX - t0[0]) / (W * 1.6))); dgy = Math.max(-.5, Math.min(.5, d0[1] - (c.clientY - t0[1]) / (H * .9))); look(); }, { passive: true });
+    dgx = Math.max(-.5, Math.min(.5, d0[0] - (c.clientX - t0[0]) / (W * 2.2))); dgy = Math.max(-.5, Math.min(.5, d0[1] - (c.clientY - t0[1]) / (H * .9))); look(); }, { passive: true });
   addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], dx = c.clientX - t0[0], dy = c.clientY - t0[1]; t0 = null;
     // 쓸지 않고 누르기만 했으면: 화면 오른쪽 절반은 앞으로, 왼쪽 절반은 뒤로(목록·아래 막대를 누른 건 제외)
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 12){ if (!e.target.closest('ol li,#nav button')) step(c.clientX < W / 2 ? -1 : 1); return; }
@@ -157,7 +157,7 @@ html,body{touch-action:none;overscroll-behavior:none}
   // 한 장 그리기: 화면을 꽉 채우고, 고개를 돌린 만큼 살짝 밀린다
   function view(){
     var s = Math.max(W / FW, H / FH) * (MOB ? 1.16 : 1.04), w = FW * s, h = FH * s;
-    var rx = MOB ? (w - W) * .27 : W * .017, ry = MOB ? (h - H) * .46 : H * .014;
+    var rx = MOB ? (w - W) * .5 : W * .017, ry = MOB ? (h - H) * .5 : H * .014;   // 휴대폰은 장면의 양 끝까지(PC 화면에 보이는 범위 전부)
     return { x: (W - w) / 2 - (hx - .5) * 2 * rx, y: (H - h) / 2 - (hy - .5) * 2 * ry, w: w, h: h };
   }
   function draw(im, al){
