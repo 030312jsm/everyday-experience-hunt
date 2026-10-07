@@ -701,6 +701,40 @@ main{padding-top:38px}
 .tb thead th.me{color:var(--blu)}
 .tb td.me{color:var(--ink);font-weight:600}
 .tag4{display:inline-block;font-size:11px;font-weight:800;color:#fff;background:var(--blu);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:1px}
+/* ── 모션 (3D 없이) ── */
+.em .nt{opacity:0;transform:translateY(16px) rotate(-3deg);transition:opacity .5s ease,transform .7s cubic-bezier(.16,1,.3,1),filter .5s;transition-delay:calc(var(--r,0) * 160ms + var(--i,0) * 45ms + 200ms)}
+.em .nt:nth-child(even){transform:translateY(16px) rotate(3deg)}
+.go .em .nt{opacity:1;transform:none}
+.sec[data-k="1"] .em .nt{transition-delay:0s}
+.sec[data-k="1"] .em .nt:not(.ev){opacity:.22;filter:saturate(.4)}
+.sec[data-k="1"] .em .nt.ev{transform:translateY(-3px) scale(1.03);box-shadow:0 0 0 2px var(--blu),0 12px 20px -10px rgba(47,107,255,.6)}
+.evcap{margin-left:auto;color:var(--blu);opacity:0;transition:opacity .4s}
+.sec[data-k="1"] .evcap{opacity:1}
+.st4 div{opacity:.3;transition:opacity .5s ease,transform .6s cubic-bezier(.16,1,.3,1)}
+.st4 i{background:var(--ink-3);transition:background .5s}
+.go .st4 div{opacity:1}.go .st4 i{background:var(--blu)}
+.go .st4 div:nth-child(1),.go .st4 div:nth-child(1) i{transition-delay:.5s}
+.go .st4 div:nth-child(2),.go .st4 div:nth-child(2) i{transition-delay:.95s}
+.go .st4 div:nth-child(3),.go .st4 div:nth-child(3) i{transition-delay:1.4s}
+.go .st4 div:nth-child(4),.go .st4 div:nth-child(4) i{transition-delay:1.85s}
+.mycard{margin:16px auto 0;width:max-content;max-width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--blu);color:#fff;border-radius:14px;padding:10px 16px;box-shadow:0 18px 30px -18px rgba(47,107,255,.9);
+  opacity:0;transform:translateY(-14px) scale(.94);transition:opacity .5s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+.go .mycard{opacity:1;transform:none;transition-delay:2.5s}
+.mycard b{color:#fff;font-size:15px;margin-right:6px}
+.mycard span{font-size:12.5px;font-weight:700;background:rgba(255,255,255,.18);border-radius:99px;padding:3px 10px}
+.cols td,.cols thead th{transition:opacity .5s ease,background .5s ease,color .5s ease}
+.cols .tag4{opacity:0;transition:opacity .4s ease .15s}
+#f9[data-k="0"] .c1,#f9[data-k="0"] .c2,#f9[data-k="1"] .c2{opacity:.22}
+#f9[data-k="0"] .c0,#f9[data-k="1"] .c1,#f9[data-k="2"] .c2{background:var(--soft);color:var(--ink);font-weight:700}
+#f9[data-k="0"] thead .c0,#f9[data-k="1"] thead .c1,#f9[data-k="2"] thead .c2{color:var(--blu)}
+#f9[data-k="0"] .c0 .tag4,#f9[data-k="1"] .c1 .tag4,#f9[data-k="2"] .c2 .tag4{opacity:1}
+.newb{margin-top:auto!important;padding-top:12px;display:flex;align-items:center;gap:8px;font-size:14px!important;font-weight:700;color:var(--ink)!important}
+.newb span{font-size:11.5px;font-weight:800;color:#fff;background:var(--red);border-radius:99px;padding:3px 9px}
+.go .newb span{animation:nb 1.1s ease 1.2s 2}
+@keyframes nb{50%{transform:scale(1.12);box-shadow:0 0 0 6px rgba(229,72,77,.18)}}
+.tb .hl>*{opacity:0;transition:opacity .8s ease}
+.go .tb .hl>*{opacity:1;transition-delay:1.1s}
+@media (prefers-reduced-motion:reduce){.em .nt,.st4 div,.mycard,.tb .hl>*{opacity:1!important;transform:none!important;transition:none!important}.newb span{animation:none!important}}
 @media(max-width:1000px){.c3,.c2,.iv,.con,.st4{grid-template-columns:1fr}.em .row{grid-template-columns:1fr}.em .notes{grid-template-columns:repeat(2,1fr)}.prev .card+.card::before{display:none}.tb{display:block;overflow-x:auto}}
 </style>
 
@@ -787,20 +821,20 @@ main{padding-top:38px}
 </section>
 
 <!-- 04 공감 지도 ① -->
-<section class="sec" id="f4" data-nav="공감 지도 ①">
+<section class="sec" id="f4" data-nav="공감 지도 ①" data-steps="2">
   <div class="wrap">
     <p class="eb rv">04 · Empathy Map<span>생각한 것 · 본 것 · 영향을 준 것</span></p>
-    <div class="em rv d1"><div class="row r1"><b>Expecting<br>&amp; Judging</b><div class="notes"><p class="nt a">웹사이트의 예매 방식은 대체로 비슷하다고 생각한다.<i>박진섭</i></p><p class="nt b">기존 예매 경험 덕분에 이번 사이트도 크게 어렵지 않았다고 평가한다.<i>장승민</i></p><p class="nt c">‘예매하기’ 버튼을 보고 시작할 위치를 판단한다.<i>최민준</i></p><p class="nt c">이전에 사용하던 예매 방법을 이번에도 적용할 수 있다고 생각한다.<i>최민준</i></p><p class="nt b">결제 직전에 자신이 선택한 예약이 맞는지 확인한다.<i>장승민</i></p><p class="nt a">결제를 하면 예매가 완료될 것으로 예상한다.<i>박진섭</i></p><p class="nt c">부국제 예매는 사람이 몰리면 표를 구하지 못할 수 있다고 생각한다.<i>최민준</i></p></div></div><div class="row r2"><b>Seeing</b><div class="notes"><p class="nt c">예매를 시작할 수 있는 ‘예매하기’ 버튼을 본다.<i>최민준</i></p><p class="nt b">날짜를 선택하는 화면을 본다.<i>장승민</i></p><p class="nt b">시간을 선택하는 화면을 본다.<i>장승민</i></p><p class="nt c">결제 화면을 본다.<i>최민준</i></p><p class="nt b">결제 직전에 예약 내용을 확인할 수 있는 정보를 본다.<i>장승민</i></p><p class="nt a">결제 후 카카오톡 또는 문자로 받은 예약 알림을 본다.<i>박진섭</i></p><p class="nt a">다른 예매 경험에서는 원인을 알 수 없는 오류 메시지를 본 적이 있다.<i>박진섭</i></p></div></div><div class="row r3"><b>Support<br>&amp; Influence</b><div class="notes"><p class="nt a">이전에 웹사이트로 예매해 본 경험이 있다.<i>박진섭</i></p><p class="nt b">기존 서비스의 예매 방식이 이번 이용에 도움이 됐다.<i>장승민</i></p><p class="nt a">날짜와 시간을 선택하는 방식이 기존 경험과 비슷했다.<i>박진섭</i></p><p class="nt a">부국제 이용 경험이 있는 친구가 있다.<i>박진섭</i></p><p class="nt c">진행 중 모르는 내용을 그 친구에게 물었다.<i>최민준</i></p><p class="nt b">친구에게 해결 방법을 안내받았다.<i>장승민</i></p><p class="nt b">친구의 안내를 받으며 예매를 진행했다.<i>장승민</i></p></div></div></div>
-    <p class="emlg rv d2"><span style="--c:#B9F0EC">박진섭</span><span style="--c:#FFB3DE">장승민</span><span style="--c:#FFE29A">최민준</span><span style="--c:transparent">인터뷰 답변을 팀원이 나눠 옮겨 적음</span></p>
+    <div class="em rv d1"><div class="row r1" style="--r:0"><b>Expecting<br>&amp; Judging</b><div class="notes"><p class="nt a" style="--i:0">웹사이트의 예매 방식은 대체로 비슷하다고 생각한다.<i>박진섭</i></p><p class="nt b" style="--i:1">기존 예매 경험 덕분에 이번 사이트도 크게 어렵지 않았다고 평가한다.<i>장승민</i></p><p class="nt c" style="--i:2">‘예매하기’ 버튼을 보고 시작할 위치를 판단한다.<i>최민준</i></p><p class="nt c ev" style="--i:3">이전에 사용하던 예매 방법을 이번에도 적용할 수 있다고 생각한다.<i>최민준</i></p><p class="nt b" style="--i:4">결제 직전에 자신이 선택한 예약이 맞는지 확인한다.<i>장승민</i></p><p class="nt a" style="--i:5">결제를 하면 예매가 완료될 것으로 예상한다.<i>박진섭</i></p><p class="nt c" style="--i:6">부국제 예매는 사람이 몰리면 표를 구하지 못할 수 있다고 생각한다.<i>최민준</i></p></div></div><div class="row r2" style="--r:1"><b>Seeing</b><div class="notes"><p class="nt c" style="--i:0">예매를 시작할 수 있는 ‘예매하기’ 버튼을 본다.<i>최민준</i></p><p class="nt b" style="--i:1">날짜를 선택하는 화면을 본다.<i>장승민</i></p><p class="nt b" style="--i:2">시간을 선택하는 화면을 본다.<i>장승민</i></p><p class="nt c" style="--i:3">결제 화면을 본다.<i>최민준</i></p><p class="nt b" style="--i:4">결제 직전에 예약 내용을 확인할 수 있는 정보를 본다.<i>장승민</i></p><p class="nt a" style="--i:5">결제 후 카카오톡 또는 문자로 받은 예약 알림을 본다.<i>박진섭</i></p><p class="nt a" style="--i:6">다른 예매 경험에서는 원인을 알 수 없는 오류 메시지를 본 적이 있다.<i>박진섭</i></p></div></div><div class="row r3" style="--r:2"><b>Support<br>&amp; Influence</b><div class="notes"><p class="nt a" style="--i:0">이전에 웹사이트로 예매해 본 경험이 있다.<i>박진섭</i></p><p class="nt b ev" style="--i:1">기존 서비스의 예매 방식이 이번 이용에 도움이 됐다.<i>장승민</i></p><p class="nt a" style="--i:2">날짜와 시간을 선택하는 방식이 기존 경험과 비슷했다.<i>박진섭</i></p><p class="nt a" style="--i:3">부국제 이용 경험이 있는 친구가 있다.<i>박진섭</i></p><p class="nt c ev" style="--i:4">진행 중 모르는 내용을 그 친구에게 물었다.<i>최민준</i></p><p class="nt b" style="--i:5">친구에게 해결 방법을 안내받았다.<i>장승민</i></p><p class="nt b ev" style="--i:6">친구의 안내를 받으며 예매를 진행했다.<i>장승민</i></p></div></div></div>
+    <p class="emlg rv d2"><span style="--c:#B9F0EC">박진섭</span><span style="--c:#FFB3DE">장승민</span><span style="--c:#FFE29A">최민준</span><span style="--c:transparent">인터뷰 답변을 팀원이 나눠 옮겨 적음</span><b class="evcap">→ 인사이트의 근거가 된 내용</b></p>
   </div>
 </section>
 
 <!-- 05 공감 지도 ② -->
-<section class="sec" id="f5" data-nav="공감 지도 ②">
+<section class="sec" id="f5" data-nav="공감 지도 ②" data-steps="2">
   <div class="wrap">
     <p class="eb rv">05 · Empathy Map<span>말하고 한 것 · Pains · Gains</span></p>
-    <div class="em rv d1"><div class="row r4"><b>Saying<br>&amp; Doing</b><div class="notes"><p class="nt b">“웹사이트 예매 자체가 그렇게 크게 다르지 않은 경험”이라고 말한다.<i>장승민</i></p><p class="nt b">학교 컴퓨터실에서 PC를 이용한다.<i>장승민</i></p><p class="nt c">부국제 사이트에 회원가입한다.<i>최민준</i></p><p class="nt c">사이트에 로그인한다.<i>최민준</i></p><p class="nt a">예매 시간에 맞춰 예매 페이지에 접속한다.<i>박진섭</i></p><p class="nt a">원하는 날짜를 선택한다.<i>박진섭</i></p><p class="nt c">결제 직전에 예약 내용을 다시 확인한다.<i>최민준</i></p></div></div><div class="row r5"><b>Pains</b><div class="notes"><p class="nt a">정해진 예매 시간에 맞춰 접속해야 한다.<i>박진섭</i></p><p class="nt c">이용자가 몰리면 표를 구하지 못할 수 있다.<i>최민준</i></p><p class="nt b">진행 중 스스로 알지 못하는 내용이 있었다.<i>장승민</i></p><p class="nt b">다른 예매 경험에서 원인 불명의 오류가 발생했다.<i>장승민</i></p><p class="nt c">해당 오류로 결제를 진행하지 못했다.<i>최민준</i></p></div></div><div class="row r6"><b>Gains</b><div class="notes"><p class="nt b">익숙한 날짜·시간 선택 방식으로 진행했다.<i>장승민</i></p><p class="nt a">‘예매하기’ 버튼을 통해 시작 위치를 찾았다.<i>박진섭</i></p><p class="nt c">기존 예매 경험을 새로운 사이트에서도 활용했다.<i>최민준</i></p><p class="nt a">결제 전에 예약 내용을 확인할 수 있었다.<i>박진섭</i></p><p class="nt a">결제 후 예약 알림을 받았다.<i>박진섭</i></p><p class="nt c">친구에게 모르는 내용의 해결 방법을 안내받았다.<i>최민준</i></p><p class="nt c">알림을 통해 예매 완료 여부를 확인했다.<i>최민준</i></p></div></div></div>
-    <p class="emlg rv d2"><span style="--c:#B9F0EC">박진섭</span><span style="--c:#FFB3DE">장승민</span><span style="--c:#FFE29A">최민준</span><span style="--c:transparent">인터뷰 답변을 팀원이 나눠 옮겨 적음</span></p>
+    <div class="em rv d1"><div class="row r4" style="--r:0"><b>Saying<br>&amp; Doing</b><div class="notes"><p class="nt b" style="--i:0">“웹사이트 예매 자체가 그렇게 크게 다르지 않은 경험”이라고 말한다.<i>장승민</i></p><p class="nt b" style="--i:1">학교 컴퓨터실에서 PC를 이용한다.<i>장승민</i></p><p class="nt c" style="--i:2">부국제 사이트에 회원가입한다.<i>최민준</i></p><p class="nt c" style="--i:3">사이트에 로그인한다.<i>최민준</i></p><p class="nt a" style="--i:4">예매 시간에 맞춰 예매 페이지에 접속한다.<i>박진섭</i></p><p class="nt a" style="--i:5">원하는 날짜를 선택한다.<i>박진섭</i></p><p class="nt c" style="--i:6">결제 직전에 예약 내용을 다시 확인한다.<i>최민준</i></p></div></div><div class="row r5" style="--r:1"><b>Pains</b><div class="notes"><p class="nt a" style="--i:0">정해진 예매 시간에 맞춰 접속해야 한다.<i>박진섭</i></p><p class="nt c" style="--i:1">이용자가 몰리면 표를 구하지 못할 수 있다.<i>최민준</i></p><p class="nt b ev" style="--i:2">진행 중 스스로 알지 못하는 내용이 있었다.<i>장승민</i></p><p class="nt b" style="--i:3">다른 예매 경험에서 원인 불명의 오류가 발생했다.<i>장승민</i></p><p class="nt c" style="--i:4">해당 오류로 결제를 진행하지 못했다.<i>최민준</i></p></div></div><div class="row r6" style="--r:2"><b>Gains</b><div class="notes"><p class="nt b ev" style="--i:0">익숙한 날짜·시간 선택 방식으로 진행했다.<i>장승민</i></p><p class="nt a ev" style="--i:1">‘예매하기’ 버튼을 통해 시작 위치를 찾았다.<i>박진섭</i></p><p class="nt c ev" style="--i:2">기존 예매 경험을 새로운 사이트에서도 활용했다.<i>최민준</i></p><p class="nt a" style="--i:3">결제 전에 예약 내용을 확인할 수 있었다.<i>박진섭</i></p><p class="nt a" style="--i:4">결제 후 예약 알림을 받았다.<i>박진섭</i></p><p class="nt c" style="--i:5">친구에게 모르는 내용의 해결 방법을 안내받았다.<i>최민준</i></p><p class="nt c" style="--i:6">알림을 통해 예매 완료 여부를 확인했다.<i>최민준</i></p></div></div></div>
+    <p class="emlg rv d2"><span style="--c:#B9F0EC">박진섭</span><span style="--c:#FFB3DE">장승민</span><span style="--c:#FFE29A">최민준</span><span style="--c:transparent">인터뷰 답변을 팀원이 나눠 옮겨 적음</span><b class="evcap">→ 인사이트의 근거가 된 내용</b></p>
   </div>
 </section>
 
@@ -851,6 +885,7 @@ main{padding-top:38px}
       <div><i>3</i><b>선택하기</b><small>하나를 고른다</small></div>
       <div><i>4</i><b>최종 확인</b><small>확정 전에 다시 본다</small></div>
     </div>
+    <p class="mycard"><b>내 사용법</b><span>비교</span><span>확인</span><span>선택</span><span>최종 확인</span></p>
     <div class="h4grid c2">
       <div class="card rv d4"><span class="n">만들어지는 방법</span><p>특강 신청을 한 번 끝내면, 그때의 순서가 내 사용법으로 저장된다.</p></div>
       <div class="card rv d5"><span class="n">고치는 방법</span><p>저장된 순서는 사용자가 직접 보고 고칠 수 있다.</p></div>
@@ -859,17 +894,17 @@ main{padding-top:38px}
 </section>
 
 <!-- 09 세 서비스 -->
-<section class="sec" id="f9" data-nav="적용 장면">
+<section class="sec" id="f9" data-nav="적용 장면" data-steps="3">
   <div class="wrap">
     <p class="eb rv">09 · Scenes<span>서비스 세 곳에 입혀지는 장면</span></p>
     <h2 class="h2 rv d1">특강에서 익힌 순서로 시설도, 병원도</h2>
-    <table class="tb rv d2">
-      <thead><tr><th></th><th>특강 신청 <span class="tag4">익힌 곳</span></th><th class="me">시설 예약 · 처음</th><th class="me">병원 예약 · 처음</th></tr></thead>
+    <table class="tb cols rv d2">
+      <thead><tr><th></th><th class="c0">특강 신청<span class="tag4">익힌 곳</span></th><th class="c1">시설 예약<span class="tag4">내 사용법 적용</span></th><th class="c2">병원 예약<span class="tag4">내 사용법 적용</span></th></tr></thead>
       <tbody>
-        <tr><th>1 비교하기</th><td>강의 목록</td><td class="me">스터디룸 A · B · C</td><td class="me">내과 · 가정의학과 · 소아청소년과</td></tr>
-        <tr><th>2 확인하기</th><td>시간 · 정원</td><td class="me">인원 · 이용 시간 단위</td><td class="me">진료 시간 · 대기 정도</td></tr>
-        <tr><th>3 선택하기</th><td>강의 하나</td><td class="me">방 하나</td><td class="me">진료과 하나</td></tr>
-        <tr><th>4 최종 확인</th><td>신청 내용</td><td class="me">예약 내용</td><td class="me">예약 내용</td></tr>
+        <tr><th>1 비교하기</th><td class="c0">강의 목록</td><td class="c1">스터디룸 A · B · C</td><td class="c2">내과 · 가정의학과 · 소아청소년과</td></tr>
+        <tr><th>2 확인하기</th><td class="c0">시간 · 정원</td><td class="c1">인원 · 이용 시간 단위</td><td class="c2">진료 시간 · 대기 정도</td></tr>
+        <tr><th>3 선택하기</th><td class="c0">강의 하나</td><td class="c1">방 하나</td><td class="c2">진료과 하나</td></tr>
+        <tr><th>4 최종 확인</th><td class="c0">신청 내용</td><td class="c1">예약 내용</td><td class="c2">예약 내용</td></tr>
       </tbody>
     </table>
     <div class="key rv"><span class="k">POINT</span><p>서비스는 달라도 단계의 위치와 이름이 같다. 처음 쓰는 서비스에서도 지금 몇 번째 단계인지 안다.</p></div>
@@ -885,7 +920,7 @@ main{padding-top:38px}
       <div class="card rv d2"><span class="n">순서는 같아도</span><h3>봐야 할 정보는 다르다</h3>
         <ul><li>시설 예약 · 인원, 이용 시간 단위</li><li>병원 예약 · 진료 시간, 대기 정도</li></ul></div>
       <div class="card on rv d3"><span class="n">어디에 보여 주나</span><h3>‘확인하기’ 단계에 그대로</h3>
-        <p>서비스의 조건은 빼지 않는다.<br>이전 서비스에 없던 조건에는 “새로 확인할 내용” 표시를 붙인다.</p></div>
+        <p>서비스의 조건은 빼지 않는다.<br>이전 서비스에 없던 조건에는 표시를 붙인다.</p><p class="newb"><span>새로 확인할 내용</span>대기 정도</p></div>
       <div class="card rv d4"><span class="n">왜 필요한가</span><h3>빨리 넘겨도 놓치지 않게</h3>
         <p>1차의 좋았던 경험(보행자 신호 잔여시간)처럼, 지금 어디에 있고 무엇을 봐야 하는지 바로 보이게 한다.</p></div>
     </div>
@@ -981,7 +1016,7 @@ main{padding-top:38px}
           : ((e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') ? -1 : 0);
     if (!d) return; e.preventDefault();
     if (window.__p3 && __p3.busy()) return;
-    var SC = [[document.getElementById('s5'), window.__scn], [document.getElementById('s6'), window.__scn6]];
+    var SC = [].slice.call(document.querySelectorAll('section[data-steps]')).map(function(x){ return [x, x.__st]; });
     for (var q = 0; q < SC.length; q++) if (SC[q][0] && SC[q][1] && Math.abs(scrollY - (SC[q][0].offsetTop - 38)) < 40 && SC[q][1].step(d)) return;
     var stops = [];
     secs.forEach(function(s){
@@ -1085,6 +1120,16 @@ main{padding-top:38px}
   if (!document.fullscreenEnabled) fs.hidden = true;
   fs.addEventListener('click', function(){
     if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(function(){});
+  });
+})();
+</script>
+<script>
+(function(){
+  [].slice.call(document.querySelectorAll('section[data-steps]')).forEach(function(s){
+    var n = +s.dataset.steps, cur = 0;
+    function show(i){ cur = i; s.dataset.k = i; }
+    s.__st = { step: function(d){ var k = cur + d; if (k < 0 || k >= n) return false; show(k); return true; }, set: function(i){ show(i < 0 ? n - 1 : i); } };
+    show(0);
   });
 })();
 </script>
