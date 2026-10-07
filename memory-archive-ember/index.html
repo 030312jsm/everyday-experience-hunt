@@ -91,7 +91,7 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
   function size(){ dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.imageSmoothingQuality = 'high'; }
   addEventListener('resize', size); size();
 
-  var tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = .3;
+  var tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = .3, SPEED_IN = .19;   // 문을 열고 들어가는 구간은 더 천천히
   var tp = 0, p = 0, mx = .5, my = .5, hx = .5, hy = .5;
   addEventListener('pointermove', function(e){ mx = e.clientX / W; my = e.clientY / H; });
   // 휠 한 번 = 다음 자리까지 영상처럼 이어서 걷는다(휠 양만큼 끊어 넘기지 않는다)
@@ -118,7 +118,7 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
     requestAnimationFrame(loop); if (!ready) return;
     // 일정한 속도로 걷되 출발과 도착만 부드럽게: 한 화면에 장면 SPEED장씩 넘어간다
     var now = performance.now(), dt = Math.min(3, (now - last) / 16.667); last = now;
-    var vmax = SPEED / (N - 1), vt = Math.max(-vmax, Math.min(vmax, (tp - p) * .05)); vel += (vt - vel) * Math.min(1, .1 * dt); p += vel * dt;
+    var vmax = (p * (N - 1) < NI - .5 ? SPEED_IN : SPEED) / (N - 1), vt = Math.max(-vmax, Math.min(vmax, (tp - p) * .05)); vel += (vt - vel) * Math.min(1, .1 * dt); p += vel * dt;
     if (Math.abs(tp - p) < 1e-5){ p = tp; vel = 0; } hx += (mx - hx) * .04; hy += (my - hy) * .04;
     // 앞뒤 두 장을 섞어 걸음이 끊기지 않게 한다
     var f = p * (N - 1), a = Math.floor(f), t = f - a;
