@@ -19,3 +19,8 @@ services:
     runtime: static
     staticPublishPath: ./hunt3-mobility
     buildCommand: ""
+  - type: web
+    name: experience-hunt-4
+    runtime: static
+    staticPublishPath: ./hunt4
+    buildCommand: ""
