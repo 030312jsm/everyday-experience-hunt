@@ -521,6 +521,36 @@ html,body{background:var(--bg)}
 #s13 .b3 div{font-family:var(--serif);font-weight:400;font-size:34px;letter-spacing:-.02em}
 @media(max-width:900px){.cov2 h1{white-space:normal}.idx .card{border-left:0;border-top:1px solid var(--line);padding-left:0}}
 @media (prefers-reduced-motion:reduce){.strip .run{animation:none}}
+
+/* ── 새 조작 방식 ── */
+/* ① 장막 전환: 다음 슬라이드가 아래에서 위로 덮으며 올라온다 (뒤로 갈 땐 위에서 아래로) */
+.sl{opacity:1;background:var(--bg);clip-path:inset(100% 0 0 0);z-index:1;transition:clip-path 0s .95s,visibility 0s .95s}
+.sl.on{opacity:1;clip-path:inset(0 0 0 0);z-index:2;transition:clip-path .95s cubic-bezier(.77,0,.18,1),visibility 0s}
+.sl.back{clip-path:inset(0 0 100% 0)}
+.sl.on.back{clip-path:inset(0 0 0 0)}
+/* ② 끌 수 있는 필름 띠 */
+.strip{cursor:grab;touch-action:pan-y;user-select:none}
+.strip.drag{cursor:grabbing}
+.strip .run{animation:none;will-change:transform}
+.strip i{transition:filter .4s,transform .5s cubic-bezier(.16,1,.3,1)}
+.strip:not(.drag) i:hover{filter:none;transform:translateY(-8px)}
+/* ③ 렌즈: 커서 주변만 또렷한 기억이 보인다 */
+.lensbox{position:relative}
+.lens{position:absolute;inset:0;z-index:2;background-size:cover;background-position:center;border-radius:2px;pointer-events:none;
+  clip-path:circle(var(--lr,0px) at var(--lx,50%) var(--ly,50%));transition:clip-path .18s ease-out}
+.lenshint{margin-top:10px;font-size:12.5px;color:var(--ink3)}
+/* ④ 따라다니는 커서 */
+#cur{position:fixed;left:0;top:0;z-index:60;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--amb);pointer-events:none;
+  display:grid;place-items:center;color:#fff;font-size:11.5px;font-weight:700;white-space:nowrap;opacity:0;
+  transition:width .3s cubic-bezier(.16,1,.3,1),height .3s cubic-bezier(.16,1,.3,1),margin .3s cubic-bezier(.16,1,.3,1),opacity .3s}
+#cur.show{opacity:1}
+#cur.big{width:84px;height:84px;margin:-42px 0 0 -42px}
+#cur span{opacity:0;transition:opacity .2s}
+#cur.big span{opacity:1}
+@media (hover:none){#cur{display:none}}
+/* ⑤ 아래 색인을 끌어서 넘기기 */
+#tl .rail{cursor:ew-resize}
+@media (prefers-reduced-motion:reduce){.sl,.sl.on{transition:none}}
 </style>
 </head>
 <body>
@@ -537,7 +567,7 @@ html,body{background:var(--bg)}
   <div class="wrap cov2">
     <p class="k2 fr"><span>Future Experience</span><span>기억의 디지털화</span><span>2045</span></p>
     <h1 class="fr">Memory <em>Archive</em></h1>
-    <div class="strip fr" aria-hidden="true"><div class="run"><i style="background-image:url(img/key.jpg)"></i><i style="background-image:url(img/p3.jpg)"></i><i style="background-image:url(img/ember.jpg)"></i><i style="background-image:url(img/p1.jpg)"></i><i style="background-image:url(img/echo.jpg)"></i><i style="background-image:url(img/p2.jpg)"></i><i style="background-image:url(img/trace.jpg)"></i><i style="background-image:url(img/p4.jpg)"></i><i style="background-image:url(img/key.jpg)"></i><i style="background-image:url(img/p3.jpg)"></i><i style="background-image:url(img/ember.jpg)"></i><i style="background-image:url(img/p1.jpg)"></i><i style="background-image:url(img/echo.jpg)"></i><i style="background-image:url(img/p2.jpg)"></i><i style="background-image:url(img/trace.jpg)"></i><i style="background-image:url(img/p4.jpg)"></i></div></div>
+    <div class="strip fr" data-cur="끌기"><div class="run"><i data-go="3" style="background-image:url(img/key.jpg)"></i><i data-go="7" style="background-image:url(img/p3.jpg)"></i><i data-go="12" style="background-image:url(img/ember.jpg)"></i><i data-go="5" style="background-image:url(img/p1.jpg)"></i><i data-go="11" style="background-image:url(img/echo.jpg)"></i><i data-go="6" style="background-image:url(img/p2.jpg)"></i><i data-go="10" style="background-image:url(img/trace.jpg)"></i><i data-go="8" style="background-image:url(img/p4.jpg)"></i><i data-go="3" style="background-image:url(img/key.jpg)"></i><i data-go="7" style="background-image:url(img/p3.jpg)"></i><i data-go="12" style="background-image:url(img/ember.jpg)"></i><i data-go="5" style="background-image:url(img/p1.jpg)"></i><i data-go="11" style="background-image:url(img/echo.jpg)"></i><i data-go="6" style="background-image:url(img/p2.jpg)"></i><i data-go="10" style="background-image:url(img/trace.jpg)"></i><i data-go="8" style="background-image:url(img/p4.jpg)"></i></div></div>
     <div class="cf fr"><p>기억을 공간처럼<br>탐색하는 서비스</p><p class="tm">장승민 · 최민준 · 박형준 · 박성하 · 최윤서</p></div>
   </div>
 </section>
@@ -612,7 +642,7 @@ html,body{background:var(--bg)}
       </div>
       <div class="dots" id="sDots"></div>
     </div>
-    <div class="scene fr" id="scene" data-k="0">
+    <div class="scene fr lensbox" id="scene" data-k="0"><i class="lens" style="background-image:url(img/key.jpg)"></i>
       <img src="img/key.jpg" alt="Memory Archive로 재구성된 여름 밤 바닷가 산책로. 사진 조각들이 떠 있다.">
       <span class="lbl" id="sLbl">LIVING ROOM · 20:40</span>
       <div class="over">
@@ -856,7 +886,7 @@ html,body{background:var(--bg)}
 <!-- 12 EMBER -->
 <section class="sl" id="em" data-nav="EMBER" data-meta="INDEX 12 · BRAND 03" data-steps="4">
   <div class="wrap bv">
-    <figure class="bimg fr" id="emImg" data-k="0">
+    <figure class="bimg fr lensbox" id="emImg" data-k="0"><i class="lens" style="background-image:url(img/ember.jpg)"></i>
       <img src="img/ember.jpg" alt="EMBER 브랜드 콘셉트 이미지. 아버지와의 저녁 식사 장면이 재구성된 집 안.">
       <figcaption class="emcap"><b>Dinner with Dad</b>2031년 11월 14일 · <span id="emState">공간만 복원됨</span></figcaption></figure>
     <div>
@@ -864,6 +894,7 @@ html,body{background:var(--bg)}
       <h2 class="bname fr">EMBER<small>WARMTH REMAINS</small></h2>
       <p class="btag fr">“기억 속에 남아 있는 작은 온기를 다시 발견하다.”</p>
       <p class="bdesc fr">떠난 사람을 AI로 되살려 대화하는 서비스가 아니라, <b>함께했던 실제 일상의 흔적</b>을 안전하게 다시 경험하는 서비스.<br>“아버지와 마지막으로 같이 저녁을 먹었던 날”을 검색하면, 그날의 사진, 집의 구조, TV 소리, 자주 듣던 음악, 식탁의 위치, 메시지 같은 실제 데이터로 그날의 공간과 분위기를 복원한다.</p>
+      <p class="lenshint fr">이미지 위에 커서를 올리면 그 부분만 또렷하게 보인다</p>
       <ol class="path fr" id="emPath">
         <li data-k="0"><span>01</span><b>목소리 없이 공간만 보기<small>SPACE ONLY</small></b></li>
         <li data-k="1"><span>02</span><b>일상의 물건 보기<small>FAMILIAR OBJECTS</small></b></li>
@@ -987,7 +1018,7 @@ html,body{background:var(--bg)}
   function go(i, st){
     if (i < 0 || i >= S.length) return;
     var changed = i !== cur || !S[i].classList.contains('on');
-    S.forEach(function(s, k){ s.classList.toggle('on', k === i); });
+    var bk = i < cur; S.forEach(function(s, k){ s.classList.toggle('back', bk && (k === i || k === cur)); s.classList.toggle('on', k === i); });
     cur = i; step = st < 0 ? nSteps(i) - 1 : st;
     ticks.forEach(function(b, k){ b.classList.toggle('on', k === i); });
     cnt.textContent = pad(i) + ' / ' + pad(S.length - 1);
@@ -1017,8 +1048,48 @@ html,body{background:var(--bg)}
   /* 클릭으로도 단계·슬라이드 이동 (탭 버튼은 해당 단계로) */
   document.querySelectorAll('.mr[data-k]').forEach(function(r){ r.querySelector('.ml').addEventListener('click', function(e){ e.stopPropagation(); step = (step === +r.dataset.k) ? 0 : +r.dataset.k; render(); }); r.querySelectorAll('.mc').forEach(function(c){ c.addEventListener('click', function(e){ e.stopPropagation(); step = +r.dataset.k; render(); }); }); });
   document.querySelectorAll('.ptab span,.steps3 li,.path li,.tt').forEach(function(b){ b.style.cursor = 'pointer'; b.addEventListener('click', function(e){ e.stopPropagation(); step = +b.dataset.k; render(); }); });
+  window.__go = go; window.__cur = function(){ return cur; };
   var h = parseInt(location.hash.slice(1), 10);
   go(h > 0 && h <= S.length ? h - 1 : 0, 0);
+})();
+</script>
+<div id="cur"><span></span></div>
+<script>
+(function(){
+  var fine = matchMedia('(hover:hover)').matches;
+  /* 따라다니는 커서 */
+  var cur = document.getElementById('cur'), lab = cur.firstChild, tx = 0, ty = 0, x = 0, y = 0;
+  if (fine){
+    addEventListener('pointermove', function(e){ tx = e.clientX; ty = e.clientY; cur.classList.add('show');
+      var t = e.target.closest && e.target.closest('[data-cur]');
+      cur.classList.toggle('big', !!t); if (t) lab.textContent = t.dataset.cur; });
+    (function f(){ x += (tx - x) * .22; y += (ty - y) * .22; cur.style.transform = 'translate(' + x + 'px,' + y + 'px)'; requestAnimationFrame(f); })();
+  }
+  /* 끌 수 있는 필름 띠: 가만두면 천천히 흐르고, 놓으면 관성으로 미끄러진다. 끌지 않고 누르면 그 슬라이드로 간다 */
+  var strip = document.querySelector('.strip'), run = strip && strip.querySelector('.run');
+  if (run){
+    var px = 0, v = -0.35, down = false, lx = 0, moved = 0, half = 0;
+    function wrap(){ half = run.scrollWidth / 2; if (!half) return; if (px <= -half) px += half; if (px > 0) px -= half; }
+    strip.addEventListener('pointerdown', function(e){ down = true; moved = 0; lx = e.clientX; strip.classList.add('drag'); strip.setPointerCapture(e.pointerId); });
+    strip.addEventListener('pointermove', function(e){ if (!down) return; var d = e.clientX - lx; lx = e.clientX; px += d; v = d; moved += Math.abs(d); });
+    function up(e){ if (!down) return; down = false; strip.classList.remove('drag');
+      if (moved < 6){ var el = document.elementFromPoint(e.clientX, e.clientY); if (el && el.dataset.go && window.__go) window.__go(+el.dataset.go, 0); } }
+    strip.addEventListener('pointerup', up); strip.addEventListener('pointercancel', up);
+    (function f(){ if (!down){ v += (-0.35 - v) * .03; px += v; } wrap(); run.style.transform = 'translate3d(' + px + 'px,0,0)'; requestAnimationFrame(f); })();
+  }
+  /* 렌즈 */
+  [].forEach.call(document.querySelectorAll('.lensbox'), function(b){
+    b.addEventListener('pointermove', function(e){ var r = b.getBoundingClientRect();
+      b.style.setProperty('--lx', (e.clientX - r.left) + 'px'); b.style.setProperty('--ly', (e.clientY - r.top) + 'px'); b.style.setProperty('--lr', Math.round(r.width * .17) + 'px'); });
+    b.addEventListener('pointerleave', function(){ b.style.setProperty('--lr', '0px'); });
+  });
+  /* 아래 색인 끌어서 넘기기 */
+  var rail = document.getElementById('rail'), rd = false;
+  function pick(e){ var r = rail.getBoundingClientRect(), n = rail.children.length, i = Math.round((e.clientX - r.left) / r.width * (n - 1));
+    i = Math.max(0, Math.min(n - 1, i)); if (window.__go && window.__cur() !== i) window.__go(i, 0); }
+  rail.addEventListener('pointerdown', function(e){ rd = true; rail.setPointerCapture(e.pointerId); pick(e); });
+  rail.addEventListener('pointermove', function(e){ if (rd) pick(e); });
+  rail.addEventListener('pointerup', function(){ rd = false; });
 })();
 </script>
 </body>
