@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory Archive · 빛 비추기 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:Pretendard;src:url(../memory-archive-v2/assets/PretendardVariable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#0b0a09}
+body{font-family:Pretendard,system-ui,sans-serif;cursor:none;user-select:none}
+/* 같은 장면을 두 겹으로 겹친다. 아래 = 불 꺼진 방, 위 = 불 켜진 방(손전등 모양으로만 보임) */
+.scene{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:5vw;align-items:center;padding:9vh 6vw 11vh}
+#base{background:#0b0a09;color:#1b1814}
+#base img{filter:brightness(.14) saturate(.3)}
+#base .amb,#base .no{color:#1b1814}
+#base li,#base figure,#base .steps{border-color:#161310}
+#lit{background:#F1EEE7;color:#16140F;
+  -webkit-mask-image:radial-gradient(circle var(--r,18vmin) at var(--x,34%) var(--y,50%),#000 0,#000 42%,rgba(0,0,0,.55) 68%,transparent 100%);
+  mask-image:radial-gradient(circle var(--r,18vmin) at var(--x,34%) var(--y,50%),#000 0,#000 42%,rgba(0,0,0,.55) 68%,transparent 100%)}
+figure img{display:block;width:100%;aspect-ratio:879/481;object-fit:cover}
+figcaption{margin-top:12px;font-size:13px}
+figcaption b{font-weight:700;margin-right:8px}
+.eb{font-family:"Instrument Serif",serif;font-style:italic;font-size:22px}
+.eb span{font-family:Pretendard,sans-serif;font-style:normal;font-size:12.5px;margin-left:12px}
+.amb{color:#D2432A}
+h1{font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(72px,9vw,150px);line-height:.95;letter-spacing:-.01em;margin-top:6px}
+.tag{font-size:12px;font-weight:700;letter-spacing:.08em;margin-top:14px}
+h2{font-size:clamp(20px,1.7vw,27px);font-weight:700;margin-top:10px;letter-spacing:-.01em}
+.body{font-size:15px;line-height:1.75;margin-top:16px}
+.steps{list-style:none;margin-top:22px;border-top:1.5px solid currentColor}
+.steps li{display:flex;align-items:baseline;gap:18px;padding:13px 0;border-bottom:1px solid #D9D3C6;font-size:15.5px;font-weight:700}
+.steps .no{font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;font-size:19px;color:#D2432A;width:22px}
+.steps small{font-size:11px;font-weight:600;letter-spacing:.06em;opacity:.55}
+#hint{position:fixed;left:6vw;bottom:4vh;z-index:5;font-size:12.5px;color:#5c554a;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="scene" id="base">
+  <figure>
+    <img src="../memory-archive-v2/img/ember.jpg" alt="아버지와 저녁을 먹던 식탁이 있는 방">
+    <figcaption><b>Dinner with Dad</b>2031년 11월 14일</figcaption>
+  </figure>
+  <div>
+    <p class="eb amb">Brand 03<span>상실과 애도</span></p>
+    <h1>EMBER</h1>
+    <p class="tag">WARMTH REMAINS</p>
+    <h2>“기억 속에 남아 있는 작은 온기를 다시 발견하다.”</h2>
+    <p class="body">떠난 사람을 AI로 되살려 대화하는 서비스가 아니라, 함께했던 실제 일상의 흔적을 안전하게 다시 경험하는 서비스.</p>
+    <ol class="steps">
+      <li><span class="no">01</span>목소리 없이 공간만 보기<small>SPACE ONLY</small></li>
+      <li><span class="no">02</span>일상의 물건 보기<small>FAMILIAR OBJECTS</small></li>
+      <li><span class="no">03</span>사진 보기<small>PHOTOS &amp; AUDIO</small></li>
+      <li><span class="no">04</span>기억 공간 체험<small>FULL MEMORY SPACE</small></li>
+    </ol>
+  </div>
+</div>
+<p id="hint">커서가 손전등 · 누르고 있으면 빛이 넓어진다 · L 키로 방 전체 불 켜기</p>
+<script>
+(function(){
+  var lit = document.getElementById('base').cloneNode(true); lit.id = 'lit'; lit.setAttribute('aria-hidden', 'true'); document.body.insertBefore(lit, document.getElementById('hint'));
+  var W = innerWidth, H = innerHeight, tx = W * .34, ty = H * .5, x = tx, y = ty, r = 0, hold = false, all = false;
+  addEventListener('resize', function(){ W = innerWidth; H = innerHeight; });
+  addEventListener('pointermove', function(e){ tx = e.clientX; ty = e.clientY; });
+  addEventListener('pointerdown', function(e){ hold = true; tx = e.clientX; ty = e.clientY; });
+  addEventListener('pointerup', function(){ hold = false; });
+  addEventListener('keydown', function(e){ if (e.key === 'l' || e.key === 'L' || e.key === 'ㅣ') all = !all; });
+  (function f(){
+    var m = Math.min(W, H), tr = all ? Math.hypot(W, H) * 1.6 : m * (hold ? .5 : .24);
+    x += (tx - x) * .16; y += (ty - y) * .16; r += (tr - r) * (all ? .05 : .12);
+    lit.style.setProperty('--x', x + 'px'); lit.style.setProperty('--y', y + 'px'); lit.style.setProperty('--r', r + 'px');
+    requestAnimationFrame(f);
+  })();
+})();
+</script>
+</body>
+</html>
