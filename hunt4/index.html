@@ -702,6 +702,24 @@ main{padding-top:38px}
 .tb thead th.me{color:var(--blu)}
 .tb td.me{color:var(--ink);font-weight:600}
 .tag4{display:inline-block;font-size:11px;font-weight:800;color:#fff;background:var(--blu);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:1px}
+/* 화면 비교 폰 */
+.cmp{margin-top:clamp(16px,2.6vh,26px);display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:clamp(20px,3vw,48px);align-items:center}
+.cmp figure{margin:0;width:min(250px,calc((100svh - 420px) / 2.1))}
+.cmp figcaption{margin-top:12px;font-size:13px;color:var(--ink-2);text-align:center;line-height:1.5}
+.cmp figcaption b{display:block;color:var(--ink);font-size:14px}
+.cmp .fam figcaption b{color:var(--blu)}
+.cmp .h4grid{margin-top:0}
+.cmp .app{gap:7px}
+.cmp .app .ai{font-size:10.5px;display:flex;align-items:center;gap:6px}
+.cmp .app .rt b{font-size:11.5px}.cmp .app .rt small{font-size:9.6px}.cmp .app .tag{font-size:8.8px}.cmp .app .two span{font-size:10.5px}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.mini span{font-size:9.4px;font-weight:700;background:#fff;border-radius:9px;padding:10px 2px;text-align:center;color:var(--ink);box-shadow:0 6px 12px -10px rgba(24,32,46,.5)}
+.mini .off{background:none;border:1px dashed #B9C0CF;color:var(--ink-3);box-shadow:none}
+.sbar{margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
+.sbar span{font-size:8.8px;font-weight:700;text-align:center;color:var(--ink-3);border-top:3px solid #D9DFEA;padding-top:4px}
+.sbar .dn{border-color:#9DB7FF;color:var(--ink-2)}.sbar .on{border-color:var(--blu);color:var(--blu)}
+@media(max-width:1000px){.cmp{grid-template-columns:1fr;justify-items:center}}
+
 /* ── 모션 (3D 없이) ── */
 .em .nt{opacity:0;transform:translateY(16px) rotate(-3deg);transition:opacity .5s ease,transform .7s cubic-bezier(.16,1,.3,1),filter .5s;transition-delay:calc(var(--r,0) * 160ms + var(--i,0) * 45ms + 200ms)}
 .em .nt:nth-child(even){transform:translateY(16px) rotate(3deg)}
@@ -951,10 +969,47 @@ main{padding-top:38px}
   </div>
 </section>
 
+<!-- 12 화면 비교 -->
+<section class="sec" id="f11b" data-nav="화면 비교">
+  <div class="wrap">
+    <p class="eb rv">12 · Screens<span>앱 안의 앱과 FAMILIAR</span></p>
+    <h2 class="h2 rv d1">미리 만든 미니앱을 여는 것과, 내 순서에 맞춰지는 것</h2>
+    <div class="cmp">
+      <figure class="rv d2"><div class="ph"><div class="scr">
+        <div class="sb"><span>9:41</span><i>•••</i></div>
+        <div class="app">
+          <p class="ai">입점한 미니앱</p>
+          <div class="mini"><span>영화 예매</span><span>병원 예약</span><span>시설 예약</span><span>특강 신청</span><span>식당 예약</span><span class="off">입점 전</span></div>
+          <p class="ai">미니앱마다 진행 순서가 다르다</p>
+          <div class="rt"><b>병원 예약 미니앱</b><small>진료과 → 의사 → 날짜 → 시간</small></div>
+          <div class="rt"><b>시설 예약 미니앱</b><small>날짜 → 시간 → 방 → 인원</small></div>
+          <div class="rt"><b>특강 신청 미니앱</b><small>강의 → 정원 확인 → 신청</small></div>
+        </div></div></div>
+        <figcaption><b>앱 안의 앱 · 예: 토스 앱인토스</b>파트너사가 미리 만든 미니앱을 연다</figcaption></figure>
+      <figure class="fam rv d3"><div class="ph"><div class="scr">
+        <div class="sb"><span>9:41</span><i>•••</i></div>
+        <div class="app">
+          <p class="ai">병원 예약 <span class="tag">내 사용법 적용</span></p>
+          <p class="sbar"><span class="dn">비교</span><span class="on">확인</span><span>선택</span><span>최종 확인</span></p>
+          <div class="rt"><b>내과</b><small>오전 진료 · 대기 적음</small></div>
+          <div class="rt best"><b>가정의학과</b><small>오후 진료 · 대기 보통</small><span class="tag r">새로 확인할 내용 · 대기</span></div>
+          <div class="rt"><b>소아청소년과</b><small>오전 진료 · 대기 다소 많음</small></div>
+          <p class="two"><span>이전</span><span class="go2">선택하기</span></p>
+        </div></div></div>
+        <figcaption><b>FAMILIAR</b>내가 익힌 순서에 서비스가 맞춰진다</figcaption></figure>
+      <div class="h4grid">
+        <div class="card rv d4"><span class="n">앱 안의 앱</span><ul><li>서비스가 플랫폼에 맞춰 미리 만들어져 들어온다</li><li>입점한 서비스만 쓸 수 있다</li><li>진행 순서는 미니앱을 만든 곳이 정한다</li></ul></div>
+        <div class="card on rv d5"><span class="n">FAMILIAR</span><ul><li>사용자가 진행하려는 단계를 읽는다</li><li>서비스의 단계를 그 순서에 자동으로 맞춘다</li><li>서비스만의 조건은 ‘확인하기’에 그대로 보여 준다</li></ul></div>
+      </div>
+    </div>
+    <p class="src" style="margin-top:12px">두 화면은 구조를 단순화한 예시 그림이며, 실제 토스 화면이 아니다.</p>
+  </div>
+</section>
+
 <!-- 12 한계와 검증 -->
 <section class="sec" id="f12" data-nav="한계 · 검증">
   <div class="wrap">
-    <p class="eb rv">12 · Limits<span>아직 확인하지 못한 것</span></p>
+    <p class="eb rv">13 · Limits<span>아직 확인하지 못한 것</span></p>
     <h2 class="h2 rv d1">한계와 검증 계획</h2>
     <div class="h4grid c2">
       <div class="card rv d2"><span class="n">한계</span>
