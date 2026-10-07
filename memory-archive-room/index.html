@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Memory Archive · 1인칭 방 시안</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:Pretendard;src:url(../memory-archive-v2/assets/PretendardVariable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#050403}
+body{font-family:Pretendard,system-ui,sans-serif;cursor:none;user-select:none}
+canvas{display:block;width:100%;height:100%}
+#hint{position:fixed;left:0;right:0;bottom:4vh;text-align:center;font-size:12.5px;color:#7d7466;pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<p id="hint">마우스로 둘러보기 · 누르고 있으면 빛이 넓어진다 · L 키로 방 불 켜기</p>
+<script type="module">
+import * as THREE from '../memory-archive/assets/vendor/three.module.js';
+
+const SERIF = '"Instrument Serif", serif', SANS = 'Pretendard, sans-serif', INK = '#16140F', AMB = '#D2432A';
+await Promise.all(['700 40px Pretendard', '400 40px Pretendard', '400 100px "Instrument Serif"', 'italic 400 40px "Instrument Serif"'].map(f => document.fonts.load(f, 'EMBER 기억')));
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x050403);
+const cam = new THREE.PerspectiveCamera(62, 1, .1, 60); cam.position.set(0, 1.6, .9); cam.rotation.order = 'YXZ';
+const ANISO = renderer.capabilities.getMaxAnisotropy();
+
+// 방: 가로 11 · 높이 4.2 · 깊이 9
+const RW = 11, RH = 4.2, RD = 9;
+const wallM = new THREE.MeshStandardMaterial({ color: 0x8a7763, roughness: .96 });
+const floorM = new THREE.MeshStandardMaterial({ color: 0x6a4a30, roughness: .75 });
+function wall(w, h, m, px, py, pz, ry, rx){ const o = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); o.position.set(px, py, pz); o.rotation.set(rx || 0, ry || 0, 0); scene.add(o); return o; }
+wall(RW, RH, wallM, 0, RH / 2, -RD / 2, 0);
+wall(RW, RH, wallM, 0, RH / 2, RD / 2, Math.PI);
+wall(RD, RH, wallM, -RW / 2, RH / 2, 0, Math.PI / 2);
+wall(RD, RH, wallM, RW / 2, RH / 2, 0, -Math.PI / 2);
+wall(RW, RD, floorM, 0, 0, 0, 0, -Math.PI / 2);
+wall(RW, RD, wallM, 0, RH, 0, 0, Math.PI / 2);
+// 걸레받이: 벽과 바닥이 만나는 선이 있어야 어둠 속에서도 방으로 읽힌다
+const baseM = new THREE.MeshStandardMaterial({ color: 0x2a1f16, roughness: .7 });
+[[RW, 0, -RD / 2 + .03, 0], [RD, -RW / 2 + .03, 0, Math.PI / 2], [RD, RW / 2 - .03, 0, Math.PI / 2]].forEach(([l, x, z, ry]) => {
+  const b = new THREE.Mesh(new THREE.BoxGeometry(l, .14, .05), baseM); b.position.set(x, .07, z); b.rotation.y = ry; scene.add(b); });
+
+// 글 패널: 캔버스에 그려 벽에 붙인 종이
+function paper(wm, hm, draw){
+  const S = 420, cv = document.createElement('canvas'); cv.width = wm * S; cv.height = hm * S;
+  const g = cv.getContext('2d'); g.fillStyle = '#F1EEE7'; g.fillRect(0, 0, cv.width, cv.height); g.textBaseline = 'alphabetic'; draw(g, cv.width, cv.height);
+  const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO;
+  return new THREE.Mesh(new THREE.PlaneGeometry(wm, hm), new THREE.MeshStandardMaterial({ map: t, roughness: .9 }));
+}
+function lines(g, text, x, y, maxW, lh){ let line = ''; for (const ch of text){ if (g.measureText(line + ch).width > maxW && ch !== ' '){ g.fillText(line, x, y); y += lh; line = ch; } else line += ch; } g.fillText(line, x, y); return y + lh; }
+function hang(o, x, y, z, ry){ o.position.set(x, y, z); o.rotation.y = ry || 0; scene.add(o); return o; }
+
+// 정면 벽: 사진 액자 + 제목
+const photoW = 4.4, photoH = photoW * 481 / 879;
+const tex = new THREE.TextureLoader().load('../memory-archive-v2/img/ember.jpg'); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = ANISO;
+const frame = new THREE.Mesh(new THREE.BoxGeometry(photoW + .16, photoH + .16, .06), new THREE.MeshStandardMaterial({ color: 0x1c1410, roughness: .5 }));
+hang(frame, -1.9, 2.05, -RD / 2 + .03);
+hang(new THREE.Mesh(new THREE.PlaneGeometry(photoW, photoH), new THREE.MeshStandardMaterial({ map: tex, roughness: .6 })), -1.9, 2.05, -RD / 2 + .065);
+hang(paper(2.9, .34, (g, w, h) => { g.fillStyle = INK; g.font = '700 62px ' + SANS; g.fillText('Dinner with Dad', 50, 92); g.font = '400 62px ' + SANS; g.fillText('2031년 11월 14일', 560, 92); }), -2.65, .58, -RD / 2 + .02);
+hang(paper(3.4, 2.5, (g, w) => {
+  g.fillStyle = AMB; g.font = 'italic 400 92px ' + SERIF; g.fillText('Brand 03', 90, 190);
+  g.font = '500 50px ' + SANS; g.fillText('상실과 애도', 440, 186);
+  g.fillStyle = INK; g.font = '400 470px ' + SERIF; g.fillText('EMBER', 70, 600);
+  g.font = '700 50px ' + SANS; g.fillText('WARMTH REMAINS', 92, 720);
+  g.font = '700 62px ' + SANS; lines(g, '“기억 속에 남아 있는 작은 온기를 다시 발견하다.”', 92, 850, w - 180, 104);
+}), 2.6, 2.05, -RD / 2 + .02);
+
+// 왼쪽 벽: 설명 / 오른쪽 벽: 네 단계
+hang(paper(3, 1.7, (g, w) => {
+  g.fillStyle = AMB; g.font = 'italic 400 80px ' + SERIF; g.fillText('What it is', 90, 160);
+  g.fillStyle = INK; g.font = '500 66px ' + SANS;
+  lines(g, '떠난 사람을 AI로 되살려 대화하는 서비스가 아니라, 함께했던 실제 일상의 흔적을 안전하게 다시 경험하는 서비스.', 90, 300, w - 180, 104);
+}), -RW / 2 + .02, 1.9, -2.5, Math.PI / 2);
+hang(paper(3.2, 2.4, (g, w) => {
+  g.fillStyle = AMB; g.font = 'italic 400 80px ' + SERIF; g.fillText('Memory Path', 90, 160);
+  g.fillStyle = INK; g.fillRect(90, 215, w - 180, 5);
+  [['01', '목소리 없이 공간만 보기', 'SPACE ONLY'], ['02', '일상의 물건 보기', 'FAMILIAR OBJECTS'], ['03', '사진 보기', 'PHOTOS & AUDIO'], ['04', '기억 공간 체험', 'FULL MEMORY SPACE']].forEach((r, i) => {
+    const y = 370 + i * 185;
+    g.fillStyle = AMB; g.font = 'italic 400 84px ' + SERIF; g.fillText(r[0], 90, y);
+    g.fillStyle = INK; g.font = '700 72px ' + SANS; g.fillText(r[1], 230, y);
+    g.fillStyle = '#8b8477'; g.font = '600 38px ' + SANS; g.fillText(r[2], 232, y + 62);
+    g.fillStyle = '#D9D3C6'; g.fillRect(90, y + 100, w - 180, 3);
+  });
+}), RW / 2 - .02, 1.95, -2.5, -Math.PI / 2);
+
+// 빛: 손에 든 손전등 하나 + 아주 약한 방 전체 빛
+const amb = new THREE.AmbientLight(0xfff1e0, .035); scene.add(amb);
+const spot = new THREE.SpotLight(0xffe6c4, 90, 40, .3, .55, 1.6); scene.add(spot, spot.target);
+
+let nx = 0, ny = 0, hold = false, all = false, yaw = 0, pitch = 0;
+const ray = new THREE.Raycaster(), m2 = new THREE.Vector2(), hand = new THREE.Vector3();
+addEventListener('pointermove', e => { nx = e.clientX / innerWidth * 2 - 1; ny = -(e.clientY / innerHeight * 2 - 1); });
+addEventListener('pointerdown', () => hold = true); addEventListener('pointerup', () => hold = false);
+addEventListener('keydown', e => { if (e.key === 'l' || e.key === 'L' || e.key === 'ㅣ') all = !all; });
+function size(){ const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+addEventListener('resize', size); size();
+
+renderer.setAnimationLoop(() => {
+  // 고개는 커서 쪽으로 천천히 돌고, 손전등은 커서를 바로 가리킨다 → 빛이 먼저 가고 시선이 따라온다
+  yaw += (-nx * 1.02 - yaw) * .045; pitch += (ny * .32 - pitch) * .045;
+  cam.rotation.set(pitch, yaw, 0); cam.updateMatrixWorld();
+  m2.set(nx * .3, ny * .45); ray.setFromCamera(m2, cam);
+  hand.set(.28, -.3, 0).applyQuaternion(cam.quaternion).add(cam.position);
+  spot.position.copy(hand); spot.target.position.copy(ray.ray.direction).multiplyScalar(12).add(cam.position);
+  spot.angle += ((hold ? .62 : .3) - spot.angle) * .1;
+  amb.intensity += ((all ? 2.2 : .035) - amb.intensity) * .05;
+  renderer.render(scene, cam);
+});
+window.__ready = true;
+</script>
+</body>
+</html>
