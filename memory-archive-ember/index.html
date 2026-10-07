@@ -74,7 +74,7 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
 
 <script>
 (function(){
-  var NI = 54, NM = 72, N = NI + NM, FW = 16, FH = 9, IDIR = /lo/.test(location.search) ? 'f/introlo/' : 'f/intro/', DIR = 'f/hd/', STEPDIR = 'f/hd/';
+  var NI = 108, NM = 143, N = NI + NM, FW = 16, FH = 9, IDIR = 'f/e_intro/', DIR = 'f/e_room/', STEPDIR = 'f/e_room/';
   // 멈추는 자리: 문 앞 · 방에 들어선 자리 · 방 가운데 · 식탁 앞
   var STOPS = [0, NI, NI + (NM - 1) / 2, N - 1].map(function(f){ return f / (N - 1); }), END = STOPS[3] - .04;
   var track = null; fetch(IDIR + 'track.json').then(function(r){ return r.json(); }).then(function(t){ track = t; });
@@ -82,16 +82,16 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
   var day = [], loaded = 0, ready = false;
   for (var i = 0; i < N; i++) (function(i){ var im = new Image(); im.onload = im.onerror = function(){ loaded++; document.getElementById('lp').textContent = '방을 불러오는 중 ' + Math.round(loaded / N * 100) + '%';
     if (loaded === N){ ready = true; document.getElementById('load').classList.add('off'); } }; im.src = (i < NI ? IDIR + ('00' + i).slice(-3) : DIR + ('00' + (i - NI)).slice(-3)) + '.webp'; day[i] = im; })(i);
-  var steps = [1, 2, 3].map(function(n){ var im = new Image(); im.src = STEPDIR + 'step' + n + '.webp'; return im; }), sel = 4, from = 4, ft = 1;
+  var steps = [2, 3, 4].map(function(n){ var im = new Image(); im.src = STEPDIR + 'step' + n + '.webp'; return im; }), sel = 1, from = 1, ft = 1;
   var lis = [].slice.call(document.querySelectorAll('ol li'));
   function pick(n){ if (n !== sel){ from = sel; ft = 0; } sel = n; lis.forEach(function(li, i){ li.classList.toggle('off', i + 1 > n); li.classList.toggle('cur', i + 1 === n); }); }
-  lis.forEach(function(li){ li.addEventListener('click', function(){ pick(+li.dataset.s); }); }); pick(4);
+  lis.forEach(function(li){ li.addEventListener('click', function(){ pick(+li.dataset.s); }); }); pick(1);
 
   var W, H, dpr;
   function size(){ dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.imageSmoothingQuality = 'high'; }
   addEventListener('resize', size); size();
 
-  var arrived = false, tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = .3, SPEED_IN = .19;   // 문을 열고 들어가는 구간은 더 천천히
+  var arrived = false, tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = .5, SPEED_IN = .34;   // 문을 열고 들어가는 구간은 더 천천히
   var tp = 0, p = 0, mx = .5, my = .5, hx = .5, hy = .5;
   addEventListener('pointermove', function(e){ mx = e.clientX / W; my = e.clientY / H; });
   // 휠 한 번 = 다음 자리까지 영상처럼 이어서 걷는다(휠 양만큼 끊어 넘기지 않는다)
@@ -128,12 +128,12 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
     var f = p * (N - 1), a = Math.floor(f), t = f - a;
     draw(day[a], 1); if (t > .01) draw(day[Math.min(N - 1, a + 1)], t);
     // 식탁 앞에서는 고른 단계의 방을 전체(04) 위에 겹친다. 자리를 뜨면 전체로 돌아간다
-    // 식탁 앞에 닿으면 01(공간만)에서 시작한다. 자리를 뜨면 걷는 장면과 같은 전체 방으로 돌아간다
-    if (p < END){ arrived = false; if (sel !== 4) pick(4); } else if (!arrived){ arrived = true; pick(1); }
+    // 걷는 장면이 곧 01(공간만)이다. 식탁 앞에서 02~04를 그 위에 겹치고, 자리를 뜨면 01로 돌아간다
+    if (p < END){ arrived = false; if (sel !== 1) pick(1); } else arrived = true;
     // 이전 단계를 깔아 둔 채 새 단계를 위에 올린다(둘 사이로 전체 방이 비쳐 번쩍이지 않게)
     ft = Math.min(1, ft + .028); var e = ft * ft * (3 - 2 * ft);
-    if (sel === 4){ if (from !== 4 && e < 1) draw(steps[from - 1], 1 - e); }
-    else { if (from !== 4 && e < 1) draw(steps[from - 1], 1); draw(steps[sel - 1], from === 4 ? e : e); }
+    if (sel === 1){ if (from !== 1 && e < 1) draw(steps[from - 2], 1 - e); }
+    else { if (from !== 1 && e < 1) draw(steps[from - 2], 1); draw(steps[sel - 2], e); }
     var si = stopIdx(); secs.forEach(function(s){ var i = +s.dataset.i; s.classList.toggle('on', i === si && Math.abs(p - STOPS[i]) < .07); });
     // 제목 자리: 문 위(장면마다 기록해 둔 문 한가운데) ↔ 왼쪽 아래 자막 자리
     var tw = title.offsetWidth, th = title.offsetHeight, cx = W * .06, cy = H - H * .13 - th, k = 1, lx = cx, ly = cy, ls = 1;
