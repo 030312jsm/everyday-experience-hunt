@@ -69,7 +69,7 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
 </section>
 
 <nav id="nav"><button><i></i></button><button><i></i></button><button><i></i></button><button><i></i></button></nav>
-<p id="hint">휠로 문을 열고 들어가기 · 식탁 앞에서 1~4 단계 고르기</p>
+<p id="hint">휠·방향키로 다음 자리까지 걷기 · 식탁 앞에서 1~4 단계 고르기</p>
 <div id="load"><p id="lp">방을 불러오는 중 0%</p></div>
 
 <script>
@@ -91,9 +91,13 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
   function size(){ dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.imageSmoothingQuality = 'high'; }
   addEventListener('resize', size); size();
 
+  var tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = .3;
   var tp = 0, p = 0, mx = .5, my = .5, hx = .5, hy = .5;
   addEventListener('pointermove', function(e){ mx = e.clientX / W; my = e.clientY / H; });
-  addEventListener('wheel', function(e){ tp = Math.max(0, Math.min(1, tp + e.deltaY * .00034)); }, { passive: true });
+  // 휠 한 번 = 다음 자리까지 영상처럼 이어서 걷는다(휠 양만큼 끊어 넘기지 않는다)
+  var wheelAt = 0;
+  addEventListener('wheel', function(e){ var now = performance.now(); if (now - wheelAt < 650 || Math.abs(e.deltaY) < 4) return; wheelAt = now;
+    tp = STOPS[Math.max(0, Math.min(STOPS.length - 1, stopIdx() + (e.deltaY > 0 ? 1 : -1)))]; }, { passive: true });
   function stopIdx(){ var b = 0; STOPS.forEach(function(s, i){ if (Math.abs(s - tp) < Math.abs(STOPS[b] - tp)) b = i; }); return b; }
   addEventListener('keydown', function(e){
     if ('1234'.indexOf(e.key) > -1 && tp > END) pick(+e.key);
@@ -112,7 +116,10 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
   }
   (function loop(){
     requestAnimationFrame(loop); if (!ready) return;
-    p += (tp - p) * .06; hx += (mx - hx) * .04; hy += (my - hy) * .04;
+    // 일정한 속도로 걷되 출발과 도착만 부드럽게: 한 화면에 장면 SPEED장씩 넘어간다
+    var now = performance.now(), dt = Math.min(3, (now - last) / 16.667); last = now;
+    var vmax = SPEED / (N - 1), vt = Math.max(-vmax, Math.min(vmax, (tp - p) * .05)); vel += (vt - vel) * Math.min(1, .1 * dt); p += vel * dt;
+    if (Math.abs(tp - p) < 1e-5){ p = tp; vel = 0; } hx += (mx - hx) * .04; hy += (my - hy) * .04;
     // 앞뒤 두 장을 섞어 걸음이 끊기지 않게 한다
     var f = p * (N - 1), a = Math.floor(f), t = f - a;
     draw(day[a], 1); if (t > .01) draw(day[Math.min(N - 1, a + 1)], t);
@@ -126,13 +133,17 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
     // 제목 자리: 문 위(장면마다 기록해 둔 문 한가운데) ↔ 왼쪽 아래 자막 자리
     var tw = title.offsetWidth, th = title.offsetHeight, cx = W * .06, cy = H - H * .13 - th, k = 1, lx = cx, ly = cy, ls = 1;
     if (track && f < NI){
-      var ia = Math.min(NI - 1, Math.floor(f)), ib = Math.min(NI - 1, ia + 1), u = f - ia, A = track[ia], B = track[ib];
+      // 문이 열리기 시작하면 제목은 그 순간의 자리에서 문을 떠난다(그 뒤로 문을 따라 커지지 않는다)
+      var F0 = NI * .3, fd = Math.min(f, F0), ia = Math.min(NI - 1, Math.floor(fd)), ib = Math.min(NI - 1, ia + 1), u = fd - ia, A = track[ia], B = track[ib];
       var s0 = Math.max(W / FW, H / FH) * 1.04, w = FW * s0, h = FH * s0, ox = (W - w) / 2 - (hx - .5) * W * .034, oy = (H - h) / 2 - (hy - .5) * H * .028;
       var ds = (A[2] + (B[2] - A[2]) * u) * w * .6 / tw, dx = ox + (A[0] + (B[0] - A[0]) * u) * w - tw * ds / 2, dy = oy + (A[1] + (B[1] - A[1]) * u) * h - th * ds / 2;
-      k = Math.max(0, Math.min(1, (f - NI * .3) / (NI * .68))); k = k * k * (3 - 2 * k);
+      k = Math.max(0, Math.min(1, (f - F0) / (NI - 1 - F0))); k = k * k * k * (k * (k * 6 - 15) + 10);
       lx = dx + (cx - dx) * k; ly = dy + (cy - dy) * k; ls = ds + (1 - ds) * k;
     }
-    title.style.transform = 'translate(' + lx + 'px,' + ly + 'px) scale(' + ls + ')';
+    // 문에 붙어 있을 땐 문과 한 몸으로, 떠난 뒤엔 천천히 따라가게 한다
+    var rt = tInit ? .07 + .93 * (1 - Math.min(1, k * 10)) : 1; tInit = !!track;
+    sx += (lx - sx) * rt; sy += (ly - sy) * rt; sc += (ls - sc) * rt;
+    title.style.transform = 'translate(' + sx + 'px,' + sy + 'px) scale(' + sc + ')';
     // 문 위에서는 황동빛, 자막 자리에서는 종이빛
     title.style.color = 'rgb(' + Math.round(214 + 27 * k) + ',' + Math.round(176 + 62 * k) + ',' + Math.round(118 + 113 * k) + ')';
     title.style.opacity = track ? Math.max(0, Math.min(1, 1 - (f - NI - 5) / 9)) : 0;
