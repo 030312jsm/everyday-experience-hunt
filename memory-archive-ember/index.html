@@ -83,7 +83,7 @@ html,body{touch-action:none;overscroll-behavior:none}
 </section>
 
 <nav id="nav"><button><i></i></button><button><i></i></button><button><i></i></button><button><i></i></button></nav>
-<p id="hint"><span class="pc">휠·방향키로 다음 자리, 식탁 앞에서는 다음 단계</span><span class="mo">위로 쓸어 넘기기</span></p>
+<p id="hint"><span class="pc">휠·방향키로 다음 자리, 식탁 앞에서는 다음 단계</span><span class="mo">오른쪽을 누르면 앞으로 · 왼쪽을 누르면 뒤로</span></p>
 <div id="load"><p id="lp">방을 불러오는 중 0%</p></div>
 
 <script>
@@ -118,6 +118,8 @@ html,body{touch-action:none;overscroll-behavior:none}
   var t0 = null;
   addEventListener('touchstart', function(e){ t0 = e.touches.length === 1 ? [e.touches[0].clientX, e.touches[0].clientY] : null; }, { passive: true });
   addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], dx = c.clientX - t0[0], dy = c.clientY - t0[1]; t0 = null;
+    // 쓸지 않고 누르기만 했으면: 화면 오른쪽 절반은 앞으로, 왼쪽 절반은 뒤로(목록·아래 막대를 누른 건 제외)
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 12){ if (!e.target.closest('ol li,#nav button')) step(c.clientX < W / 2 ? -1 : 1); return; }
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 36) return; step((Math.abs(dy) > Math.abs(dx) ? dy : dx) < 0 ? 1 : -1); }, { passive: true });
   // 앞으로/뒤로 한 칸: 식탁 앞에서는 01→04 단계를 차례로 넘기고, 그 밖에서는 다음 자리로 걷는다
   function step(d){
