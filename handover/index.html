@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HANDOVER · 손을 건네받는 작업실</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:Pretendard;src:url(../memory-archive-v2/assets/PretendardVariable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#050506;color:#F1EEE7}
+body{font-family:Pretendard,system-ui,sans-serif;user-select:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+/* 글이 놓이는 왼쪽 아래만 살짝 가라앉힌다 */
+#scrim{position:fixed;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(5,5,6,.62) 0,rgba(5,5,6,.28) 34%,rgba(5,5,6,0) 58%)}
+.st{position:fixed;left:6vw;bottom:13vh;width:min(40vw,620px);opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .9s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.st.on{opacity:1;transform:none}
+/* 제목: 처음엔 문 위에 붙어 있다가, 문이 열리면 왼쪽 아래 자막 자리로 옮겨 간다 */
+#title{position:fixed;left:0;top:0;transform-origin:0 0;pointer-events:none;white-space:nowrap;will-change:transform}
+.eb{font-family:"Instrument Serif",serif;font-style:italic;font-size:24px;color:#E8815F}
+.eb span{font-family:Pretendard,sans-serif;font-style:normal;font-size:13px;margin-left:12px;color:#E8815F}
+h1{font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(90px,11vw,190px);line-height:.92;margin-top:4px}
+.tag{font-size:12.5px;font-weight:700;letter-spacing:.1em;margin-top:16px;opacity:.8}
+h2{font-size:clamp(24px,2.3vw,38px);font-weight:700;line-height:1.35;letter-spacing:-.01em}
+.body{font-size:16.5px;line-height:1.8;margin-top:18px;opacity:.86}
+ol{list-style:none;margin-top:16px;border-top:1.5px solid rgba(241,238,231,.85)}
+ol li{display:flex;align-items:baseline;gap:18px;padding:13px 0;border-bottom:1px solid rgba(241,238,231,.22);font-size:18px;font-weight:700}
+ol .no{font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;font-size:22px;color:#E8815F;width:26px}
+ol small{font-size:11.5px;font-weight:600;letter-spacing:.07em;opacity:.55}
+/* 단계 고르기: 고른 단계까지만 밝고, 그 뒤 단계는 흐리다 */
+.st.on ol{pointer-events:auto}
+ol li{cursor:pointer;transition:opacity .4s,padding-left .4s cubic-bezier(.16,1,.3,1)}
+ol li.off{opacity:.32}
+@media (hover:hover){ol li:hover{padding-left:10px;opacity:1}}
+ol li{position:relative}
+ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;height:7px;margin-top:-4px;border-radius:50%;background:#E8815F}
+#nav{position:fixed;left:0;right:0;bottom:4.2vh;display:flex;justify-content:center;gap:10px;align-items:center}
+#nav button{appearance:none;border:0;background:none;padding:8px 4px;cursor:pointer}
+#nav i{display:block;width:44px;height:2px;background:rgba(241,238,231,.28);transition:background .4s}
+#nav .on i{background:#F1EEE7}
+#hint{position:fixed;right:6vw;bottom:4.6vh;font-size:12.5px;color:rgba(241,238,231,.5);pointer-events:none}
+.eb.ko{font-family:Pretendard,sans-serif;font-style:normal;font-weight:700;font-size:17px;letter-spacing:.02em}
+ol li{flex-wrap:wrap}
+ol li em{flex-basis:100%;font-style:normal;font-size:13.5px;font-weight:500;line-height:1.6;opacity:0;max-height:0;overflow:hidden;padding-left:44px;transition:opacity .5s,max-height .6s cubic-bezier(.16,1,.3,1)}
+ol li.cur em{opacity:.82;max-height:60px}
+#def{transition:opacity .5s,max-height .6s;max-height:120px;overflow:hidden}
+#def.off{opacity:0;max-height:0;margin-top:0}
+/* 벽의 판: 보이지 않는 누름 자리 */
+#hot button{position:fixed;appearance:none;border:1px solid transparent;background:none;cursor:pointer;transition:border-color .3s,background .3s}
+#hot button:hover{border-color:rgba(241,238,231,.85);background:rgba(241,238,231,.08)}
+#hot.off{display:none}
+#vt{position:fixed;inset:0;z-index:8;background:rgba(5,5,6,.9);display:grid;place-items:center;padding:5vh 5vw}
+#vt[hidden]{display:none}
+#vt figure{max-width:100%;max-height:100%;display:grid;gap:14px;justify-items:center}
+#vt img{max-width:90vw;max-height:80vh;display:block}
+#vt figcaption{font-size:17px;font-weight:700}
+#vt figcaption span{font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;color:#E8815F;margin-right:12px;font-size:20px}
+#vtx{position:fixed;right:3vw;top:3vh;appearance:none;border:0;background:none;color:#F1EEE7;font-size:34px;line-height:1;cursor:pointer}
+#load{position:fixed;inset:0;background:#050506;display:grid;place-items:center;transition:opacity .8s;z-index:9}
+#load p{font-size:13px;color:rgba(241,238,231,.6);letter-spacing:.04em}
+#load.off{opacity:0;pointer-events:none}
+html,body{touch-action:none;overscroll-behavior:none}
+#guide{display:none}
+/* 휴대폰: 글 폭을 화면에 맞추고 아래쪽을 가라앉힌다 */
+@media (max-width:820px){
+  #scrim{background:linear-gradient(0deg,rgba(5,5,6,.78) 0,rgba(5,5,6,.45) 34%,rgba(5,5,6,0) 62%)}
+  .st{left:6vw;right:6vw;width:auto;bottom:16vh}
+  h1{font-size:23vw}
+  .eb{font-size:19px}.eb span{font-size:12px;margin-left:9px}
+  /* 줄이 넘치면 낱말 단위로 끊고, 줄 길이를 고르게 나눈다 */
+  h2{font-size:clamp(19px,5.6vw,24px);line-height:1.4;word-break:keep-all;text-wrap:balance}
+  .body{font-size:clamp(13.5px,3.8vw,15.5px);line-height:1.7;word-break:keep-all;text-wrap:balance}
+  .body br,h2 br{display:none}
+  ol li{word-break:keep-all}
+  ol li{font-size:15.5px;gap:12px;padding:11px 0;flex-wrap:wrap}ol small{font-size:10px}ol .no{font-size:19px;width:22px}
+  ol li.cur::before{left:-13px}
+  #nav{bottom:6.5vh}#nav i{width:32px}
+  #hint{left:0;right:0;bottom:3vh;text-align:center;font-size:11.5px}#hint{display:none}
+  /* 첫 화면 도움말: 처음 한 번 누르거나 쓸면 사라진다 */
+  #guide{display:flex;position:fixed;inset:0;pointer-events:none;transition:opacity .7s}
+  #guide.off{opacity:0}
+  #guide span{flex:1;display:flex;align-items:flex-start;gap:10px;padding:68vh 5vw 0;font-size:13px;line-height:1.5;color:rgba(241,238,231,.85)}
+  #guide i{font-style:normal}
+  #guide .gl{border-right:1px dashed rgba(241,238,231,.22)}
+  #guide .gr{justify-content:flex-end;text-align:right}
+  #guide b{font-weight:400;font-size:30px;line-height:1.25}
+  #guide em{position:absolute;left:0;right:0;top:calc(68vh + 64px);text-align:center;font-style:normal;font-size:12px;color:rgba(241,238,231,.6)}
+}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="scrim"></div>
+
+<header id="title">
+  <p class="eb">Future Experience<span>손기술을 건네받는 장갑</span></p>
+  <h1>HANDOVER</h1>
+  <p class="tag">FROM HAND TO HAND</p>
+</header>
+<section class="st" data-i="2">
+  <p class="eb ko">세 개의 손</p>
+  <p class="body" id="def">사라져 가는 손의 기술을 영상이 아닌 움직임 그대로 기록하고, <br>배우는 사람이 그 손을 직접 겪으며 자기 손으로 옮겨 가도록 돕는다.</p>
+  <ol>
+    <li data-s="1"><span class="no">01</span>손을 건네받는 공방<small>통영 나전칠기 끊음질</small><em>서른 살 수아 ← 박정호 장인의 손 · 기록 412시간</em></li>
+    <li data-s="2"><span class="no">02</span>다치기 전의 손에게 배우는 주방<small>정우의 채썰기</small><em>마흔여섯 살 정우 ← 3년 전 자신의 손 · 기록 47분</em></li>
+    <li data-s="3"><span class="no">03</span>멀리서 건네받는 손<small>릴롱궤 중앙병원 제왕절개</small><em>스물아홉 살 에스더 ← 치콘디 반다 선생의 손 · 수술 312건 중 모형 재현</em></li>
+  </ol>
+</section>
+<section class="st" data-i="3">
+  <p class="eb">Visual Territory</p>
+  <p class="body">판을 누르면 크게 볼 수 있다.</p>
+</section>
+<div id="hot"></div>
+<div id="vt" hidden><figure><img alt=""><figcaption></figcaption></figure><button id="vtx" aria-label="닫기">×</button></div>
+
+<nav id="nav"><button><i></i></button><button><i></i></button><button><i></i></button><button><i></i></button></nav>
+<p id="hint"><span class="pc">휠·방향키로 다음 자리, 작업대 앞에서는 다음 장면</span></p>
+<div id="guide" aria-hidden="true"><span class="gl"><b>‹</b><i>왼쪽을 누르면<br>뒤로</i></span><span class="gr"><i>오른쪽을 누르면<br>앞으로</i><b>›</b></span><em>화면을 잡고 끌면 둘러볼 수 있어요</em></div>
+<div id="load"><p id="lp">작업실을 불러오는 중 0%</p></div>
+
+<script>
+(function(){
+  // 휴대폰은 메모리가 작아 장면을 절반만, 작은 크기로 쓴다
+  var MOB = matchMedia('(max-width: 820px), (pointer: coarse)').matches;
+  var NI = MOB ? 54 : 108, NM = MOB ? 72 : 143, NW = MOB ? 50 : 100, N = NI + NM + NW, FW = 16, FH = 9, PRE = MOB ? 'f/m_' : 'f/', IDIR = PRE + 'intro/', DIR = PRE + 'room/', WDIR = PRE + 'wall/', STEPDIR = DIR;
+  // 멈추는 자리: 문 앞 · 작업실에 들어선 자리 · 작업대 앞 · 판이 걸린 벽 앞
+  var STOPS = [0, NI, NI + NM - 1, N - 1].map(function(f){ return f / (N - 1); }), BENCH = STOPS[2];
+  var track = null; fetch(IDIR + 'track.json').then(function(r){ return r.json(); }).then(function(t){ track = t; });
+  var cv = document.getElementById('c'), g = cv.getContext('2d');
+  var day = [], loaded = 0, ready = false;
+  for (var i = 0; i < N; i++) (function(i){ var im = new Image(); im.onload = im.onerror = function(){ loaded++; document.getElementById('lp').textContent = '방을 불러오는 중 ' + Math.round(loaded / N * 100) + '%';
+    if (loaded === N){ ready = true; document.getElementById('load').classList.add('off'); } }; im.src = (i < NI ? IDIR + ('00' + i).slice(-3) : i < NI + NM ? DIR + ('00' + (i - NI)).slice(-3) : WDIR + ('00' + (i - NI - NM)).slice(-3)) + '.webp'; day[i] = im; })(i);
+  var steps = [1, 2, 3].map(function(n){ var im = new Image(); im.src = STEPDIR + 'step' + n + '.webp'; return im; }), sel = 0, from = 0, ft = 1;
+  // 손 레이어: GPT에서 받은 투명 PNG를 그대로 얹는다(0 = 놓여 있는 장갑, 1~3 = 장면별 두 손)
+  var hands = [0, 1, 2, 3].map(function(n){ var im = new Image(); im.src = 'layers/' + n + '.png'; return im; }), ha = [0, 0, 0, 0];
+  var lis = [].slice.call(document.querySelectorAll('ol li'));
+  function pick(n){ if (n !== sel){ from = sel; ft = 0; } sel = n; lis.forEach(function(li, i){ li.classList.toggle('off', n > 0 && i + 1 !== n); li.classList.toggle('cur', i + 1 === n); }); document.getElementById('def').classList.toggle('off', n > 0); }
+  lis.forEach(function(li){ li.addEventListener('click', function(){ pick(sel === +li.dataset.s ? 0 : +li.dataset.s); }); }); pick(0);
+
+  var W, H, dpr;
+  function size(){ dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.imageSmoothingQuality = 'high'; }
+  addEventListener('resize', size); size();
+
+  var arrived = false, tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = MOB ? .25 : .5, SPEED_IN = MOB ? .17 : .34;   // 문을 열고 들어가는 구간은 더 천천히
+  var tp = 0, p = 0, mx = .5, my = .5, hx = .5, hy = .5;
+  addEventListener('pointermove', function(e){ if (!MOB){ mx = e.clientX / W; my = e.clientY / H; } });
+  // 휠 한 번 = 다음 자리까지 영상처럼 이어서 걷는다(휠 양만큼 끊어 넘기지 않는다)
+  var wheelAt = 0;
+  addEventListener('wheel', function(e){ var now = performance.now(); if (now - wheelAt < 650 || Math.abs(e.deltaY) < 4) return; wheelAt = now;
+    step(e.deltaY > 0 ? 1 : -1); }, { passive: true });
+  // 휴대폰: 누르면 이동, 끌면 둘러보기
+  var t0 = null;
+  var guide = document.getElementById('guide');
+  addEventListener('touchstart', function(e){ guide.classList.add('off'); d0 = [dgx, dgy]; t0 = e.touches.length === 1 ? [e.touches[0].clientX, e.touches[0].clientY] : null; }, { passive: true });
+  // 휴대폰: 화면을 잡고 끌면 둘러본다(잡은 그림을 끄는 방향)
+  var dgx = 0, dgy = 0, d0 = [0, 0];
+  function look(){ mx = .5 + dgx; my = .5 + dgy; }
+  addEventListener('touchmove', function(e){ if (!t0 || e.touches.length !== 1) return; var c = e.touches[0];
+    dgx = Math.max(-.5, Math.min(.5, d0[0] - (c.clientX - t0[0]) / (W * 2.2))); dgy = Math.max(-.5, Math.min(.5, d0[1] - (c.clientY - t0[1]) / (H * .9))); look(); }, { passive: true });
+  addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], dx = c.clientX - t0[0], dy = c.clientY - t0[1]; t0 = null;
+    // 쓸지 않고 누르기만 했으면: 화면 오른쪽 절반은 앞으로, 왼쪽 절반은 뒤로(목록·아래 막대를 누른 건 제외)
+    if (Math.max(Math.abs(dx), Math.abs(dy)) < 12){ if (!e.target.closest('ol li,#nav button,#hot,#vt')) step(c.clientX < W / 2 ? -1 : 1); return; }
+  }, { passive: true });
+  // 앞으로/뒤로 한 칸: 작업대 앞에서는 장갑 → 01 → 02 → 03 장면을 차례로 넘기고, 판을 크게 보는 중에는 옆 판으로, 그 밖에서는 다음 자리로 걷는다
+  function step(d){
+    if (!vt.hidden){ show((vtCur - 1 + d + 9) % 9 + 1); return; }
+    if (arrived && tp === BENCH && (d > 0 ? sel < 3 : sel > 0)){ pick(sel + d); return; }
+    tp = STOPS[Math.max(0, Math.min(STOPS.length - 1, stopIdx() + d))]; }
+  function stopIdx(){ var b = 0; STOPS.forEach(function(s, i){ if (Math.abs(s - tp) < Math.abs(STOPS[b] - tp)) b = i; }); return b; }
+  addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){ vt.hidden = true; return; }
+    if ('0123'.indexOf(e.key) > -1 && tp === BENCH && arrived) pick(+e.key);
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') step(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step(-1);
+  });
+  // 벽의 판 9개: 누르는 자리와 크게 보기
+  var VTN = ['매끄러운 세라믹 표면 / 유기적 곡면', '무광, 패브릭', '선형적인, Art', '나무재질의 정갈한 느낌', '흑백의 대비가 명확한 단색조', '무채도 반투명 중첩', '반들반들한 은백색', '생체 신호 연동, 나노테크', '비정형적인, 유선형'];
+  var hot = document.getElementById('hot'), vt = document.getElementById('vt'), vtCur = 1, boards = [];
+  function show(n){ vtCur = n; vt.querySelector('img').src = 'vt/' + n + '.jpg'; vt.querySelector('figcaption').innerHTML = '<span>' + ('0' + n).slice(-2) + '</span>' + VTN[n - 1]; vt.hidden = false; }
+  vt.addEventListener('click', function(e){ if (e.target.tagName !== 'IMG') vt.hidden = true; });
+  fetch('f/wall/boards.json').then(function(r){ return r.json(); }).then(function(b){ boards = b.map(function(x){ var el = document.createElement('button'); el.setAttribute('aria-label', VTN[x[0] - 1]); el.addEventListener('click', function(){ show(x[0]); }); hot.appendChild(el); return { el: el, r: x }; }); });
+  var navB = [].slice.call(document.querySelectorAll('#nav button')), secs = [].slice.call(document.querySelectorAll('.st')), title = document.getElementById('title');
+  navB.forEach(function(b, i){ b.addEventListener('click', function(){ tp = STOPS[i]; }); });
+
+  // 한 장 그리기: 화면을 꽉 채우고, 고개를 돌린 만큼 살짝 밀린다
+  function view(){
+    var s = Math.max(W / FW, H / FH) * (MOB ? 1.16 : 1.04), w = FW * s, h = FH * s;
+    var rx = MOB ? (w - W) * .5 : W * .017, ry = MOB ? (h - H) * .5 : H * .014;   // 휴대폰은 장면의 양 끝까지(PC 화면에 보이는 범위 전부)
+    return { x: (W - w) / 2 - (hx - .5) * 2 * rx, y: (H - h) / 2 - (hy - .5) * 2 * ry, w: w, h: h };
+  }
+  function draw(im, al){
+    if (!im || !im.naturalWidth) return;
+    var v = view(); g.globalAlpha = al; g.drawImage(im, v.x * dpr, v.y * dpr, v.w * dpr, v.h * dpr); g.globalAlpha = 1;
+  }
+  (function loop(){
+    requestAnimationFrame(loop); if (!ready) return;
+    // 일정한 속도로 걷되 출발과 도착만 부드럽게: 한 화면에 장면 SPEED장씩 넘어간다
+    var now = performance.now(), dt = Math.min(3, (now - last) / 16.667); last = now;
+    var vmax = (p * (N - 1) < NI - .5 ? SPEED_IN : SPEED) / (N - 1), vt = Math.max(-vmax, Math.min(vmax, (tp - p) * .05)); vel += (vt - vel) * Math.min(1, .1 * dt); p += vel * dt;
+    if (Math.abs(tp - p) < 1e-5){ p = tp; vel = 0; } hx += (mx - hx) * .04; hy += (my - hy) * .04;
+    // 앞뒤 두 장을 섞어 걸음이 끊기지 않게 한다
+    var f = p * (N - 1), a = Math.floor(f), t = f - a;
+    draw(day[a], 1); if (t > .01) draw(day[Math.min(N - 1, a + 1)], t);
+    // 작업대 앞에 멈춰 섰을 때만 장면을 고를 수 있다. 자리를 뜨면 장갑만 놓인 작업대로 돌아간다
+    arrived = Math.abs(p - BENCH) < .0015; if (!arrived && Math.abs(p - BENCH) > .02 && sel !== 0) pick(0);
+    // 이전 장면을 깔아 둔 채 새 장면을 위에 올린다
+    ft = Math.min(1, ft + .028); var e = ft * ft * (3 - 2 * ft);
+    if (sel === 0){ if (from !== 0 && e < 1) draw(steps[from - 1], 1 - e); }
+    else { if (from !== 0 && e < 1) draw(steps[from - 1], 1); draw(steps[sel - 1], e); }
+    // 손 레이어: 고른 장면의 손만 서서히 올린다. 놓여 있는 장갑(0)은 크기만 줄여 작업대 가운데에 둔다
+    for (var hi = 0; hi < 4; hi++){
+      ha[hi] += ((arrived && sel === hi ? 1 : 0) - ha[hi]) * (arrived && sel === hi ? .05 : .12);
+      if (ha[hi] < .01 || !hands[hi].naturalWidth) continue;
+      var v2 = view(), k0 = hi === 0 ? .6 : 1, cxh = .5, cyh = hi === 0 ? .44 : .5;
+      g.globalAlpha = Math.min(1, ha[hi]); g.drawImage(hands[hi], (v2.x + v2.w * (cxh - k0 / 2)) * dpr, (v2.y + v2.h * (cyh - k0 / 2)) * dpr, v2.w * k0 * dpr, v2.h * k0 * dpr); g.globalAlpha = 1;
+    }
+    var si = stopIdx(); secs.forEach(function(s){ var i = +s.dataset.i; s.classList.toggle('on', i === si && Math.abs(p - STOPS[i]) < .03); });
+    // 벽 앞에 섰을 때만 판 누름 자리를 화면 위치에 맞춰 놓는다
+    var atWall = Math.abs(p - 1) < .002; hot.classList.toggle('off', !atWall);
+    if (atWall){ var vw = view(); boards.forEach(function(b){ var r = b.r, st = b.el.style; st.left = vw.x + r[1] * vw.w + 'px'; st.top = vw.y + r[2] * vw.h + 'px'; st.width = r[3] * vw.w + 'px'; st.height = r[4] * vw.h + 'px'; }); }
+    // 제목 자리: 문 위(장면마다 기록해 둔 문 한가운데) ↔ 왼쪽 아래 자막 자리
+    var tw = title.offsetWidth, th = title.offsetHeight, cx = W * .06, cy = H - H * (W < 821 ? .16 : .13) - th, k = 1, lx = cx, ly = cy, ls = 1;
+    if (track && f < NI){
+      // 문이 열리기 시작하면 제목은 그 순간의 자리에서 문을 떠난다(그 뒤로 문을 따라 커지지 않는다)
+      var F0 = NI * .3, fd = Math.min(f, F0), ia = Math.min(NI - 1, Math.floor(fd)), ib = Math.min(NI - 1, ia + 1), u = fd - ia, A = track[ia], B = track[ib];
+      var v = view(), w = v.w, h = v.h, ox = v.x, oy = v.y;
+      var ds = (A[2] + (B[2] - A[2]) * u) * w * .6 / tw, dx = ox + (A[0] + (B[0] - A[0]) * u) * w - tw * ds / 2, dy = oy + (A[1] + (B[1] - A[1]) * u) * h - th * ds / 2;
+      k = Math.max(0, Math.min(1, (f - F0) / (NI - 1 - F0))); k = k * k * k * (k * (k * 6 - 15) + 10);
+      lx = dx + (cx - dx) * k; ly = dy + (cy - dy) * k; ls = ds + (1 - ds) * k;
+    }
+    // 문에 붙어 있을 땐 문과 한 몸으로, 떠난 뒤엔 천천히 따라가게 한다
+    var rt = tInit ? .07 + .93 * (1 - Math.min(1, k * 10)) : 1; tInit = !!track;
+    sx += (lx - sx) * rt; sy += (ly - sy) * rt; sc += (ls - sc) * rt;
+    title.style.transform = 'translate(' + sx + 'px,' + sy + 'px) scale(' + sc + ')';
+    // 문 위에서는 황동빛, 자막 자리에서는 종이빛
+    title.style.color = 'rgb(' + Math.round(214 + 27 * k) + ',' + Math.round(176 + 62 * k) + ',' + Math.round(118 + 113 * k) + ')';
+    title.style.opacity = track ? Math.max(0, Math.min(1, 1 - (f - NI - 5) / 9)) : 0;
+    navB.forEach(function(b, i){ b.classList.toggle('on', i === si); });
+  })();
+})();
+</script>
+</body>
+</html>
