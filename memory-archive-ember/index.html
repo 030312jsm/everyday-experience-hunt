@@ -97,7 +97,7 @@ html,body{touch-action:none;overscroll-behavior:none}
 
 <nav id="nav"><button><i></i></button><button><i></i></button><button><i></i></button><button><i></i></button></nav>
 <p id="hint"><span class="pc">휠·방향키로 다음 자리, 식탁 앞에서는 다음 단계</span></p>
-<div id="guide" aria-hidden="true"><span class="gl"><b>‹</b><i>왼쪽을 누르면<br>뒤로</i></span><span class="gr"><i>오른쪽을 누르면<br>앞으로</i><b>›</b></span><em>화면을 잡고 끌거나 휴대폰을 기울이면 둘러볼 수 있어요</em></div>
+<div id="guide" aria-hidden="true"><span class="gl"><b>‹</b><i>왼쪽을 누르면<br>뒤로</i></span><span class="gr"><i>오른쪽을 누르면<br>앞으로</i><b>›</b></span><em>화면을 잡고 끌면 둘러볼 수 있어요</em></div>
 <div id="load"><p id="lp">방을 불러오는 중 0%</p></div>
 
 <script>
@@ -132,17 +132,12 @@ html,body{touch-action:none;overscroll-behavior:none}
   var t0 = null;
   var guide = document.getElementById('guide');
   addEventListener('touchstart', function(e){ guide.classList.add('off'); d0 = [dgx, dgy]; t0 = e.touches.length === 1 ? [e.touches[0].clientX, e.touches[0].clientY] : null; }, { passive: true });
-  // 휴대폰: 화면을 잡고 끌면 둘러본다(잡은 그림을 끄는 방향). 기울기 센서가 있으면 기울여서도 둘러본다
-  var dgx = 0, dgy = 0, d0 = [0, 0], gyx = 0, gyy = 0, g0 = null, gyroAsked = false;
-  function look(){ mx = Math.max(0, Math.min(1, .5 + dgx + gyx)); my = Math.max(0, Math.min(1, .5 + dgy + gyy)); }
+  // 휴대폰: 화면을 잡고 끌면 둘러본다(잡은 그림을 끄는 방향)
+  var dgx = 0, dgy = 0, d0 = [0, 0];
+  function look(){ mx = .5 + dgx; my = .5 + dgy; }
   addEventListener('touchmove', function(e){ if (!t0 || e.touches.length !== 1) return; var c = e.touches[0];
     dgx = Math.max(-.5, Math.min(.5, d0[0] - (c.clientX - t0[0]) / (W * 1.6))); dgy = Math.max(-.5, Math.min(.5, d0[1] - (c.clientY - t0[1]) / (H * .9))); look(); }, { passive: true });
-  function onTilt(e){ if (e.gamma == null || e.beta == null) return; if (!g0) g0 = [e.gamma, e.beta];
-    gyx = Math.max(-.5, Math.min(.5, (e.gamma - g0[0]) / 44)); gyy = Math.max(-.5, Math.min(.5, (e.beta - g0[1]) / 50)); look(); }
-  function askGyro(){ if (gyroAsked || !MOB || !window.DeviceOrientationEvent) return; gyroAsked = true;
-    var D = DeviceOrientationEvent; if (typeof D.requestPermission === 'function') D.requestPermission().then(function(r){ if (r === 'granted') addEventListener('deviceorientation', onTilt); }).catch(function(){});
-    else addEventListener('deviceorientation', onTilt); }
-  addEventListener('touchend', function(e){ askGyro(); if (!t0) return; var c = e.changedTouches[0], dx = c.clientX - t0[0], dy = c.clientY - t0[1]; t0 = null;
+  addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], dx = c.clientX - t0[0], dy = c.clientY - t0[1]; t0 = null;
     // 쓸지 않고 누르기만 했으면: 화면 오른쪽 절반은 앞으로, 왼쪽 절반은 뒤로(목록·아래 막대를 누른 건 제외)
     if (Math.max(Math.abs(dx), Math.abs(dy)) < 12){ if (!e.target.closest('ol li,#nav button')) step(c.clientX < W / 2 ? -1 : 1); return; }
   }, { passive: true });
