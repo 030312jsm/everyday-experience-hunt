@@ -91,7 +91,7 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
   function size(){ dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * dpr; cv.height = H * dpr; g.imageSmoothingQuality = 'high'; }
   addEventListener('resize', size); size();
 
-  var tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = .3, SPEED_IN = .19;   // 문을 열고 들어가는 구간은 더 천천히
+  var arrived = false, tInit = false, sx = 0, sy = 0, sc = 1, vel = 0, last = performance.now(), SPEED = .3, SPEED_IN = .19;   // 문을 열고 들어가는 구간은 더 천천히
   var tp = 0, p = 0, mx = .5, my = .5, hx = .5, hy = .5;
   addEventListener('pointermove', function(e){ mx = e.clientX / W; my = e.clientY / H; });
   // 휠 한 번 = 다음 자리까지 영상처럼 이어서 걷는다(휠 양만큼 끊어 넘기지 않는다)
@@ -124,7 +124,8 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
     var f = p * (N - 1), a = Math.floor(f), t = f - a;
     draw(day[a], 1); if (t > .01) draw(day[Math.min(N - 1, a + 1)], t);
     // 식탁 앞에서는 고른 단계의 방을 전체(04) 위에 겹친다. 자리를 뜨면 전체로 돌아간다
-    if (p < END && sel !== 4) pick(4);
+    // 식탁 앞에 닿으면 01(공간만)에서 시작한다. 자리를 뜨면 걷는 장면과 같은 전체 방으로 돌아간다
+    if (p < END){ arrived = false; if (sel !== 4) pick(4); } else if (!arrived){ arrived = true; pick(1); }
     // 이전 단계를 깔아 둔 채 새 단계를 위에 올린다(둘 사이로 전체 방이 비쳐 번쩍이지 않게)
     ft = Math.min(1, ft + .028); var e = ft * ft * (3 - 2 * ft);
     if (sel === 4){ if (from !== 4 && e < 1) draw(steps[from - 1], 1 - e); }
