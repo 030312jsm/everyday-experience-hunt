@@ -16,6 +16,8 @@ canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
 #scrim{position:fixed;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(5,5,6,.62) 0,rgba(5,5,6,.28) 34%,rgba(5,5,6,0) 58%)}
 .st{position:fixed;left:6vw;bottom:13vh;width:min(40vw,620px);opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .9s cubic-bezier(.16,1,.3,1);pointer-events:none}
 .st.on{opacity:1;transform:none}
+/* 제목: 처음엔 문 위에 붙어 있다가, 문이 열리면 왼쪽 아래 자막 자리로 옮겨 간다 */
+#title{position:fixed;left:0;top:0;transform-origin:0 0;pointer-events:none;white-space:nowrap;will-change:transform}
 .eb{font-family:"Instrument Serif",serif;font-style:italic;font-size:24px;color:#E8815F}
 .eb span{font-family:Pretendard,sans-serif;font-style:normal;font-size:13px;margin-left:12px;color:#E8815F}
 h1{font-family:"Instrument Serif",serif;font-weight:400;font-size:clamp(90px,11vw,190px);line-height:.92;margin-top:4px}
@@ -47,16 +49,16 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
 <canvas id="c"></canvas>
 <div id="scrim"></div>
 
-<section class="st" data-at="0">
+<header id="title">
   <p class="eb">Brand 03<span>상실과 애도</span></p>
   <h1>EMBER</h1>
   <p class="tag">WARMTH REMAINS</p>
-</section>
-<section class="st" data-at="0.5">
+</header>
+<section class="st" data-i="2">
   <h2>“기억 속에 남아 있는<br>작은 온기를 다시 발견하다.”</h2>
   <p class="body">떠난 사람을 AI로 되살려 대화하는 서비스가 아니라,<br>함께했던 실제 일상의 흔적을 안전하게 다시 경험하는 서비스.</p>
 </section>
-<section class="st" data-at="1">
+<section class="st" data-i="3">
   <p class="eb">Memory Path</p>
   <ol>
     <li data-s="1"><span class="no">01</span>목소리 없이 공간만 보기<small>SPACE ONLY</small></li>
@@ -66,17 +68,20 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
   </ol>
 </section>
 
-<nav id="nav"><button><i></i></button><button><i></i></button><button><i></i></button></nav>
-<p id="hint">휠로 걸어 들어가기 · 식탁 앞에서 1~4 단계 고르기</p>
+<nav id="nav"><button><i></i></button><button><i></i></button><button><i></i></button><button><i></i></button></nav>
+<p id="hint">휠로 문을 열고 들어가기 · 식탁 앞에서 1~4 단계 고르기</p>
 <div id="load"><p id="lp">방을 불러오는 중 0%</p></div>
 
 <script>
 (function(){
-  var N = 72, FW = 16, FH = 9, STOPS = [0, .5, 1], DIR = 'f/day/', STEPDIR = 'f/';
+  var NI = 54, NM = 72, N = NI + NM, FW = 16, FH = 9, IDIR = /lo/.test(location.search) ? 'f/introlo/' : 'f/intro/', DIR = 'f/hd/', STEPDIR = 'f/hd/';
+  // 멈추는 자리: 문 앞 · 방에 들어선 자리 · 방 가운데 · 식탁 앞
+  var STOPS = [0, NI, NI + (NM - 1) / 2, N - 1].map(function(f){ return f / (N - 1); }), END = STOPS[3] - .04;
+  var track = null; fetch(IDIR + 'track.json').then(function(r){ return r.json(); }).then(function(t){ track = t; });
   var cv = document.getElementById('c'), g = cv.getContext('2d');
   var day = [], loaded = 0, ready = false;
   for (var i = 0; i < N; i++) (function(i){ var im = new Image(); im.onload = im.onerror = function(){ loaded++; document.getElementById('lp').textContent = '방을 불러오는 중 ' + Math.round(loaded / N * 100) + '%';
-    if (loaded === N){ ready = true; document.getElementById('load').classList.add('off'); } }; im.src = DIR + ('00' + i).slice(-3) + '.webp'; day[i] = im; })(i);
+    if (loaded === N){ ready = true; document.getElementById('load').classList.add('off'); } }; im.src = (i < NI ? IDIR + ('00' + i).slice(-3) : DIR + ('00' + (i - NI)).slice(-3)) + '.webp'; day[i] = im; })(i);
   var steps = [1, 2, 3].map(function(n){ var im = new Image(); im.src = STEPDIR + 'step' + n + '.webp'; return im; }), sel = 4, from = 4, ft = 1;
   var lis = [].slice.call(document.querySelectorAll('ol li'));
   function pick(n){ if (n !== sel){ from = sel; ft = 0; } sel = n; lis.forEach(function(li, i){ li.classList.toggle('off', i + 1 > n); li.classList.toggle('cur', i + 1 === n); }); }
@@ -88,14 +93,14 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
 
   var tp = 0, p = 0, mx = .5, my = .5, hx = .5, hy = .5;
   addEventListener('pointermove', function(e){ mx = e.clientX / W; my = e.clientY / H; });
-  addEventListener('wheel', function(e){ tp = Math.max(0, Math.min(1, tp + e.deltaY * .00055)); }, { passive: true });
+  addEventListener('wheel', function(e){ tp = Math.max(0, Math.min(1, tp + e.deltaY * .00034)); }, { passive: true });
   function stopIdx(){ var b = 0; STOPS.forEach(function(s, i){ if (Math.abs(s - tp) < Math.abs(STOPS[b] - tp)) b = i; }); return b; }
   addEventListener('keydown', function(e){
-    if ('1234'.indexOf(e.key) > -1 && tp > .95) pick(+e.key);
+    if ('1234'.indexOf(e.key) > -1 && tp > END) pick(+e.key);
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') tp = STOPS[Math.min(STOPS.length - 1, stopIdx() + 1)];
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') tp = STOPS[Math.max(0, stopIdx() - 1)];
   });
-  var navB = [].slice.call(document.querySelectorAll('#nav button')), secs = [].slice.call(document.querySelectorAll('.st'));
+  var navB = [].slice.call(document.querySelectorAll('#nav button')), secs = [].slice.call(document.querySelectorAll('.st')), title = document.getElementById('title');
   navB.forEach(function(b, i){ b.addEventListener('click', function(){ tp = STOPS[i]; }); });
 
   // 한 장 그리기: 화면을 꽉 채우고, 고개를 돌린 만큼 살짝 밀린다
@@ -112,12 +117,25 @@ ol li.cur::before{content:"";position:absolute;left:-18px;top:50%;width:7px;heig
     var f = p * (N - 1), a = Math.floor(f), t = f - a;
     draw(day[a], 1); if (t > .01) draw(day[Math.min(N - 1, a + 1)], t);
     // 식탁 앞에서는 고른 단계의 방을 전체(04) 위에 겹친다. 자리를 뜨면 전체로 돌아간다
-    if (p < .93 && sel !== 4) pick(4);
+    if (p < END && sel !== 4) pick(4);
     // 이전 단계를 깔아 둔 채 새 단계를 위에 올린다(둘 사이로 전체 방이 비쳐 번쩍이지 않게)
     ft = Math.min(1, ft + .028); var e = ft * ft * (3 - 2 * ft);
     if (sel === 4){ if (from !== 4 && e < 1) draw(steps[from - 1], 1 - e); }
     else { if (from !== 4 && e < 1) draw(steps[from - 1], 1); draw(steps[sel - 1], from === 4 ? e : e); }
-    var si = stopIdx(); secs.forEach(function(s, i){ s.classList.toggle('on', i === si && Math.abs(p - STOPS[i]) < .12); });
+    var si = stopIdx(); secs.forEach(function(s){ var i = +s.dataset.i; s.classList.toggle('on', i === si && Math.abs(p - STOPS[i]) < .07); });
+    // 제목 자리: 문 위(장면마다 기록해 둔 문 한가운데) ↔ 왼쪽 아래 자막 자리
+    var tw = title.offsetWidth, th = title.offsetHeight, cx = W * .06, cy = H - H * .13 - th, k = 1, lx = cx, ly = cy, ls = 1;
+    if (track && f < NI){
+      var ia = Math.min(NI - 1, Math.floor(f)), ib = Math.min(NI - 1, ia + 1), u = f - ia, A = track[ia], B = track[ib];
+      var s0 = Math.max(W / FW, H / FH) * 1.04, w = FW * s0, h = FH * s0, ox = (W - w) / 2 - (hx - .5) * W * .034, oy = (H - h) / 2 - (hy - .5) * H * .028;
+      var ds = (A[2] + (B[2] - A[2]) * u) * w * .6 / tw, dx = ox + (A[0] + (B[0] - A[0]) * u) * w - tw * ds / 2, dy = oy + (A[1] + (B[1] - A[1]) * u) * h - th * ds / 2;
+      k = Math.max(0, Math.min(1, (f - NI * .3) / (NI * .68))); k = k * k * (3 - 2 * k);
+      lx = dx + (cx - dx) * k; ly = dy + (cy - dy) * k; ls = ds + (1 - ds) * k;
+    }
+    title.style.transform = 'translate(' + lx + 'px,' + ly + 'px) scale(' + ls + ')';
+    // 문 위에서는 황동빛, 자막 자리에서는 종이빛
+    title.style.color = 'rgb(' + Math.round(214 + 27 * k) + ',' + Math.round(176 + 62 * k) + ',' + Math.round(118 + 113 * k) + ')';
+    title.style.opacity = track ? Math.max(0, Math.min(1, 1 - (f - NI - 5) / 9)) : 0;
     navB.forEach(function(b, i){ b.classList.toggle('on', i === si); });
   })();
 })();
