@@ -704,7 +704,7 @@ main{padding-top:38px}
 .tag4{display:inline-block;font-size:11px;font-weight:800;color:#fff;background:var(--blu);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:1px}
 /* 화면 비교 폰 */
 .cmp{margin-top:clamp(16px,2.6vh,26px);display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:clamp(20px,3vw,48px);align-items:center}
-.cmp figure{margin:0;width:min(250px,calc((100svh - 420px) / 2.1))}
+.cmp figure{align-self:start}.cmp figure{margin:0;width:min(250px,calc((100svh - 420px) / 2.1))}
 .cmp figcaption{margin-top:12px;font-size:13px;color:var(--ink-2);text-align:center;line-height:1.5}
 .cmp figcaption b{display:block;color:var(--ink);font-size:14px}
 .cmp .fam figcaption b{color:var(--blu)}
@@ -714,6 +714,8 @@ main{padding-top:38px}
 .cmp .app .rt b{font-size:11.5px}.cmp .app .rt small{font-size:9.6px}.cmp .app .tag{font-size:8.8px}.cmp .app .two span{font-size:10.5px}
 .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
 .mini span{font-size:9.4px;font-weight:700;background:#fff;border-radius:9px;padding:10px 2px;text-align:center;color:var(--ink);box-shadow:0 6px 12px -10px rgba(24,32,46,.5)}
+.mini span i{display:block;font-style:normal;font-size:7.8px;font-weight:700;color:var(--blu);margin-bottom:2px}
+.mini span{padding:7px 2px}
 .mini .off{background:none;border:1px dashed #B9C0CF;color:var(--ink-3);box-shadow:none}
 .sbar{margin:0;display:grid;grid-template-columns:repeat(4,1fr);gap:3px}
 .sbar span{font-size:8.8px;font-weight:700;text-align:center;color:var(--ink-3);border-top:3px solid #D9DFEA;padding-top:4px}
@@ -971,20 +973,20 @@ main{padding-top:38px}
 <!-- 12 화면 비교 -->
 <section class="sec" id="f11b" data-nav="화면 비교">
   <div class="wrap">
-    <p class="eb rv">12 · Screens<span>앱 안의 앱과 FAMILIAR</span></p>
+    <p class="eb rv">12 · Screens<span>토스 앱인토스와 FAMILIAR</span></p>
     <h2 class="h2 rv d1">미리 만든 미니앱을 여는 것과, 내 순서에 맞춰지는 것</h2>
     <div class="cmp">
       <figure class="rv d2"><div class="ph"><div class="scr">
         <div class="sb"><span>9:41</span><i>•••</i></div>
         <div class="app">
-          <p class="ai">입점한 미니앱</p>
-          <div class="mini"><span>영화 예매</span><span>병원 예약</span><span>시설 예약</span><span>특강 신청</span><span>식당 예약</span><span class="off">입점 전</span></div>
-          <p class="ai">미니앱마다 진행 순서가 다르다</p>
-          <div class="rt"><b>병원 예약 미니앱</b><small>진료과 → 의사 → 날짜 → 시간</small></div>
-          <div class="rt"><b>시설 예약 미니앱</b><small>날짜 → 시간 → 방 → 인원</small></div>
-          <div class="rt"><b>특강 신청 미니앱</b><small>강의 → 정원 확인 → 신청</small></div>
+          <p class="ai">전체 · 미니앱</p>
+          <div class="mini"><span><i>게임</i>용사단 키우기</span><span><i>게임</i>돌돌디</span><span><i>eSIM</i>코심</span><span><i>쿠폰</i>디스팟</span><span><i>운세</i>점신</span><span><i>부동산</i>안전집사</span></div>
+          <p class="ai">미니앱마다 만든 곳이 다르다</p>
+          <div class="rt"><b>용사단 키우기</b><small>게임사 슈퍼조이</small></div>
+          <div class="rt"><b>코심</b><small>개발자 1명 · 해외 eSIM 로밍</small></div>
+          <div class="rt"><b>디스팟</b><small>2인 팀 · 할인쿠폰</small></div>
         </div></div></div>
-        <figcaption><b>앱 안의 앱 · 예: 토스 앱인토스</b>파트너사가 미리 만든 미니앱을 연다</figcaption></figure>
+        <figcaption><b>토스 앱인토스</b>토스 홈 · 전체 탭 · 미니앱 스토어에서 미니앱을 연다</figcaption></figure>
       <figure class="fam rv d3"><div class="ph"><div class="scr">
         <div class="sb"><span>9:41</span><i>•••</i></div>
         <div class="app">
@@ -997,11 +999,11 @@ main{padding-top:38px}
         </div></div></div>
         <figcaption><b>FAMILIAR</b>내가 익힌 순서에 서비스가 맞춰진다</figcaption></figure>
       <div class="h4grid">
-        <div class="card rv d4"><span class="n">앱 안의 앱</span><ul><li>서비스가 플랫폼에 맞춰 미리 만들어져 들어온다</li><li>입점한 서비스만 쓸 수 있다</li><li>진행 순서는 미니앱을 만든 곳이 정한다</li></ul></div>
+        <div class="card rv d4"><span class="n">토스 앱인토스</span><ul><li>파트너사와 개발자가 미니앱을 각자 미리 만든다</li><li>검수를 통과한 미니앱만 입점한다</li><li>2026년 8월 기준 입점 미니앱 약 1만 개, 월 이용자 약 400만 명</li></ul></div>
         <div class="card on rv d5"><span class="n">FAMILIAR</span><ul><li>사용자가 진행하려는 단계를 읽는다</li><li>서비스의 단계를 그 순서에 자동으로 맞춘다</li><li>서비스만의 조건은 ‘확인하기’에 그대로 보여 준다</li></ul></div>
       </div>
     </div>
-    <p class="src" style="margin-top:12px">두 화면은 구조를 단순화한 예시 그림이며, 실제 토스 화면이 아니다.</p>
+    <p class="src" style="margin-top:12px">미니앱 이름과 수치는 토스피드(2025 · 2026)와 파이낸셜포스트 기사에 나온 사례다. 화면은 구조를 단순화한 그림이며 실제 토스 화면이 아니다.</p>
   </div>
 </section>
 
