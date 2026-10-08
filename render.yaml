@@ -24,3 +24,8 @@ services:
     runtime: static
     staticPublishPath: ./hunt4
     buildCommand: ""
+  - type: web
+    name: handover
+    runtime: static
+    staticPublishPath: ./handover
+    buildCommand: ""
