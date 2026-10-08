@@ -261,7 +261,7 @@ html,body{touch-action:none;overscroll-behavior:none}
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step(-1);
   });
   // ── 갤러리 ── gs: -1 닫힘 · 0 아홉 영역이 한눈에 · 1~9 영역 하나를 크게
-  var VTN = ['매끄러운 세라믹 표면 / 유기적 곡면', '무광, 패브릭', '선형적인, Art', '나무재질의 정갈한 느낌', '흑백의 대비가 명확한 단색조', '무채도 반투명 중첩', '반들반들한 은백색', '손을 따라 감기는 가는 선과 입자', '비정형적인, 유선형', '마디마다 끼운 반투명 조각'], NC = VTN.length;
+  var VTN = ['매끄러운 세라믹 표면 / 유기적 곡면', '무광, 패브릭', '선형적인, Art', '나무재질의 정갈한 느낌', '흑백의 대비가 명확한 단색조', '무채도 반투명 중첩', '반들반들한 은백색', '몸과 손을 따라 감기는 가는 선과 입자', '비정형적인, 유선형', '마디마다 끼운 반투명 조각'], NC = VTN.length;
   var hot = document.getElementById('hot'), galEl = document.getElementById('gal'), gst = document.getElementById('gst'), gti = document.getElementById('gti'), gs = -1, G = null, boards = [], gtimer = 0, gOpen = 0;
   function build(d){
     G = d; G.items.forEach(function(it, k){ var im = document.createElement('img'); im.alt = ''; im.loading = 'eager'; im.src = 'vt/i/' + ('00' + it.n).slice(-3) + '.webp'; if (it.e) im.className = 'e';
