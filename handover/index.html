@@ -89,6 +89,7 @@ ol>li.cur .tl{display:block}
 /* PC: 장면을 고르면 왼쪽 절반이 시나리오 한 장이 된다. 여섯 대목이 모두 보이고 지금 대목만 밝다 */
 .st.sc.full{left:0;top:0;bottom:0;width:46vw;padding:0 3vw 5vh 5vw;background:rgba(8,7,6,.95);display:flex;flex-direction:column;justify-content:center;transform:none}
 .st.sc.full ol{margin-top:10px}
+ol.pick>li.cur::before{display:none}
 .st.sc.full ol>li{padding:10px 0 0;border-bottom:0}
 .st.sc.full ol>li .tl{margin:1.4vh 0 0 6px}
 .st.sc.full .tl .b{display:grid;grid-template-columns:clamp(112px,9.5vw,150px) minmax(0,1fr);column-gap:14px;padding:.75vh 0;opacity:.36;transition:opacity .5s}
@@ -215,8 +216,16 @@ html,body{touch-action:none;overscroll-behavior:none}
   lis.forEach(function(li, i){ var tl = document.createElement('div'); tl.className = 'tl'; SCN[i].forEach(function(b, k){ var el = document.createElement('div'); el.className = 'b';
     el.innerHTML = '<b>' + b[0] + '</b><div><p>' + (MOB ? b[1] : SHORT[i][k]) + '</p>' + (b[2] ? '<q>' + b[2] + '</q>' : '') + '</div>'; el.addEventListener('click', function(e){ e.stopPropagation(); beat(k); }); tl.appendChild(el); }); li.appendChild(tl); });
   lis[0].parentNode.classList.add('pick');
+  // 글 상자가 작은 상자에서 왼쪽 한 장으로 자라난다(반대로 갈 때는 서서히 나타난다)
+  function setFull(on){ var el = document.querySelector('.st.sc'); if (el.classList.contains('full') === on) return;
+    var a = el.getBoundingClientRect(); el.classList.toggle('full', on); var b = el.getBoundingClientRect(); if (!el.animate) return;
+    var ez = 'cubic-bezier(.16,1,.3,1)';
+    if (on) el.animate([{ clipPath: 'inset(' + Math.max(0, a.top - b.top) + 'px ' + Math.max(0, b.right - a.right) + 'px ' + Math.max(0, b.bottom - a.bottom) + 'px ' + Math.max(0, a.left - b.left) + 'px)' }, { clipPath: 'inset(0px 0px 0px 0px)' }], { duration: 900, easing: ez });
+    else el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, easing: 'ease' });
+    [].forEach.call(el.children, function(c, i){ c.animate([{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 800, delay: on ? 120 + i * 60 : 0, easing: ez, fill: 'backwards' }); });
+  }
   function beat(k){ bi = k; if (!sel) return; [].forEach.call(lis[sel - 1].querySelectorAll('.tl .b'), function(el, i){ el.classList.toggle('on', i === k); el.classList.toggle('done', i < k); }); }
-  function pick(n, k){ if (n !== sel){ from = sel; ft = 0; } sel = n; lis.forEach(function(li, i){ li.classList.toggle('off', n > 0 && i + 1 !== n); li.classList.toggle('cur', i + 1 === n); }); document.getElementById('def').classList.toggle('off', n > 0); document.querySelector('.st.sc').classList.toggle('full', n > 0 && !MOB); beat(k || 0); }
+  function pick(n, k){ if (n !== sel){ from = sel; ft = 0; } sel = n; lis.forEach(function(li, i){ li.classList.toggle('off', n > 0 && i + 1 !== n); li.classList.toggle('cur', i + 1 === n); }); document.getElementById('def').classList.toggle('off', n > 0); setFull(n > 0 && !MOB); beat(k || 0); }
   if (!MOB) lis.forEach(function(li){ li.addEventListener('click', function(){ pick(sel === +li.dataset.s ? 0 : +li.dataset.s); }); }); pick(0);
 
   var W, H, dpr;
