@@ -253,7 +253,7 @@ html,body{touch-action:none;overscroll-behavior:none}
   fetch('vt/items.json').then(function(r){ return r.json(); }).then(build);
   document.getElementById('galx').addEventListener('click', function(){ gal(-1); });
   addEventListener('resize', function(){ if (gs >= 0) lay(gs); });
-  fetch('f/wall/boards.json').then(function(r){ return r.json(); }).then(function(b){ boards = b.map(function(x){ var el = document.createElement('button'); el.setAttribute('aria-label', VTN[x[0] - 1]); el.addEventListener('click', function(){ gal(x[0]); }); hot.appendChild(el); return { el: el, r: x }; }); });
+  fetch('f/wall/boards.json').then(function(r){ return r.json(); }).then(function(b){ boards = b.map(function(x){ var el = document.createElement('button'); el.setAttribute('aria-label', VTN[x[0] - 1]); el.addEventListener('click', function(){ if (gs < 0) gal(x[0]); }); hot.appendChild(el); return { el: el, r: x }; }); });
   var navB = [].slice.call(document.querySelectorAll('#nav button')), secs = [].slice.call(document.querySelectorAll('.st')), title = document.getElementById('title');
   navB.forEach(function(b, i){ b.addEventListener('click', function(){ tp = STOPS[i]; }); });
 
