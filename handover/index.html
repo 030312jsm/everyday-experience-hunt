@@ -245,7 +245,7 @@ html,body{touch-action:none;overscroll-behavior:none}
   }, { passive: true });
   // 앞으로/뒤로 한 칸: 작업대 앞에서는 장갑 → 01 → 02 → 03 장면을 차례로 넘기고, 판을 크게 보는 중에는 옆 판으로, 그 밖에서는 다음 자리로 걷는다
   function step(d){
-    if (gs >= 0){ if (d > 0){ if (gs < 9) gal(gs + 1); } else gal(gs - 1); return; }
+    if (gs >= 0){ if (d > 0){ if (gs < NC) gal(gs + 1); } else gal(gs - 1); return; }
     if (d > 0 && tp === 1 && Math.abs(p - 1) < .002){ gal(0); return; }
     if (arrived && tp === BENCH){
       if (sel > 0 && bi + d >= 0 && bi + d < SCN[sel - 1].length){ beat(bi + d); return; }      // 장면 안에서는 대목을 하나씩
@@ -261,7 +261,7 @@ html,body{touch-action:none;overscroll-behavior:none}
     if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step(-1);
   });
   // ── 갤러리 ── gs: -1 닫힘 · 0 아홉 영역이 한눈에 · 1~9 영역 하나를 크게
-  var VTN = ['매끄러운 세라믹 표면 / 유기적 곡면', '무광, 패브릭', '선형적인, Art', '나무재질의 정갈한 느낌', '흑백의 대비가 명확한 단색조', '무채도 반투명 중첩', '반들반들한 은백색', '생체 신호 연동, 나노테크', '비정형적인, 유선형'];
+  var VTN = ['매끄러운 세라믹 표면 / 유기적 곡면', '무광, 패브릭', '선형적인, Art', '나무재질의 정갈한 느낌', '흑백의 대비가 명확한 단색조', '무채도 반투명 중첩', '반들반들한 은백색', '손을 따라 감기는 가는 선과 입자', '비정형적인, 유선형', '마디마다 끼운 반투명 조각'], NC = VTN.length;
   var hot = document.getElementById('hot'), galEl = document.getElementById('gal'), gst = document.getElementById('gst'), gti = document.getElementById('gti'), gs = -1, G = null, boards = [], gtimer = 0, gOpen = 0;
   function build(d){
     G = d; G.items.forEach(function(it, k){ var im = document.createElement('img'); im.alt = ''; im.loading = 'eager'; im.src = 'vt/i/' + ('00' + it.n).slice(-3) + '.webp'; if (it.e) im.className = 'e';
@@ -271,8 +271,8 @@ html,body{touch-action:none;overscroll-behavior:none}
   // 영역 c의 판이 화면에 놓일 자리(가로세로 비율을 지키며 칸 안에 맞춘다)
   function fit(c, bx, by, bw, bh){ var a = G.asp[c - 1], w = Math.min(bw, bh * a), h = w / a; return [bx + (bw - w) / 2, by + (bh - h) / 2, w, h]; }
   function lay(mode){
-    if (!G) return; var cols = W < 821 ? 2 : 3, rows = Math.ceil(9 / cols), mx0 = W * .05, my0 = H * (W < 821 ? .1 : .12), cw = (W - mx0 * 2) / cols, ch = (H - my0 - H * .08) / rows, box = {};
-    for (var c = 1; c <= 9; c++){ var i = c - 1; box[c] = mode === c ? fit(c, W * .06, H * .14, W * .88, H * .78) : fit(c, mx0 + (i % cols) * cw + cw * .06, my0 + Math.floor(i / cols) * ch + ch * .16, cw * .88, ch * .74); }
+    if (!G) return; var cols = W < 821 ? 2 : NC > 9 ? 4 : 3, rows = Math.ceil(NC / cols), mx0 = W * .05, my0 = H * (W < 821 ? .1 : .12), cw = (W - mx0 * 2) / cols, ch = (H - my0 - H * .08) / rows, box = {};
+    for (var c = 1; c <= NC; c++){ var i = c - 1; box[c] = mode === c ? fit(c, W * .06, H * .14, W * .88, H * .78) : fit(c, mx0 + (i % cols) * cw + cw * .06, my0 + Math.floor(i / cols) * ch + ch * .16, cw * .88, ch * .74); }
     G.items.forEach(function(it){ var b = box[it.c], st = it.el.style, x, y, w, h, o = 1, rot = 0;
       if (mode === 'pile'){ w = Math.min(W, H) * .13; h = w / it.a; x = W / 2 - w / 2 + it.r[0] * W * .09; y = H / 2 - h / 2 + it.r[1] * H * .1; rot = it.r[2] * 26; }
       else { x = b[0] + it.x * b[2]; y = b[1] + it.y * b[3]; w = it.w * b[2]; h = it.h * b[3]; if (mode > 0 && it.c !== mode) o = 0; }
@@ -280,7 +280,7 @@ html,body{touch-action:none;overscroll-behavior:none}
     G.lb.forEach(function(el, i){ var b = box[i + 1]; el.style.transform = 'translate(' + b[0] + 'px,' + (b[1] - 26) + 'px)'; el.style.opacity = mode === 0 ? 1 : 0; el.style.pointerEvents = mode === 0 ? 'auto' : 'none'; });
     if (mode > 0){ var n = G.items.filter(function(it){ return it.c === mode; }), ex = n.filter(function(it){ return it.e; }).length;
       gti.innerHTML = '<span>' + ('0' + mode).slice(-2) + '</span>' + VTN[mode - 1] + '<small>' + n.length + '장 · AI 생성 ' + (n.length - ex) + ' · 외부 출처 ' + ex + '</small>'; gti.style.opacity = 1; }
-    else { gti.innerHTML = mode === 0 ? 'Visual Territory<small>' + G.items.length + '장 · 아홉 영역</small>' : ''; gti.style.opacity = mode === 0 ? 1 : 0; }
+    else { gti.innerHTML = mode === 0 ? 'Visual Territory<small>' + G.items.length + '장 · ' + NC + '개 영역</small>' : ''; gti.style.opacity = mode === 0 ? 1 : 0; }
   }
   function gal(n){
     clearTimeout(gtimer);
