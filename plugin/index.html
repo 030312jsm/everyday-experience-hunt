@@ -56,6 +56,12 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 .card q{display:block;quotes:"“" "”";font-size:clamp(17px,1.75vw,25px);font-weight:700;line-height:1.5;letter-spacing:-.02em;margin-top:16px;text-wrap:pretty}
 .vs+.lead b,.lead.in{color:var(--ink)}
 .lead.in{margin-bottom:clamp(14px,2.6vh,24px)}
+.rows{padding-block:6px}
+.rows>div{display:grid;grid-template-columns:11.5em minmax(0,1fr) auto;gap:20px;align-items:center;padding:clamp(11px,2vh,18px) 0;border-top:1px solid var(--line)}
+.rows>div:first-child{border-top:0}
+.rows b{font-size:clamp(15px,1.3vw,18px);font-weight:700;letter-spacing:-.01em}
+.rows p{margin-top:0}
+.rows+.lead{margin-top:clamp(16px,3vh,28px)}
 /* 표지 */
 #s0{align-items:center;text-align:center;padding-bottom:0;overflow:hidden}
 #s0 .sub{font-size:clamp(17px,1.8vw,25px);font-weight:600;letter-spacing:-.02em;margin-top:14px}
@@ -64,7 +70,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 #s0 .hero{margin-top:clamp(8px,2vh,20px)}
 #s0 .hero img{height:100%;width:100%;object-fit:contain}
 .r3{position:relative;aspect-ratio:1406/1194;width:min(100%,calc((100vh - 330px) * 1406 / 1194));margin-inline:auto}
-.r3 img{position:absolute;inset:0;width:100%;height:100%}
+.r3 img,.r3 canvas{position:absolute;inset:0;width:100%;height:100%}
 .r3 .L{opacity:0;transition:opacity .7s ease}.r3 .L.show{opacity:1}
 #s9 .bd{align-items:center;text-align:center}
 #s9 h2{font-size:clamp(32px,5.2vw,80px);line-height:1.18;margin-top:20px}
@@ -127,6 +133,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   dl>div{grid-template-columns:5em minmax(0,1fr);padding:9px 0}
   .plan{width:100%;border-radius:14px}
   .layers li{grid-template-columns:12px 5.2em minmax(0,1fr);gap:9px;padding:9px 0;font-size:14px}.layers span{font-size:13px}
+  .rows>div{grid-template-columns:1fr;gap:6px;justify-items:start;padding:11px 0}
   .tabs{display:flex}.tabs button{flex:1;padding:8px 4px;font-size:12.5px}
   .why{min-height:0}
   #s9 .bd{justify-content:center}
@@ -174,8 +181,22 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   </div>
 </section>
 
+<section class="sl" id="s2b">
+  <div><p class="chip">03 · 이미 있는 것</p><h2>방을 읽는 앱은 많다. <b class="k">콘센트로 배치하는</b> 앱은 찾지 못했다</h2></div>
+  <div class="bd">
+    <div class="card rows">
+      <div><b>IKEA Kreativ</b><p>사진 여러 장으로 방을 3D로 만들고, 있던 가구를 지운 뒤 IKEA 가구를 놓아 본다.</p><span class="chip g">치수 · 원근</span></div>
+      <div><b>오늘의집 3D 인테리어</b><p>도면을 등록하거나 우리 집을 검색해 가구를 놓고, AI 자동 배치로 초안을 받는다.</p><span class="chip g">도면 · 방 높이</span></div>
+      <div><b>Apple RoomPlan</b><p>아이폰 LiDAR로 방을 훑으면 벽·문·창과 주요 가구를 알아본다. 여러 스캔 앱이 이 기술을 쓴다.</p><span class="chip g">벽 · 문 · 창 · 가구</span></div>
+      <div><b>magicplan</b><p>시공·인테리어 전문가용. LiDAR로 벽·창·문과 콘센트를 가리켜 도면에 남긴다.</p><span class="chip">콘센트까지 · 기록용</span></div>
+    </div>
+    <p class="lead">콘센트를 읽는 기술도, 배치를 추천하는 서비스도 이미 있다. 둘을 이어 “거기서 쓸 수 있는가”로 배치하는 서비스는 찾아본 범위에서 나오지 않았다.</p>
+    <p class="note">2026년 10월, 각 서비스의 공개 소개 글과 도움말을 검색해 확인한 범위입니다.</p>
+  </div>
+</section>
+
 <section class="sl" id="s3" data-steps="4">
-  <div><p class="chip">03 · 속도면</p><h2>평면도에 없는 것을 읽는다</h2></div>
+  <div><p class="chip">04 · 속도면</p><h2>평면도에 없는 것을 읽는다</h2></div>
   <div class="bd"><div class="two">
     <div class="r3" id="planA" role="img" aria-label="빈 원룸 위에 콘센트, 랜선 단자, 설비, 햇빛, 와이파이 범위가 차례로 겹쳐진다"><img class="L show" data-from="0" src="assets/step0.webp" alt="" width="1406" height="1194"><img class="L" data-from="1" src="assets/step1.webp" alt="" width="1406" height="1194"><img class="L" data-from="2" src="assets/step2.webp" alt="" width="1406" height="1194"><img class="L" data-from="3" src="assets/step3.webp" alt="" width="1406" height="1194"><img class="L" data-from="4" src="assets/step4.webp" alt="" width="1406" height="1194"></div>
     <ol class="layers" id="layers">
@@ -189,9 +210,9 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 </section>
 
 <section class="sl" id="s4" data-steps="2">
-  <div><p class="chip">04 · 꽂기</p><h2>같은 가구, 같은 방, 다른 결과</h2></div>
+  <div><p class="chip">05 · 꽂기</p><h2>같은 가구, 같은 방, 다른 결과</h2></div>
   <div class="bd"><div class="two">
-    <div class="r3" id="planB" role="img" aria-label="같은 방에 가구를 세 가지 방식으로 놓은 모습"><img class="lay" data-lay="0" src="assets/room0.webp" alt="" width="1406" height="1194"><img class="lay" data-lay="1" src="assets/room1.webp" alt="" width="1406" height="1194"><img class="lay" data-lay="2" src="assets/room2.webp" alt="" width="1406" height="1194"></div>
+    <div class="r3" id="planB" role="img" aria-label="같은 방에서 가구가 세 가지 배치로 옮겨 간다"><canvas id="cvB" width="1100" height="934"></canvas></div>
     <div>
       <div class="tabs" id="tabs"><button>A · 창가에 침대</button><button>B · 창가에 책상</button><button class="best">C · PLUGIN 추천</button></div>
       <div class="score"><div><b id="sc1">5/9</b><small>벽 콘센트로 해결</small></div><div><b id="sc2">2</b><small>필요한 멀티탭</small></div><div><b id="sc3">1</b><small>가려지는 단자</small></div></div>
@@ -202,7 +223,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 </section>
 
 <section class="sl" id="s5" data-steps="4">
-  <div><p class="chip">05 · 쓰는 순서</p><h2>집 보러 간 날 찍고, 이삿날 그대로 놓는다</h2></div>
+  <div><p class="chip">06 · 쓰는 순서</p><h2>집 보러 간 날 찍고, 이삿날 그대로 놓는다</h2></div>
   <div class="bd"><div class="flow" id="flow">
     <div class="card show"><p class="chip">01</p><h3>찍기</h3><p>빈집을 휴대폰으로 한 바퀴 찍는다. 계약 전이어도 된다.</p></div>
     <div class="card"><p class="chip">02</p><h3>읽기</h3><p>AI가 영상에서 콘센트, 단자, 설비, 햇빛을 읽어 속도면을 만든다.</p></div>
@@ -213,7 +234,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 </section>
 
 <section class="sl" id="s6">
-  <div><p class="chip">06 · 사용 장면</p><h2>자취 3년 차 민지의 집 구하기</h2></div>
+  <div><p class="chip">07 · 사용 장면</p><h2>자취 3년 차 민지의 집 구하기</h2></div>
   <div class="bd">
     <p class="lead in">민지는 집을 보러 간 날 방을 한 바퀴 찍는다. 그날 저녁 알림이 온다.</p>
     <div class="vs">
@@ -225,7 +246,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 </section>
 
 <section class="sl" id="s7">
-  <div><p class="chip">07 · 세 가지 조건</p><h2>원하는가, 만들 수 있는가, 돈이 도는가</h2></div>
+  <div><p class="chip">08 · 세 가지 조건</p><h2>원하는가, 만들 수 있는가, 돈이 도는가</h2></div>
   <div class="bd"><div class="cards">
     <div class="card"><p class="chip">공감</p><h3>집을 고칠 수 없는 사람들</h3><ul><li>1~2년마다 이사하는 전월세 1인 가구는 집에 맞춰 놓는 수밖에 없다.</li><li>“콘센트 위치 때문에 배치를 어떻게 해야 하느냐”는 글이 인테리어 커뮤니티에 올라와 있다.</li><li class="todo">몇 명이 겪는지는 설문으로 확인해야 한다.</li></ul></div>
     <div class="card"><p class="chip">기술</p><h3>보이는 것부터 읽는다</h3><ul><li>지금: 영상에서 벽·문·창을 알아내 배치를 짜는 것, 사진에서 콘센트와 단자를 알아보는 것.</li><li>3~5년 안: 벽 속 배선과 차단기 용량 추정, 한 번의 촬영으로 햇빛과 전파까지 계산.</li></ul></div>
@@ -234,11 +255,11 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 </section>
 
 <section class="sl" id="s8">
-  <div><p class="chip">08 · 한계와 확인할 것</p><h2>아직 답하지 못한 것</h2></div>
+  <div><p class="chip">09 · 한계와 확인할 것</p><h2>아직 답하지 못한 것</h2></div>
   <div class="bd"><div class="cards">
     <div class="card"><p class="chip g">01</p><h3>살고 있는 집은 못 읽는다</h3><p>가구 뒤에 이미 가려진 콘센트는 찍히지 않는다. 빈집일 때 찍어야 한다.</p></div>
     <div class="card"><p class="chip g">02</p><h3>남의 집을 찍는 일이다</h3><p>계약 전에 찍으려면 집주인 동의가 필요하다.</p></div>
-    <div class="card"><p class="chip g">03</p><h3>비슷한 기능이 있는지</h3><p>찾아본 범위에서는 나오지 않았다. 국내외 서비스를 더 확인해야 한다.</p></div>
+    <div class="card"><p class="chip g">03</p><h3>비슷한 기능이 있는지</h3><p>콘센트를 읽는 기술은 이미 있다. 배치에 쓰는 서비스는 찾아본 범위에서 나오지 않았고, 더 확인해야 한다.</p></div>
   </div></div>
 </section>
 
@@ -283,6 +304,15 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   ];
   var pA = document.getElementById('planA'), pB = document.getElementById('planB');
 
+  // ── 꽂기 장: 가구가 직접 옮겨 가는 연속 장면(0 = A, 20 = B, 40 = C) ──
+  var cvB = document.getElementById('cvB'), gB = cvB.getContext('2d'), FR = [], fc = 0, ft = 0, raf = 0;
+  function drawSeq(){ var a = Math.floor(fc), b = Math.min(40, a + 1), t = fc - a; gB.clearRect(0, 0, cvB.width, cvB.height);
+    if (FR[a].complete && FR[a].naturalWidth) gB.drawImage(FR[a], 0, 0, cvB.width, cvB.height);
+    if (t > .02 && FR[b].complete && FR[b].naturalWidth){ gB.globalAlpha = t; gB.drawImage(FR[b], 0, 0, cvB.width, cvB.height); gB.globalAlpha = 1; } }
+  for (var fi = 0; fi <= 40; fi++){ FR[fi] = new Image(); FR[fi].onload = (function(i){ return function(){ if (Math.floor(fc) === i) drawSeq(); }; })(fi); FR[fi].src = 'assets/seq/' + ('0' + fi).slice(-2) + '.webp'; }
+  function seqGo(to){ ft = to; if (raf) return; var last = performance.now();
+    (function tick(n){ var dt = Math.max(0, Math.min(50, n - last)); last = n; var d = ft - fc, v = dt * 20 / 3000 * (Math.abs(d) > 20 ? 1.5 : 1);
+      if (Math.abs(d) <= v || !v && !d){ fc = ft; drawSeq(); raf = 0; return; } fc += d > 0 ? v : -v; drawSeq(); raf = requestAnimationFrame(tick); })(last); }
   // ── 넘기기 ──
   var S = [].slice.call(document.querySelectorAll('.sl')), cur = 0, st = S.map(function(){ return 0; });
   var nav = document.getElementById('nav'), pg = document.getElementById('pg');
@@ -294,7 +324,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
     pg.textContent = ('0' + (cur + 1)).slice(-2) + ' / ' + ('0' + S.length).slice(-2);
     var k = st[cur], id = S[cur].id;
     if (id === 's3'){ [].forEach.call(pA.querySelectorAll('.L'), function(g){ g.classList.toggle('show', k >= +g.dataset.from); }); [].forEach.call(document.querySelectorAll('#layers li'), function(li, i){ li.classList.toggle('show', i <= k); }); }
-    if (id === 's4'){ [].forEach.call(pB.querySelectorAll('.lay'), function(g){ g.classList.toggle('show', +g.dataset.lay === k); }); [].forEach.call(document.querySelectorAll('#tabs button'), function(b, i){ b.classList.toggle('on', i === k); });
+    if (id === 's4'){ seqGo(k * 20); [].forEach.call(pB.querySelectorAll('.lay'), function(g){ g.classList.toggle('show', +g.dataset.lay === k); }); [].forEach.call(document.querySelectorAll('#tabs button'), function(b, i){ b.classList.toggle('on', i === k); });
       var l = LAY[k]; ['sc1', 'sc2', 'sc3'].forEach(function(n, i){ var el = document.getElementById(n); el.textContent = l.sc[i]; el.style.color = k === 2 ? 'var(--ok)' : i ? 'var(--warn)' : 'var(--ink)'; document.getElementById('tabs').dataset.k = k; });
       document.getElementById('why').innerHTML = l.why.map(function(w){ return '<li class="' + w[0] + '">' + w[1] + '</li>'; }).join(''); }
     if (id === 's5') [].forEach.call(document.querySelectorAll('#flow > div'), function(d, i){ d.classList.toggle('show', i <= k); });
