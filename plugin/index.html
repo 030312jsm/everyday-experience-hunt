@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PLUGIN · 집에 꽂히는 가구 배치</title>
+<style>
+@font-face{font-family:Pretendard;src:url(assets/PretendardVariable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{--paper:#F4F1EA;--ink:#14161B;--ink2:#565B66;--ink3:#8C909A;--line:#D8D3C7;--blue:#1F4FE0;--warn:#D2432A;--ok:#1E8A5A;--sun:#E9A81C}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:var(--paper);color:var(--ink)}
+body{font-family:Pretendard,system-ui,sans-serif;word-break:keep-all;-webkit-font-smoothing:antialiased}
+.mono{font-family:ui-monospace,Consolas,monospace;letter-spacing:.02em}
+/* 한 번에 한 장씩 보인다 */
+.sl{position:fixed;inset:0;padding:8vh 6vw 11vh;display:flex;flex-direction:column;justify-content:center;opacity:0;visibility:hidden;transform:translateY(16px);transition:opacity .55s ease,transform .7s cubic-bezier(.16,1,.3,1),visibility 0s .55s;overflow-y:auto}
+.sl.on{opacity:1;visibility:visible;transform:none;transition:opacity .55s ease,transform .7s cubic-bezier(.16,1,.3,1),visibility 0s}
+.eb{font-size:13px;color:var(--blue);font-weight:700;display:flex;gap:12px;align-items:center}
+.eb::before{content:"";width:22px;height:2px;background:var(--blue)}
+h1{font-size:clamp(64px,12vw,190px);font-weight:800;letter-spacing:-.04em;line-height:.92}
+h2{font-size:clamp(26px,3.2vw,46px);font-weight:800;letter-spacing:-.025em;line-height:1.25;margin-top:14px;text-wrap:balance}
+.lead{font-size:clamp(15px,1.35vw,19px);line-height:1.75;color:var(--ink2);margin-top:16px;max-width:46em;text-wrap:pretty}
+b.k{color:var(--blue);font-weight:800}
+/* 표지 */
+#s0{justify-content:flex-end}
+#s0 .top{position:absolute;left:6vw;right:6vw;top:7vh;display:flex;justify-content:space-between;font-size:13px;color:var(--ink2)}
+#s0 h1 i{font-style:normal;color:var(--blue)}
+#s0 .sub{font-size:clamp(18px,2vw,28px);font-weight:700;margin-top:18px}
+#s0 .plug{position:absolute;right:6vw;top:22vh;width:min(30vw,380px)}
+/* 세 칸 */
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:34px;border-top:2px solid var(--ink)}
+.three>div{padding:20px 22px 6px 0}
+.three>div+div{padding-left:22px;border-left:1px solid var(--line)}
+.three .no{font-size:12px;color:var(--ink3)}
+.three h3{font-size:clamp(17px,1.5vw,21px);font-weight:800;margin-top:8px;line-height:1.4}
+.three p{font-size:14.5px;line-height:1.7;color:var(--ink2);margin-top:8px}
+.three ul{list-style:none;margin-top:10px;display:grid;gap:7px}
+.three li{font-size:14px;line-height:1.6;color:var(--ink2);padding-left:13px;position:relative}
+.three li::before{content:"";position:absolute;left:0;top:.72em;width:5px;height:5px;background:var(--ink3);border-radius:50%}
+.three li.todo{color:var(--warn)}.three li.todo::before{background:var(--warn)}
+/* 비교 표 */
+table{border-collapse:collapse;margin-top:30px;width:min(100%,900px)}
+th,td{text-align:left;padding:14px 18px 14px 0;border-bottom:1px solid var(--line);font-size:clamp(14px,1.2vw,17px);line-height:1.55}
+th{font-size:12.5px;color:var(--ink3);font-weight:700;border-bottom:2px solid var(--ink)}
+td:first-child{color:var(--ink3);font-size:13px;width:7.5em}
+td:last-child{font-weight:700}
+tr.hl td:last-child{color:var(--blue)}
+/* 도면 */
+.two{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:4vw;align-items:center;margin-top:10px}
+.plan{width:100%;background:#FBFAF6;border:1px solid var(--line)}
+.plan .wall{fill:none;stroke:var(--ink);stroke-width:5;stroke-linejoin:miter}
+.plan .thin{fill:none;stroke:var(--ink);stroke-width:1.5}
+.plan .fix{fill:#E9E5DA;stroke:var(--ink3);stroke-width:1}
+.plan text{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;fill:var(--ink3)}
+.plan .L{opacity:0;transition:opacity .7s ease}
+.plan .L.show{opacity:1}
+.plan .el{fill:var(--blue)}.plan .net{fill:var(--ok)}.plan .eq{fill:var(--ink2)}
+.plan .furn rect{fill:rgba(31,79,224,.1);stroke:var(--blue);stroke-width:1.5}
+.plan .furn text{fill:var(--blue);font-size:11px;font-weight:700}
+.plan .furn .bad{fill:rgba(210,67,42,.12);stroke:var(--warn)}
+.plan .cord{stroke:var(--warn);stroke-width:1.5;stroke-dasharray:4 4;fill:none}
+.plan .good{stroke:var(--ok);stroke-width:1.5;fill:none}
+#planB .L text{display:none}
+.lay{opacity:0;transition:opacity .6s ease}.lay.show{opacity:1}
+.layers{list-style:none;display:grid;gap:0;border-top:2px solid var(--ink);margin-top:20px}
+.layers li{display:grid;grid-template-columns:22px 5.5em minmax(0,1fr);gap:12px;align-items:baseline;padding:13px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.55;opacity:.3;transition:opacity .5s}
+.layers li.show{opacity:1}
+.layers i{width:11px;height:11px;border-radius:50%;display:block;transform:translateY(1px)}
+.layers b{font-weight:800}.layers span{color:var(--ink2)}
+.tabs{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.tabs button{appearance:none;border:1.5px solid var(--ink);background:none;font:inherit;font-size:14px;font-weight:700;padding:8px 14px;cursor:pointer;color:var(--ink)}
+.tabs button.on{background:var(--ink);color:var(--paper)}
+.tabs button.best.on{background:var(--blue);border-color:var(--blue)}
+.score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:18px;border-top:2px solid var(--ink);border-bottom:1px solid var(--line)}
+.score div{padding:12px 0}
+.score b{display:block;font-size:clamp(26px,2.6vw,38px);font-weight:800;letter-spacing:-.02em}
+.score small{font-size:12.5px;color:var(--ink3)}
+.why{list-style:none;margin-top:14px;display:grid;gap:9px;min-height:9.5em}
+.why li{font-size:14.5px;line-height:1.6;padding-left:22px;position:relative;color:var(--ink2)}
+.why li::before{content:"×";position:absolute;left:0;top:0;color:var(--warn);font-weight:800}
+.why li.g::before{content:"✓";color:var(--ok)}
+.note{font-size:12px;color:var(--ink3);margin-top:12px}
+/* 순서 */
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:34px;border-top:2px solid var(--ink)}
+.flow>div{padding:18px 16px 6px 0;opacity:.28;transition:opacity .5s}
+.flow>div.show{opacity:1}
+.flow>div+div{padding-left:16px;border-left:1px solid var(--line)}
+.flow .no{font-size:12px;color:var(--blue);font-weight:700}
+.flow h3{font-size:clamp(19px,1.9vw,26px);font-weight:800;margin-top:6px}
+.flow p{font-size:14px;line-height:1.65;color:var(--ink2);margin-top:8px}
+blockquote{font-size:clamp(17px,1.65vw,23px);line-height:1.8;margin-top:26px;max-width:38em;border-left:3px solid var(--blue);padding-left:24px;text-wrap:pretty}
+blockquote q{display:block;quotes:"“" "”";font-weight:800;margin:10px 0;color:var(--blue)}
+/* 아래 */
+#nav{position:fixed;left:6vw;bottom:4.5vh;display:flex;gap:6px;z-index:5}
+#nav button{appearance:none;border:0;background:none;padding:8px 2px;cursor:pointer}
+#nav i{display:block;width:26px;height:2px;background:var(--line);transition:background .4s}
+#nav .on i{background:var(--ink)}
+#pg{position:fixed;right:6vw;bottom:4.2vh;font-size:12.5px;color:var(--ink3);z-index:5}
+@media (max-width:820px){
+  .sl{padding:7vh 6vw 13vh;justify-content:flex-start}
+  #s0{justify-content:flex-end}#s0 .plug{width:44vw;top:16vh}
+  .three,.flow{grid-template-columns:1fr}.three>div+div,.flow>div+div{padding-left:0;border-left:0;border-top:1px solid var(--line)}
+  .three>div,.flow>div{padding:14px 0 10px}
+  .two{grid-template-columns:1fr;gap:18px}
+  th,td{padding:10px 10px 10px 0}td:first-child{width:5em}
+  #nav i{width:16px}
+}
+</style>
+</head>
+<body>
+
+<section class="sl" id="s0">
+  <div class="top mono"><span>EVERYDAY EXPERIENCE HUNT</span><span>BRAND CONCEPT</span></div>
+  <svg class="plug" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="92" fill="none" stroke="#14161B" stroke-width="3"/><circle cx="68" cy="100" r="11" fill="#1F4FE0"/><circle cx="132" cy="100" r="11" fill="#1F4FE0"/><rect x="92" y="18" width="16" height="22" fill="#14161B"/><rect x="92" y="160" width="16" height="22" fill="#14161B"/></svg>
+  <p class="eb">집의 벽 속까지 읽는 가구 배치</p>
+  <h1>PLUG<i>IN</i></h1>
+  <p class="sub">내 살림이 새집에 꽂히는 자리를 찾는다</p>
+</section>
+
+<section class="sl" id="s1">
+  <p class="eb">01 · 문제</p>
+  <h2>가구를 다 놓은 뒤에야 안다</h2>
+  <div class="three">
+    <div><p class="no mono">A</p><h3>침대 머리맡에 콘센트가 없다</h3><p>충전기 하나 때문에 2미터 멀티탭이 방을 가로지른다.</p></div>
+    <div><p class="no mono">B</p><h3>옷장이 콘센트와 스위치를 가렸다</h3><p>가구를 다 놓고 나서야 그 벽에 단자가 있었다는 걸 안다.</p></div>
+    <div><p class="no mono">C</p><h3>랜선이 현관으로 들어온다</h3><p>공유기를 거기 뒀더니 침대에서 와이파이가 끊긴다.</p></div>
+  </div>
+  <p class="lead">알았을 때는 가구가 무겁고, 조립한 가구는 반품이 안 된다. 그래서 멀티탭과 긴 선으로 버틴다.</p>
+</section>
+
+<section class="sl" id="s2">
+  <p class="eb">02 · 빈자리</p>
+  <h2>지금의 배치 도구는 <b class="k">들어가는지</b>만 본다</h2>
+  <table>
+    <tr><th></th><th>지금의 배치 도구</th><th>PLUGIN</th></tr>
+    <tr><td>보는 것</td><td>벽, 문, 창, 치수</td><td>그 위에 전기 · 통신 · 설비 · 햇빛 · 전파</td></tr>
+    <tr class="hl"><td>답하는 질문</td><td>들어가는가</td><td>거기서 쓸 수 있는가</td></tr>
+    <tr><td>결과</td><td>보기 좋은 그림</td><td>이유가 붙은 배치안과 모자란 것 목록</td></tr>
+    <tr><td>시점</td><td>이사한 뒤</td><td>계약하기 전부터</td></tr>
+  </table>
+</section>
+
+<section class="sl" id="s3" data-steps="4">
+  <p class="eb">03 · 속도면</p>
+  <h2>평면도에 없는 것을 읽는다</h2>
+  <div class="two">
+    <svg class="plan" id="planA" viewBox="0 0 640 440" role="img" aria-label="원룸 평면도 위에 콘센트, 랜선 단자, 설비, 햇빛, 와이파이 범위가 차례로 겹쳐진다"></svg>
+    <ol class="layers" id="layers">
+      <li class="show"><i style="background:#14161B"></i><b>벽과 치수</b><span>지금의 도구가 보는 것은 여기까지</span></li>
+      <li><i style="background:#1F4FE0"></i><b>전기</b><span>콘센트 위치와 구 수, 전등 스위치</span></li>
+      <li><i style="background:#1E8A5A"></i><b>통신</b><span>랜선 단자, TV 단자</span></li>
+      <li><i style="background:#565B66"></i><b>설비 · 움직임</b><span>에어컨 배관 구멍, 보일러 조절기, 문이 열리는 반경</span></li>
+      <li><i style="background:#E9A81C"></i><b>환경</b><span>오후에 해가 드는 자리, 와이파이가 닿는 범위</span></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sl" id="s4" data-steps="2">
+  <p class="eb">04 · 꽂기</p>
+  <h2>같은 가구, 같은 방, 다른 결과</h2>
+  <div class="two">
+    <svg class="plan" id="planB" viewBox="0 0 640 440" role="img" aria-label="같은 방에 가구를 세 가지 방식으로 놓은 배치도"></svg>
+    <div>
+      <div class="tabs" id="tabs"><button>A · 창가에 침대</button><button>B · 창가에 책상</button><button class="best">C · PLUGIN 추천</button></div>
+      <div class="score"><div><b id="sc1">5/9</b><small>벽 콘센트로 해결</small></div><div><b id="sc2">2</b><small>필요한 멀티탭</small></div><div><b id="sc3">1</b><small>가려지는 단자</small></div></div>
+      <ul class="why" id="why"></ul>
+      <p class="note">수치는 이 예시 도면에서 센 것입니다.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sl" id="s5" data-steps="4">
+  <p class="eb">05 · 쓰는 순서</p>
+  <h2>집 보러 간 날 찍고, 이삿날 그대로 놓는다</h2>
+  <div class="flow" id="flow">
+    <div class="show"><p class="no mono">01</p><h3>찍기</h3><p>빈집을 휴대폰으로 한 바퀴 찍는다. 계약 전이어도 된다.</p></div>
+    <div><p class="no mono">02</p><h3>읽기</h3><p>AI가 영상에서 콘센트, 단자, 설비, 햇빛을 읽어 속도면을 만든다.</p></div>
+    <div><p class="no mono">03</p><h3>넣기</h3><p>가진 가구와 가전을 등록한다. 필요한 콘센트 수가 계산된다.</p></div>
+    <div><p class="no mono">04</p><h3>꽂기</h3><p>이유가 붙은 배치안 세 가지와, 모자란 것 목록이 나온다.</p></div>
+    <div><p class="no mono">05</p><h3>옮기기</h3><p>고른 안이 이사 업체에 배치도로 넘어가고, 번호대로 놓인다.</p></div>
+  </div>
+</section>
+
+<section class="sl" id="s6">
+  <p class="eb">06 · 사용 장면</p>
+  <h2>자취 3년 차 민지의 집 구하기</h2>
+  <blockquote>민지는 집을 보러 간 날 방을 한 바퀴 찍는다. 그날 저녁 알림이 온다.
+    <q>이 집은 콘센트가 한쪽 벽에 몰려 있어, 책상과 침대를 둘 다 편하게 둘 자리가 없습니다.</q>
+    다음 날 본 다른 집을 찍는다.
+    <q>책상, 침대, TV 모두 벽 콘센트로 해결됩니다.</q>
+    민지는 두 번째 집을 계약한다. 이삿날 기사는 배치도대로 가구를 놓고, 그날 밤 멀티탭은 한 개도 꺼내지 않는다.</blockquote>
+</section>
+
+<section class="sl" id="s7">
+  <p class="eb">07 · 세 가지 조건</p>
+  <h2>원하는가, 만들 수 있는가, 돈이 도는가</h2>
+  <div class="three">
+    <div><p class="no mono">DESIRABILITY · 공감</p><h3>집을 고칠 수 없는 사람들</h3><ul><li>1~2년마다 이사하는 전월세 1인 가구는 집에 맞춰 놓는 수밖에 없다.</li><li>“콘센트 위치 때문에 배치를 어떻게 해야 하느냐”는 글이 인테리어 커뮤니티에 올라와 있다.</li><li class="todo">몇 명이 겪는지는 설문으로 확인해야 한다.</li></ul></div>
+    <div><p class="no mono">FEASIBILITY · 기술</p><h3>보이는 것부터 읽는다</h3><ul><li>지금: 영상에서 벽·문·창을 알아내 배치를 짜는 것, 사진에서 콘센트와 단자를 알아보는 것.</li><li>3~5년 안: 벽 속 배선과 차단기 용량 추정, 한 번의 촬영으로 햇빛과 전파까지 계산.</li></ul></div>
+    <div><p class="no mono">VIABILITY · 사업</p><h3>집에 맞는 물건이 팔린다</h3><ul><li>가구·가전 회사: 이 자리에 맞는 제품으로 추천돼 팔릴 때 수수료.</li><li>이사 업체: 배치도를 받아 현장 시간을 줄이는 제휴.</li><li>같은 평면의 아파트는 한 번 읽으면 수백 세대에 쓰인다.</li></ul></div>
+  </div>
+</section>
+
+<section class="sl" id="s8">
+  <p class="eb">08 · 한계와 확인할 것</p>
+  <h2>아직 답하지 못한 것</h2>
+  <div class="three">
+    <div><p class="no mono">01</p><h3>살고 있는 집은 못 읽는다</h3><p>가구 뒤에 이미 가려진 콘센트는 찍히지 않는다. 빈집일 때 찍어야 한다.</p></div>
+    <div><p class="no mono">02</p><h3>남의 집을 찍는 일이다</h3><p>계약 전에 찍으려면 집주인 동의가 필요하다.</p></div>
+    <div><p class="no mono">03</p><h3>비슷한 기능이 있는지</h3><p>찾아본 범위에서는 나오지 않았다. 국내외 서비스를 더 확인해야 한다.</p></div>
+  </div>
+</section>
+
+<section class="sl" id="s9" style="justify-content:flex-end">
+  <p class="eb">PLUGIN</p>
+  <h2 style="font-size:clamp(34px,5.4vw,84px);line-height:1.15">들어가는 집이 아니라,<br><b class="k">쓸 수 있는 집</b>으로.</h2>
+</section>
+
+<nav id="nav"></nav>
+<p id="pg" class="mono"></p>
+
+<script>
+(function(){
+  // ── 예시 도면(원룸): 두 장의 도면이 같은 방을 쓴다 ──
+  function base(){
+    return '<rect class="wall" x="40" y="40" width="560" height="360"/>' +
+      '<rect x="88" y="396" width="64" height="9" fill="#FBFAF6"/><path class="thin" d="M90 400 L90 338 A62 62 0 0 1 152 400"/>' +          // 현관문
+      '<rect class="fix" x="40" y="40" width="130" height="110"/><text x="52" y="100">욕실</text>' +
+      '<rect class="fix" x="190" y="43" width="170" height="34"/><text x="200" y="64">싱크대</text>' +
+      '<rect x="596" y="120" width="9" height="180" fill="#FBFAF6"/><path class="thin" d="M598 120 V300 M603 120 V300"/><text x="560" y="112">창</text>' +
+      '<text x="96" y="424">현관</text>';
+  }
+  function outlet(x, y, n){ var s = ''; for (var i = 0; i < n; i++) s += '<rect class="el" x="' + (x - 5 * n + i * 11) + '" y="' + (y - 5) + '" width="9" height="9"/>'; return s; }
+  var OUT = [[440, 40, 2], [600, 334, 2], [330, 400, 2], [520, 400, 2], [40, 250, 1], [300, 40, 2]];
+  function layers(){
+    var s = '<g class="L" data-from="1">' + OUT.map(function(o){ return outlet(o[0], o[1], o[2]); }).join('') + '<circle class="el" cx="172" cy="400" r="5"/><text x="160" y="388" style="fill:#1F4FE0">스위치</text><text x="418" y="60" style="fill:#1F4FE0">콘센트 2구</text><text x="50" y="240" style="fill:#1F4FE0">1구</text></g>';
+    s += '<g class="L" data-from="2"><path class="net" d="M34 334 h12 v12 h-12z"/><text x="52" y="328" style="fill:#1E8A5A">랜선 단자</text><path class="net" d="M364 394 h12 v12 h-12z"/><text x="352" y="388" style="fill:#1E8A5A">TV</text></g>';
+    s += '<g class="L" data-from="3"><circle class="eq" cx="572" cy="40" r="6"/><text x="500" y="60" style="fill:#565B66">에어컨 배관</text><rect class="eq" x="196" y="395" width="16" height="10"/><text x="216" y="388" style="fill:#565B66">보일러</text><path d="M90 400 L90 338 A62 62 0 0 1 152 400Z" fill="rgba(86,91,102,.14)"/></g>';
+    s += '<g class="L" data-from="4"><path d="M600 120 L600 300 L372 366 L318 186Z" fill="rgba(233,168,28,.2)"/><text x="430" y="250" style="fill:#B07E0E">오후 햇빛</text>' +
+      '<circle cx="40" cy="340" r="150" fill="none" stroke="#1E8A5A" stroke-width="1" stroke-dasharray="3 5"/><circle cx="40" cy="340" r="300" fill="none" stroke="#1E8A5A" stroke-width="1" stroke-dasharray="3 5" opacity=".6"/><circle cx="40" cy="340" r="450" fill="none" stroke="#1E8A5A" stroke-width="1" stroke-dasharray="3 5" opacity=".3"/><text x="150" y="208" style="fill:#1E8A5A">전파</text></g>';
+    return s;
+  }
+  function f(x, y, w, h, name, bad){ return '<rect ' + (bad ? 'class="bad" ' : '') + 'x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"/><text x="' + (x + 8) + '" y="' + (y + 18) + '"' + (bad ? ' style="fill:#D2432A"' : '') + '>' + name + '</text>'; }
+  var LAY = [
+    { furn: f(380, 140, 200, 110, '침대') + f(50, 190, 60, 130, '책상') + f(430, 352, 150, 42, '옷장', 1) + f(250, 356, 150, 38, 'TV'),
+      extra: '<path class="cord" d="M580 250 L598 334"/><path class="cord" d="M110 300 L330 396"/>',
+      sc: ['5/9', '2', '1'], why: [['', '침대 머리맡에 콘센트가 없어 2m 멀티탭이 필요합니다.'], ['', '책상 옆 콘센트는 1구뿐이라 컴퓨터와 모니터를 같이 못 꽂습니다.'], ['', '옷장이 콘센트 2구를 가립니다.'], ['g', '책상 바로 옆에 랜선 단자가 옵니다.']] },
+    { furn: f(520, 130, 70, 130, '책상', 1) + f(50, 170, 110, 150, '침대') + f(430, 352, 150, 42, '옷장', 1) + f(250, 356, 150, 38, 'TV'),
+      extra: '<path class="cord" d="M560 260 L598 334"/><path class="cord" d="M46 340 C200 300 400 240 520 200"/>',
+      sc: ['6/9', '1', '2'], why: [['', '오후 내내 모니터에 해가 들어옵니다.'], ['', '랜선 단자에서 책상까지 6m를 끌어야 합니다.'], ['', '침대가 1구 콘센트를, 옷장이 2구 콘센트를 가립니다.'], ['g', '침대는 햇빛이 직접 닿지 않는 자리입니다.']] },
+    { furn: f(390, 48, 150, 60, '책상') + f(430, 280, 160, 110, '침대') + f(50, 165, 54, 120, '옷장') + f(280, 358, 130, 36, 'TV') + f(46, 300, 40, 34, '선반'),
+      extra: '<path class="good" d="M440 48 V44"/><path class="good" d="M590 334 h8"/><path class="good" d="M330 394 v4"/><text x="92" y="322" style="fill:#1E8A5A">공유기 1m 위</text>',
+      sc: ['9/9', '0', '0'], why: [['g', '책상 뒤에 콘센트 2구가 오고, 해를 등지고 앉습니다.'], ['g', '침대 머리맡에 콘센트 2구가 옵니다.'], ['g', 'TV 뒤에 콘센트와 TV 단자가 함께 옵니다.'], ['g', '공유기를 랜선 단자 옆 선반 위에 올려 방 전체에 닿게 합니다.'], ['g', '옷장은 쓰지 않을 1구 콘센트 쪽 벽에 붙입니다.']] }
+  ];
+  var pA = document.getElementById('planA'), pB = document.getElementById('planB');
+  pA.innerHTML = base() + layers();
+  pB.innerHTML = base() + layers().replace(/class="L"/g, 'class="L show"') + LAY.map(function(l, i){ return '<g class="lay furn" data-lay="' + i + '">' + l.furn + l.extra + '</g>'; }).join('');
+
+  // ── 넘기기 ──
+  var S = [].slice.call(document.querySelectorAll('.sl')), cur = 0, st = S.map(function(){ return 0; });
+  var nav = document.getElementById('nav'), pg = document.getElementById('pg');
+  S.forEach(function(_, i){ var b = document.createElement('button'); b.innerHTML = '<i></i>'; b.setAttribute('aria-label', (i + 1) + '번째 장'); b.addEventListener('click', function(){ go(i, 0); }); nav.appendChild(b); });
+  function max(i){ return +(S[i].dataset.steps || 0); }
+  function render(){
+    S.forEach(function(s, i){ s.classList.toggle('on', i === cur); });
+    [].forEach.call(nav.children, function(b, i){ b.classList.toggle('on', i === cur); });
+    pg.textContent = ('0' + (cur + 1)).slice(-2) + ' / ' + ('0' + S.length).slice(-2);
+    var k = st[cur], id = S[cur].id;
+    if (id === 's3'){ [].forEach.call(pA.querySelectorAll('.L'), function(g){ g.classList.toggle('show', k >= +g.dataset.from); }); [].forEach.call(document.querySelectorAll('#layers li'), function(li, i){ li.classList.toggle('show', i <= k); }); }
+    if (id === 's4'){ [].forEach.call(pB.querySelectorAll('.lay'), function(g){ g.classList.toggle('show', +g.dataset.lay === k); }); [].forEach.call(document.querySelectorAll('#tabs button'), function(b, i){ b.classList.toggle('on', i === k); });
+      var l = LAY[k]; ['sc1', 'sc2', 'sc3'].forEach(function(n, i){ var el = document.getElementById(n); el.textContent = l.sc[i]; el.style.color = k === 2 ? 'var(--ok)' : i ? 'var(--warn)' : 'var(--ink)'; });
+      document.getElementById('why').innerHTML = l.why.map(function(w){ return '<li class="' + w[0] + '">' + w[1] + '</li>'; }).join(''); }
+    if (id === 's5') [].forEach.call(document.querySelectorAll('#flow > div'), function(d, i){ d.classList.toggle('show', i <= k); });
+  }
+  function go(i, k){ cur = Math.max(0, Math.min(S.length - 1, i)); st[cur] = k === 'end' ? max(cur) : (k || 0); render(); }
+  function step(d){ if (d > 0){ if (st[cur] < max(cur)){ st[cur]++; render(); } else if (cur < S.length - 1) go(cur + 1, 0); } else { if (st[cur] > 0){ st[cur]--; render(); } else if (cur > 0) go(cur - 1, 'end'); } }
+  [].forEach.call(document.querySelectorAll('#tabs button'), function(b, i){ b.addEventListener('click', function(e){ e.stopPropagation(); st[cur] = i; render(); }); });
+  addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); step(1); } if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp'){ e.preventDefault(); step(-1); } });
+  var wt = 0; addEventListener('wheel', function(e){ var n = performance.now(); if (n - wt < 600 || Math.abs(e.deltaY) < 6) return; var s = S[cur]; if (s.scrollHeight > s.clientHeight + 2) return; wt = n; step(e.deltaY > 0 ? 1 : -1); }, { passive: true });
+  // 휴대폰: 화면 오른쪽을 누르면 앞으로, 왼쪽을 누르면 뒤로
+  var t0 = null; addEventListener('touchstart', function(e){ t0 = [e.touches[0].clientX, e.touches[0].clientY]; }, { passive: true });
+  addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], m = Math.max(Math.abs(c.clientX - t0[0]), Math.abs(c.clientY - t0[1])); t0 = null; if (m > 12 || e.target.closest('button')) return; step(c.clientX < innerWidth / 2 ? -1 : 1); }, { passive: true });
+  var h = parseInt(location.hash.slice(1), 10); go(isNaN(h) ? 0 : h, 0);
+})();
+</script>
+</body>
+</html>
