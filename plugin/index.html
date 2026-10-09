@@ -63,8 +63,9 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 #s0{padding-bottom:max(48px,7vh)}
 #s0 .hero{margin-top:clamp(8px,2vh,20px)}
 #s0 .hero img{height:100%;width:100%;object-fit:contain}
-.r3{position:relative;aspect-ratio:1407/1194;width:min(100%,calc((100vh - 330px) * 1407 / 1194));margin-inline:auto}
+.r3{position:relative;aspect-ratio:1406/1194;width:min(100%,calc((100vh - 330px) * 1406 / 1194));margin-inline:auto}
 .r3 img{position:absolute;inset:0;width:100%;height:100%}
+.r3 .L{opacity:0;transition:opacity .7s ease}.r3 .L.show{opacity:1}
 #s9 .bd{align-items:center;text-align:center}
 #s9 h2{font-size:clamp(32px,5.2vw,80px);line-height:1.18;margin-top:20px}
 /* 도면 */
@@ -140,7 +141,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   <p class="chip">집의 벽 속까지 읽는 가구 배치</p>
   <h1>PLUG<span style="color:var(--blue)">IN</span></h1>
   <p class="sub">내 살림이 새집에 꽂히는 자리를 찾는다</p>
-  <div class="hero"><img src="assets/room2.webp" alt="" width="1407" height="1194"></div>
+  <div class="hero"><img src="assets/room2.webp" alt="" width="1406" height="1194"></div>
 </section>
 
 <section class="sl" id="s1">
@@ -176,7 +177,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 <section class="sl" id="s3" data-steps="4">
   <div><p class="chip">03 · 속도면</p><h2>평면도에 없는 것을 읽는다</h2></div>
   <div class="bd"><div class="two">
-    <svg class="plan" id="planA" viewBox="0 0 640 440" role="img" aria-label="원룸 평면도 위에 콘센트, 랜선 단자, 설비, 햇빛, 와이파이 범위가 차례로 겹쳐진다"></svg>
+    <div class="r3" id="planA" role="img" aria-label="빈 원룸 위에 콘센트, 랜선 단자, 설비, 햇빛, 와이파이 범위가 차례로 겹쳐진다"><img class="L show" data-from="0" src="assets/step0.webp" alt="" width="1406" height="1194"><img class="L" data-from="1" src="assets/step1.webp" alt="" width="1406" height="1194"><img class="L" data-from="2" src="assets/step2.webp" alt="" width="1406" height="1194"><img class="L" data-from="3" src="assets/step3.webp" alt="" width="1406" height="1194"><img class="L" data-from="4" src="assets/step4.webp" alt="" width="1406" height="1194"></div>
     <ol class="layers" id="layers">
       <li class="show"><i style="background:#111318"></i><b>벽과 치수</b><span>지금의 도구가 보는 것은 여기까지</span></li>
       <li><i style="background:#1F4FE0"></i><b>전기</b><span>콘센트 위치와 구 수, 전등 스위치</span></li>
@@ -190,7 +191,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 <section class="sl" id="s4" data-steps="2">
   <div><p class="chip">04 · 꽂기</p><h2>같은 가구, 같은 방, 다른 결과</h2></div>
   <div class="bd"><div class="two">
-    <div class="r3" id="planB" role="img" aria-label="같은 방에 가구를 세 가지 방식으로 놓은 모습"><img class="lay" data-lay="0" src="assets/room0.webp" alt="" width="1407" height="1194"><img class="lay" data-lay="1" src="assets/room1.webp" alt="" width="1407" height="1194"><img class="lay" data-lay="2" src="assets/room2.webp" alt="" width="1407" height="1194"></div>
+    <div class="r3" id="planB" role="img" aria-label="같은 방에 가구를 세 가지 방식으로 놓은 모습"><img class="lay" data-lay="0" src="assets/room0.webp" alt="" width="1406" height="1194"><img class="lay" data-lay="1" src="assets/room1.webp" alt="" width="1406" height="1194"><img class="lay" data-lay="2" src="assets/room2.webp" alt="" width="1406" height="1194"></div>
     <div>
       <div class="tabs" id="tabs"><button>A · 창가에 침대</button><button>B · 창가에 책상</button><button class="best">C · PLUGIN 추천</button></div>
       <div class="score"><div><b id="sc1">5/9</b><small>벽 콘센트로 해결</small></div><div><b id="sc2">2</b><small>필요한 멀티탭</small></div><div><b id="sc3">1</b><small>가려지는 단자</small></div></div>
@@ -281,7 +282,6 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
       sc: ['9/9', '0', '0'], why: [['g', '책상 뒤에 콘센트 2구가 오고, 해를 등지고 앉습니다.'], ['g', '침대 머리맡에 콘센트 2구가 옵니다.'], ['g', 'TV 뒤에 콘센트와 TV 단자가 함께 옵니다.'], ['g', '공유기를 랜선 단자 옆 선반 위에 올려 방 전체에 닿게 합니다.'], ['g', '옷장은 쓰지 않을 1구 콘센트 쪽 벽에 붙입니다.']] }
   ];
   var pA = document.getElementById('planA'), pB = document.getElementById('planB');
-  pA.innerHTML = base() + layers();
 
   // ── 넘기기 ──
   var S = [].slice.call(document.querySelectorAll('.sl')), cur = 0, st = S.map(function(){ return 0; });
