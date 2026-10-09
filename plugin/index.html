@@ -61,7 +61,14 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 .rows>div:first-child{border-top:0}
 .rows b{font-size:clamp(15px,1.3vw,18px);font-weight:700;letter-spacing:-.01em}
 .rows p{margin-top:0}
-.rows+.lead{margin-top:clamp(16px,3vh,28px)}
+.refs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.refs .card{padding:0;overflow:hidden;display:flex;flex-direction:column}
+.refs img{display:block;width:100%;height:clamp(96px,calc(100vh - 560px),230px);object-fit:cover;border-bottom:1px solid var(--line)}
+.refs .card>div{padding:clamp(14px,1.5vw,20px);display:flex;flex-direction:column;align-items:flex-start;gap:8px;flex:1}
+.refs b{font-size:clamp(15px,1.3vw,18px);font-weight:700;letter-spacing:-.01em}
+.refs p{margin-top:0;font-size:clamp(13px,1.05vw,15px);line-height:1.6}
+.refs .chip{margin-top:auto}
+.refs+.lead{margin-top:clamp(14px,2.6vh,24px)}
 /* 표지 */
 #s0{align-items:center;text-align:center;padding-bottom:0;overflow:hidden}
 #s0 .sub{font-size:clamp(17px,1.8vw,25px);font-weight:600;letter-spacing:-.02em;margin-top:14px}
@@ -134,7 +141,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   dl>div{grid-template-columns:5em minmax(0,1fr);padding:9px 0}
   .plan{width:100%;border-radius:14px}
   .layers li{grid-template-columns:12px 5.2em minmax(0,1fr);gap:9px;padding:9px 0;font-size:14px}.layers span{font-size:13px}
-  .rows>div{grid-template-columns:1fr;gap:6px;justify-items:start;padding:11px 0}
+  .refs{grid-template-columns:1fr 1fr;gap:10px}.refs img{height:110px}
   .tabs{display:flex}.tabs button{flex:1;padding:8px 4px;font-size:12.5px}
   .why{min-height:0}
   #s9 .bd{justify-content:center}
@@ -183,16 +190,16 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 </section>
 
 <section class="sl" id="s2b">
-  <div><p class="chip">03 · 이미 있는 것</p><h2>방을 읽는 앱은 많다. <b class="k">콘센트로 배치하는</b> 앱은 찾지 못했다</h2></div>
+  <div><p class="chip">03 · 이미 있는 것</p><h2>방을 읽는 앱은 많은데 <b class="k">콘센트로 배치하는</b> 앱은 찾지 못했다</h2></div>
   <div class="bd">
-    <div class="card rows">
-      <div><b>IKEA Kreativ</b><p>사진 여러 장으로 방을 3D로 만들고, 있던 가구를 지운 뒤 IKEA 가구를 놓아 본다.</p><span class="chip g">치수 · 원근</span></div>
-      <div><b>오늘의집 3D 인테리어</b><p>도면을 등록하거나 우리 집을 검색해 가구를 놓고, AI 자동 배치로 초안을 받는다.</p><span class="chip g">도면 · 방 높이</span></div>
-      <div><b>Apple RoomPlan</b><p>아이폰 LiDAR로 방을 훑으면 벽·문·창과 주요 가구를 알아본다. 여러 스캔 앱이 이 기술을 쓴다.</p><span class="chip g">벽 · 문 · 창 · 가구</span></div>
-      <div><b>magicplan</b><p>시공·인테리어 전문가용. LiDAR로 벽·창·문과 콘센트를 가리켜 도면에 남긴다.</p><span class="chip">콘센트까지 · 기록용</span></div>
+    <div class="refs">
+      <div class="card"><img src="assets/ref_ikea.webp" alt="IKEA Kreativ 화면" width="640" height="480" loading="lazy"><div><b>IKEA Kreativ</b><p>사진 여러 장으로 방을 3D로 만들고, 있던 가구를 지운 뒤 IKEA 가구를 놓아 본다.</p><span class="chip g">치수 · 원근</span></div></div>
+      <div class="card"><img src="assets/ref_archi.webp" alt="오늘의집 3D 인테리어 화면" width="640" height="480" loading="lazy"><div><b>오늘의집 3D 인테리어</b><p>아키스케치 기반. 도면을 등록하거나 우리 집을 검색해 가구를 놓고, AI 자동 배치로 초안을 받는다.</p><span class="chip g">도면 · 방 높이</span></div></div>
+      <div class="card"><img src="assets/ref_roomplan.webp" alt="Apple RoomPlan 화면" width="640" height="480" loading="lazy"><div><b>Apple RoomPlan</b><p>아이폰 LiDAR로 방을 훑으면 벽·문·창과 주요 가구를 알아본다. 여러 스캔 앱이 쓰는 기술.</p><span class="chip g">벽 · 문 · 창 · 가구</span></div></div>
+      <div class="card"><img src="assets/ref_magicplan.webp" alt="magicplan 화면" width="640" height="480" loading="lazy"><div><b>magicplan</b><p>시공·인테리어 전문가용. LiDAR로 벽·창·문과 콘센트를 가리켜 도면에 남긴다.</p><span class="chip">콘센트까지 · 기록용</span></div></div>
     </div>
     <p class="lead">콘센트를 읽는 기술도, 배치를 추천하는 서비스도 이미 있다. 둘을 이어 “거기서 쓸 수 있는가”로 배치하는 서비스는 찾아본 범위에서 나오지 않았다.</p>
-    <p class="note">2026년 10월, 각 서비스의 공개 소개 글과 도움말을 검색해 확인한 범위입니다.</p>
+    <p class="note">2026년 10월, 각 서비스의 공개 소개 글과 도움말을 검색해 확인한 범위입니다. 화면은 각 공식 사이트(ikea.com, archisketch.com, developer.apple.com, magicplan.app)에서 캡처했습니다.</p>
   </div>
 </section>
 
@@ -224,12 +231,12 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 </section>
 
 <section class="sl" id="s5" data-steps="4">
-  <div><p class="chip">06 · 쓰는 순서</p><h2>집 보러 간 날 찍고, 이삿날 그대로 놓는다</h2></div>
+  <div><p class="chip">06 · 쓰는 순서</p><h2>집 보러 간 날 찍고, 이삿날 그대로 놓기</h2></div>
   <div class="bd"><div class="flow" id="flow">
     <div class="card show"><p class="chip">01</p><h3>찍기</h3><p>빈집을 휴대폰으로 한 바퀴 찍는다. 계약 전이어도 된다.</p></div>
     <div class="card"><p class="chip">02</p><h3>읽기</h3><p>AI가 영상에서 콘센트, 단자, 설비, 햇빛을 읽어 속도면을 만든다.</p></div>
-    <div class="card"><p class="chip">03</p><h3>넣기</h3><p>가진 가구와 가전을 등록한다. 앱이 필요한 콘센트 수를 센다.</p></div>
-    <div class="card"><p class="chip">04</p><h3>꽂기</h3><p>이유가 붙은 배치안 세 가지와, 모자란 것 목록이 나온다.</p></div>
+    <div class="card"><p class="chip">03</p><h3>넣기</h3><p>가진 가구와 가전을 등록하면 앱이 필요한 콘센트 수를 센다.</p></div>
+    <div class="card"><p class="chip">04</p><h3>꽂기</h3><p>이유가 붙은 배치안 세 가지와, 모자란 것 목록.</p></div>
     <div class="card"><p class="chip">05</p><h3>옮기기</h3><p>고른 안을 이사 업체에 배치도로 보내면, 기사가 번호대로 놓는다.</p></div>
   </div></div>
 </section>
