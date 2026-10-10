@@ -68,7 +68,23 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 .refs b{font-size:clamp(15px,1.3vw,18px);font-weight:700;letter-spacing:-.01em}
 .refs p{margin-top:0;font-size:clamp(13px,1.05vw,15px);line-height:1.6}
 .refs .chip{margin-top:auto}
-.refs+.lead{margin-top:clamp(14px,2.6vh,24px)}
+.refs+.refd+.lead{margin-top:clamp(14px,2.6vh,24px)}
+.refs .card{cursor:pointer;transition:border-color .3s}.refs .card:hover{border-color:var(--ink3)}
+/* 카드를 누르거나 다음으로 넘기면 그 앱의 실제 화면과 쓰는 순서가 나온다 */
+.refd,#s2b.det .refs,#s2b.det .refs+.refd+.lead,#s2b.det .lead+.note{display:none}
+#s2b.det .refd{display:block}
+.rd{display:none;grid-template-columns:auto minmax(0,1fr);gap:clamp(20px,3vw,48px);align-items:center;margin-top:clamp(12px,2.4vh,22px)}
+.rd.show{display:grid}
+.shots{display:flex;gap:12px}
+.shots img{display:block;height:clamp(180px,calc(100vh - 400px),460px);width:auto;max-width:34vw;object-fit:cover;border-radius:16px;border:1px solid var(--line);background:var(--card)}
+.info b{font-size:clamp(20px,2vw,28px);font-weight:700;letter-spacing:-.02em}
+.info .sub{font-size:clamp(14px,1.2vw,17px);color:var(--ink2);margin-top:4px}
+.info ol{list-style:none;counter-reset:n;margin-top:clamp(12px,2.4vh,22px);display:grid;gap:clamp(8px,1.4vh,12px)}
+.info li{counter-increment:n;display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;font-size:clamp(14px,1.2vw,17px);line-height:1.55}
+.info li::before{content:counter(n);width:24px;height:24px;border-radius:50%;background:var(--tint);color:var(--blue);font-size:12.5px;font-weight:700;display:grid;place-items:center;margin-top:1px}
+.vd{margin-top:clamp(12px,2.4vh,22px);padding:12px 16px;border-radius:14px;background:#EDEDE8;font-size:clamp(13.5px,1.1vw,15.5px);line-height:1.55;color:var(--ink)}
+.vd.y{background:var(--tint)}
+.vd i{font-style:normal;font-weight:700;margin-right:10px;color:var(--ink2)}.vd.y i{color:var(--blue)}
 /* 표지 */
 #s0{align-items:center;text-align:center;padding-bottom:0;overflow:hidden}
 #s0 .sub{font-size:clamp(17px,1.8vw,25px);font-weight:600;letter-spacing:-.02em;margin-top:14px}
@@ -142,6 +158,8 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   .plan{width:100%;border-radius:14px}
   .layers li{grid-template-columns:12px 5.2em minmax(0,1fr);gap:9px;padding:9px 0;font-size:14px}.layers span{font-size:13px}
   .refs{grid-template-columns:1fr 1fr;gap:10px}.refs img{height:110px}
+  .rd.show{grid-template-columns:1fr;gap:14px}.shots{overflow-x:auto}.shots img{height:240px;max-width:none}
+  #rtabs{flex-wrap:wrap}#rtabs button{flex:none;padding:7px 9px}
   .tabs{display:flex}.tabs button{flex:1;padding:8px 4px;font-size:12.5px}
   .why{min-height:0}
   #s9 .bd{justify-content:center}
@@ -189,7 +207,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   </div>
 </section>
 
-<section class="sl" id="s2b">
+<section class="sl" id="s2b" data-steps="4">
   <div><p class="chip">03 · 이미 있는 것</p><h2>방을 읽는 앱은 많은데 <b class="k">콘센트로 배치하는</b> 앱은 찾지 못했다</h2></div>
   <div class="bd">
     <div class="refs">
@@ -197,6 +215,13 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
       <div class="card"><img src="assets/ref_archi.webp" alt="오늘의집 3D 인테리어 화면" width="640" height="480" loading="lazy"><div><b>오늘의집 3D 인테리어</b><p>아키스케치 기반. 도면을 등록하거나 우리 집을 검색해 가구를 놓고, AI 자동 배치로 초안을 받는다.</p><span class="chip g">도면 · 방 높이</span></div></div>
       <div class="card"><img src="assets/ref_roomplan.webp" alt="Apple RoomPlan 화면" width="640" height="480" loading="lazy"><div><b>Apple RoomPlan</b><p>아이폰 LiDAR로 방을 훑으면 벽·문·창과 주요 가구를 알아본다. 여러 스캔 앱이 쓰는 기술.</p><span class="chip g">벽 · 문 · 창 · 가구</span></div></div>
       <div class="card"><img src="assets/ref_magicplan.webp" alt="magicplan 화면" width="640" height="480" loading="lazy"><div><b>magicplan</b><p>시공·인테리어 전문가용. LiDAR로 벽·창·문과 콘센트를 가리켜 도면에 남기는 앱.</p><span class="chip">콘센트까지 · 기록용</span></div></div>
+    </div>
+    <div class="refd">
+      <div class="tabs" id="rtabs"><button>전체</button><button>IKEA Kreativ</button><button>오늘의집 3D 인테리어</button><button>Apple RoomPlan</button><button>magicplan</button></div>
+      <div class="rd" data-i="1"><div class="shots"><img src="assets/app_ikea_a.webp" alt="IKEA Kreativ 실제 화면" loading="lazy"><img src="assets/app_ikea_b.webp" alt="IKEA Kreativ 실제 화면" loading="lazy"></div><div class="info"><b>IKEA Kreativ</b><p class="sub">IKEA 앱과 웹에 들어 있는 무료 기능</p><ol><li>방을 여러 방향에서 찍는다</li><li>방이 3D로 만들어지고, 있던 가구를 지울 수 있다</li><li>IKEA 가구를 골라 놓고 돌려 본 뒤 저장·공유</li></ol><p class="vd"><i>콘센트 · 단자</i>소개 글에서 확인 못 함. 가구가 들어가 보이는지까지.</p><p class="note">IKEA 앱 · 미국 앱스토어 평점 4.8 · 화면: 앱스토어, ikea.com</p></div></div>
+      <div class="rd" data-i="2"><div class="shots"><img src="assets/app_archi_a.webp" alt="오늘의집 3D 인테리어 실제 화면" loading="lazy"><img src="assets/app_archi_b.webp" alt="오늘의집 3D 인테리어 실제 화면" loading="lazy"></div><div class="info"><b>오늘의집 3D 인테리어</b><p class="sub">아키스케치 기반의 무료 3D 설계 도구</p><ol><li>도면을 올리거나 우리 집 평형·타입을 검색한다</li><li>방 높이를 맞추고 판매 중인 가구를 놓는다</li><li>AI 자동 배치로 초안을 받고, 렌더링 이미지로 본다</li></ol><p class="vd"><i>콘센트 · 단자</i>소개 글에 없음. 입력은 도면과 방 높이.</p><p class="note">화면: 아키스케치 소개 페이지(archisketch.com)</p></div></div>
+      <div class="rd" data-i="3"><div class="shots"><img src="assets/app_roomplan_a.webp" alt="Apple RoomPlan 실제 화면" loading="lazy"></div><div class="info"><b>Apple RoomPlan</b><p class="sub">앱이 아니라 개발자가 가져다 쓰는 기술</p><ol><li>LiDAR가 달린 아이폰·아이패드로 방을 훑는다</li><li>벽·문·창과 가구를 3D로 알아보고 치수를 잰다</li><li>결과를 3D 파일(USDZ)로 내보내 다른 앱에서 쓴다</li></ol><p class="vd"><i>콘센트 · 단자</i>확인한 자료의 인식 항목에 없음.</p><p class="note">화면: Apple 개발자 페이지</p></div></div>
+      <div class="rd" data-i="4"><div class="shots"><img src="assets/app_magic_a.webp" alt="magicplan 실제 화면" loading="lazy"><img src="assets/app_magic_b.webp" alt="magicplan 실제 화면" loading="lazy"></div><div class="info"><b>magicplan</b><p class="sub">리모델링·복구 업체가 현장에서 쓰는 앱</p><ol><li>휴대폰으로 방을 스캔해 도면을 만든다</li><li>문·창·콘센트 같은 객체를 도면에 올린다. LiDAR 모드는 콘센트도 가리켜 인식</li><li>사진·메모를 붙여 견적과 보고서로 만든다</li></ol><p class="vd y"><i>콘센트 · 단자</i>읽는다. 다만 도면 기록용이고, 가구 배치 추천은 소개에서 확인 못 함.</p><p class="note">미국 앱스토어 평점 4.7 · 화면: 앱스토어</p></div></div>
     </div>
     <p class="lead">콘센트를 읽는 기술도, 배치를 추천하는 서비스도 이미 있다. 둘을 이어 “거기서 쓸 수 있는가”로 배치하는 서비스는 찾아본 범위에서 나오지 않았다.</p>
     <p class="note">2026년 10월, 각 서비스의 공개 소개 글과 도움말을 검색해 확인한 범위입니다. 화면은 각 공식 사이트(ikea.com, archisketch.com, developer.apple.com, magicplan.app)에서 캡처했습니다.</p>
@@ -331,6 +356,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
     [].forEach.call(nav.children, function(b, i){ b.classList.toggle('on', i === cur); });
     pg.textContent = ('0' + (cur + 1)).slice(-2) + ' / ' + ('0' + S.length).slice(-2);
     var k = st[cur], id = S[cur].id;
+    if (id === 's2b'){ S[cur].classList.toggle('det', k > 0); [].forEach.call(document.querySelectorAll('#s2b .rd'), function(d){ d.classList.toggle('show', +d.dataset.i === k); }); [].forEach.call(document.querySelectorAll('#rtabs button'), function(b, i){ b.classList.toggle('on', i === k); }); }
     if (id === 's3'){ [].forEach.call(pA.querySelectorAll('.L'), function(g){ g.classList.toggle('show', k >= +g.dataset.from); }); [].forEach.call(document.querySelectorAll('#layers li'), function(li, i){ li.classList.toggle('show', i <= k); }); }
     if (id === 's4'){ seqGo(k * 20); [].forEach.call(pB.querySelectorAll('.lay'), function(g){ g.classList.toggle('show', +g.dataset.lay === k); }); [].forEach.call(document.querySelectorAll('#tabs button'), function(b, i){ b.classList.toggle('on', i === k); });
       var l = LAY[k]; ['sc1', 'sc2', 'sc3'].forEach(function(n, i){ var el = document.getElementById(n); el.textContent = l.sc[i]; el.style.color = k === 2 ? 'var(--ok)' : i ? 'var(--warn)' : 'var(--ink)'; document.getElementById('tabs').dataset.k = k; });
@@ -340,11 +366,13 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   function go(i, k){ cur = Math.max(0, Math.min(S.length - 1, i)); st[cur] = k === 'end' ? max(cur) : (k || 0); render(); }
   function step(d){ if (d > 0){ if (st[cur] < max(cur)){ st[cur]++; render(); } else if (cur < S.length - 1) go(cur + 1, 0); } else { if (st[cur] > 0){ st[cur]--; render(); } else if (cur > 0) go(cur - 1, 'end'); } }
   [].forEach.call(document.querySelectorAll('#tabs button'), function(b, i){ b.addEventListener('click', function(e){ e.stopPropagation(); st[cur] = i; render(); }); });
+  [].forEach.call(document.querySelectorAll('#rtabs button'), function(b, i){ b.addEventListener('click', function(){ st[cur] = i; render(); }); });
+  [].forEach.call(document.querySelectorAll('#s2b .refs .card'), function(c, i){ c.addEventListener('click', function(){ st[cur] = i + 1; render(); }); });
   addEventListener('keydown', function(e){ if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown'){ e.preventDefault(); step(1); } if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp'){ e.preventDefault(); step(-1); } });
   var wt = 0; addEventListener('wheel', function(e){ var n = performance.now(); if (n - wt < 600 || Math.abs(e.deltaY) < 6) return; var s = S[cur]; if (s.scrollHeight > s.clientHeight + 2) return; wt = n; step(e.deltaY > 0 ? 1 : -1); }, { passive: true });
   // 휴대폰: 화면 오른쪽을 누르면 앞으로, 왼쪽을 누르면 뒤로
   var t0 = null; addEventListener('touchstart', function(e){ t0 = [e.touches[0].clientX, e.touches[0].clientY]; }, { passive: true });
-  addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], m = Math.max(Math.abs(c.clientX - t0[0]), Math.abs(c.clientY - t0[1])); t0 = null; if (m > 12 || e.target.closest('button')) return; step(c.clientX < innerWidth / 2 ? -1 : 1); }, { passive: true });
+  addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], m = Math.max(Math.abs(c.clientX - t0[0]), Math.abs(c.clientY - t0[1])); t0 = null; if (m > 12 || e.target.closest('button,.refs .card')) return; step(c.clientX < innerWidth / 2 ? -1 : 1); }, { passive: true });
   var h = parseInt(location.hash.slice(1), 10); go(isNaN(h) ? 0 : h, 0);
 })();
 </script>
