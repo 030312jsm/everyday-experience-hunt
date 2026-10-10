@@ -141,12 +141,28 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 .flow .card{opacity:.32;transition:opacity .5s,border-color .5s}
 .flow .card.show{opacity:1}
 .flow h3{font-size:clamp(19px,1.9vw,26px)}
+#mb,.hint{display:none}
 @media (max-width:820px){
+  html,body{overscroll-behavior:none}
+  #nav{display:none !important}
+  #mb{display:flex;position:fixed;left:0;right:0;bottom:0;height:calc(50px + env(safe-area-inset-bottom));padding:0 8px env(safe-area-inset-bottom);align-items:center;gap:8px;background:var(--bg);border-top:1px solid var(--line);z-index:6}
+  #mb button{appearance:none;border:0;background:none;font:inherit;font-size:28px;line-height:1;width:46px;height:46px;color:var(--ink)}
+  #mb .bar{flex:1;height:3px;border-radius:2px;background:#DEDED8;overflow:hidden}#mprog{display:block;height:100%;background:var(--ink);transition:width .4s}
+  .hint{display:block;font-size:13px;color:var(--ink3);margin-top:10px}
+  .refs.three .card{flex-direction:row;align-items:stretch}
+  .refs.three .card img{width:36%;height:auto;min-height:100px;border-bottom:0;border-right:1px solid var(--line)}
+  .refs.three .card>div{padding:12px 14px;justify-content:center;gap:5px}
+  #s2b .refs p{display:none}#s2b .refs .card>div{padding:10px 12px;gap:6px}
+  #planA{width:min(100%,calc(34vh * 1406 / 1194)) !important}#planB{width:min(100%,calc(34vh * 1406 / 1194))}
+  .why{margin-top:10px;gap:6px}.why li{font-size:13.5px}
+  .score div{padding:9px 12px}.score b{font-size:24px}
+  .card li{font-size:13.5px}.card ul{gap:6px;margin-top:8px}
+  .info ol{gap:7px}.info li{font-size:14px}
   #top{height:52px;background:var(--bg)}#nav i{width:16px}
   #nav{left:0;right:0;bottom:0;transform:none;justify-content:center;padding:10px 0 14px;background:var(--bg)}
   .cards .card{min-height:0;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;align-items:center}
   .flow .card{min-height:0}.cards .card h3,.flow .card h3{margin-top:0;padding-top:0}.cards .card p:not(.chip),.cards .card ul{grid-column:1/-1;min-height:0}
-  .sl{padding:68px 5vw 64px}
+  .sl{padding:68px 5vw calc(70px + env(safe-area-inset-bottom))}
   .bd{padding-top:18px}
   h2{margin-top:10px}
   .cards,.vs,.two,.flow{grid-template-columns:1fr;gap:10px}
@@ -175,6 +191,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 <section class="sl" id="s0">
   <p class="chip">콘센트와 랜선 자리까지 보고 정하는 가구 배치</p>
   <h1>PLUG<span style="color:var(--blue)">IN</span></h1>
+  <p class="hint">옆으로 밀어서 넘기기</p>
   <div class="hero"><img src="assets/room2.webp" alt="" width="1406" height="1194"></div>
 </section>
 
@@ -301,6 +318,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 </section>
 
 <nav id="nav"></nav>
+<div id="mb"><button id="pv" aria-label="이전">‹</button><div class="bar"><i id="mprog"></i></div><button id="nx" aria-label="다음">›</button></div>
 
 <script>
 (function(){
@@ -354,7 +372,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   function render(){
     S.forEach(function(s, i){ s.classList.toggle('on', i === cur); });
     [].forEach.call(nav.children, function(b, i){ b.classList.toggle('on', i === cur); });
-    pg.textContent = ('0' + (cur + 1)).slice(-2) + ' / ' + ('0' + S.length).slice(-2);
+    pg.textContent = ('0' + (cur + 1)).slice(-2) + ' / ' + ('0' + S.length).slice(-2); document.getElementById('mprog').style.width = ((cur + 1) / S.length * 100) + '%';
     var k = st[cur], id = S[cur].id;
     if (id === 's2b'){ S[cur].classList.toggle('det', k > 0); [].forEach.call(document.querySelectorAll('#s2b .rd'), function(d){ d.classList.toggle('show', +d.dataset.i === k); }); [].forEach.call(document.querySelectorAll('#rtabs button'), function(b, i){ b.classList.toggle('on', i === k); }); }
     if (id === 's3'){ [].forEach.call(pA.querySelectorAll('.L'), function(g){ g.classList.toggle('show', k >= +g.dataset.from); }); [].forEach.call(document.querySelectorAll('#layers li'), function(li, i){ li.classList.toggle('show', i <= k); }); }
@@ -363,7 +381,10 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
       document.getElementById('why').innerHTML = l.why.map(function(w){ return '<li class="' + w[0] + '">' + w[1] + '</li>'; }).join(''); }
     if (id === 's5') [].forEach.call(document.querySelectorAll('#flow > div'), function(d, i){ d.classList.toggle('show', i <= k); });
   }
-  function go(i, k){ cur = Math.max(0, Math.min(S.length - 1, i)); st[cur] = k === 'end' ? max(cur) : (k || 0); render(); }
+  function go(i, k){ var p = cur; cur = Math.max(0, Math.min(S.length - 1, i)); st[cur] = k === 'end' ? max(cur) : (k || 0);
+    if (p === cur || !matchMedia('(max-width:820px)').matches){ render(); return; }
+    var d = cur > p ? 1 : -1, a = S[p], b = S[cur]; a.style.transform = 'translateX(' + (-d * 40) + 'px)'; b.style.transition = 'none'; b.style.transform = 'translateX(' + (d * 40) + 'px)'; b.scrollTop = 0;
+    render(); b.offsetWidth; b.style.transition = ''; b.style.transform = ''; setTimeout(function(){ a.style.transform = ''; }, 600); }
   function step(d){ if (d > 0){ if (st[cur] < max(cur)){ st[cur]++; render(); } else if (cur < S.length - 1) go(cur + 1, 0); } else { if (st[cur] > 0){ st[cur]--; render(); } else if (cur > 0) go(cur - 1, 'end'); } }
   [].forEach.call(document.querySelectorAll('#tabs button'), function(b, i){ b.addEventListener('click', function(e){ e.stopPropagation(); st[cur] = i; render(); }); });
   [].forEach.call(document.querySelectorAll('#rtabs button'), function(b, i){ b.addEventListener('click', function(){ st[cur] = i; render(); }); });
@@ -372,7 +393,9 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   var wt = 0; addEventListener('wheel', function(e){ var n = performance.now(); if (n - wt < 600 || Math.abs(e.deltaY) < 6) return; var s = S[cur]; if (s.scrollHeight > s.clientHeight + 2) return; wt = n; step(e.deltaY > 0 ? 1 : -1); }, { passive: true });
   // 휴대폰: 화면 오른쪽을 누르면 앞으로, 왼쪽을 누르면 뒤로
   var t0 = null; addEventListener('touchstart', function(e){ t0 = [e.touches[0].clientX, e.touches[0].clientY]; }, { passive: true });
-  addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], m = Math.max(Math.abs(c.clientX - t0[0]), Math.abs(c.clientY - t0[1])); t0 = null; if (m > 12 || e.target.closest('button,.refs .card')) return; step(c.clientX < innerWidth / 2 ? -1 : 1); }, { passive: true });
+  addEventListener('touchend', function(e){ if (!t0) return; var c = e.changedTouches[0], dx = c.clientX - t0[0], dy = c.clientY - t0[1]; t0 = null;
+    if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.3) return; var sc = e.target.closest('.shots,#rtabs'); if (sc && sc.scrollWidth > sc.clientWidth + 4) return; step(dx < 0 ? 1 : -1); }, { passive: true });
+  document.getElementById('pv').addEventListener('click', function(){ step(-1); }); document.getElementById('nx').addEventListener('click', function(){ step(1); });
   var h = parseInt(location.hash.slice(1), 10); go(isNaN(h) ? 0 : h, 0);
 })();
 </script>
