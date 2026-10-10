@@ -86,6 +86,11 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
 .vd{margin-top:clamp(12px,2.4vh,22px);padding:12px 16px;border-radius:14px;background:#EDEDE8;font-size:clamp(13.5px,1.1vw,15.5px);line-height:1.55;color:var(--ink)}
 .vd.y{background:var(--tint)}
 .vd i{font-style:normal;font-weight:700;margin-right:10px;color:var(--ink2)}.vd.y i{color:var(--blue)}
+.pts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:clamp(12px,2.4vh,20px)}
+.pts p{display:flex;align-items:center;gap:12px;font-size:clamp(15px,1.35vw,19px);font-weight:600;letter-spacing:-.01em;line-height:1.45}
+.must{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:12px;font-size:13.5px}
+.must i{font-style:normal;color:var(--ink3);margin-right:6px}
+.must span{padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-weight:600}
 /* 표지 */
 #s0{align-items:center;text-align:center;padding-bottom:0;overflow:hidden}
 #s0 .sub{font-size:clamp(17px,1.8vw,25px);font-weight:600;letter-spacing:-.02em;margin-top:14px}
@@ -178,6 +183,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   .refs.three{grid-template-columns:1fr}.refs.three img{height:150px}
   .rd.show{grid-template-columns:1fr;gap:14px}.shots{overflow-x:auto}.shots img{height:240px;max-width:none}
   #rtabs{flex-wrap:wrap}#rtabs button{flex:none;padding:7px 9px}
+  .pts{grid-template-columns:1fr;gap:8px}.pts p{font-size:14.5px;align-items:flex-start}
   .tabs{display:flex}.tabs button{flex:1;padding:8px 4px;font-size:12.5px}
   .why{min-height:0}
   #s9 .bd{justify-content:center}
@@ -223,6 +229,10 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
         <div><dt>결과물</dt><dd>가구 배치안과 그 이유, 공유기 둘 자리, 더 필요한 물건</dd></div>
         <div><dt>사용 시점</dt><dd>집 계약 전부터</dd></div></dl></div>
     </div>
+    <div class="pts">
+      <p><span class="chip">강점 1</span>콘센트·랜선·햇빛까지 확인한 배치</p>
+      <p><span class="chip">강점 2</span>내가 꼭 넣어야 하는 물건을 알맞은 자리에 넣어 보고 결정</p>
+    </div>
   </div>
 </section>
 
@@ -266,6 +276,7 @@ dd{font-size:clamp(15px,1.4vw,19px);font-weight:600;line-height:1.5;letter-spaci
   <div class="bd"><div class="two">
     <div class="r3" id="planB" role="img" aria-label="같은 방에서 가구가 세 가지 배치로 옮겨 간다"><canvas id="cvB" width="1100" height="934"></canvas></div>
     <div>
+      <p class="must"><i>꼭 넣을 물건</i><span>침대</span><span>책상</span><span>옷장</span><span>TV</span><span>공유기</span></p>
       <div class="tabs" id="tabs"><button>A · 창가에 침대</button><button>B · 창가에 책상</button><button class="best">C · PLUGIN 추천</button></div>
       <div class="score"><div><b id="sc1">5/9</b><small>벽 콘센트로 해결</small></div><div><b id="sc2">2</b><small>필요한 멀티탭</small></div><div><b id="sc3">1</b><small>가려지는 단자</small></div></div>
       <ul class="why" id="why"></ul>
