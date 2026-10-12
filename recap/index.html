@@ -60,6 +60,9 @@ h2{font-size:clamp(28px,3.6vw,48px);font-weight:800;letter-spacing:-.035em;line-
 .num b em{font-style:normal;font-size:.42em;letter-spacing:-.01em;margin-left:3px}
 .num p{font-size:15px;color:var(--ink2);margin-top:12px}
 .num small{display:block;font-size:12.5px;color:var(--ink3);margin-top:6px}
+.sub{margin-top:64px}
+.nums.four{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:24px}
+.nums.four .num b{font-size:clamp(30px,3.2vw,46px)}
 /* 표 */
 .tb{margin-top:40px;background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
 .tr{display:grid;gap:18px;padding:16px 24px;border-top:1px solid var(--line);align-items:baseline}
@@ -169,6 +172,7 @@ section{padding:56px 0}
 .nums::-webkit-scrollbar,.steps::-webkit-scrollbar,.svs::-webkit-scrollbar,.three::-webkit-scrollbar,#mnav::-webkit-scrollbar{display:none}
 .nums>*,.steps>*,.svs>*,.three>*{flex:0 0 86%;scroll-snap-align:center}
 .nums>*{flex-basis:70%}
+.sub{margin-top:40px}
 .nums{margin-top:28px}.steps{margin-top:28px}.three{margin-top:28px}
 .step,.sv{padding:20px;border-radius:22px;align-content:start}
 .step .ph,.ph2 .ph{width:min(260px,100%)}
@@ -358,6 +362,21 @@ section{scroll-margin-top:60px}
 <div class="cd rv"><h4>사업이 되는가</h4><small class="s m">입원부터 시작</small>
 <ul class="li"><li>병원이 AI 차트를 이미 구독</li><li>환자경험평가 결과가 의료질평가지원금 약 7,000억 원에 반영</li><li>2026년 평가부터 병원 887곳 추가</li><li class="n">이 평가는 입원 환자 대상. 첫 적용처는 퇴원 요약</li></ul></div>
 </div>
+<h3 class="sub rv">사업이 되는가 자세히</h3>
+<div class="nums four">
+<div class="num rv"><b>37,514<em>곳</em></b><p>국내 의원 수. 치과의원 19,254곳, 한의원 14,807곳 별도</p><small>국민건강보험공단, 2025년</small></div>
+<div class="num rv"><b>53<em>억 달러</em></b><p>같은 방식인 미국 Abridge의 기업 가치</p><small>2025년 6월 투자 유치 기준</small></div>
+<div class="num rv"><b>1.17<em>억 달러</em></b><p>Abridge가 병원과 맺은 연간 계약 매출. 의료기관 150곳 이상 도입</p><small>2025년 1분기, 시장조사 업체 추정</small></div>
+<div class="num rv"><b>6~13<em>원</em></b><p>카카오 알림톡 한 건을 보내는 비용</p><small>발송 업체 공개 단가</small></div>
+</div>
+<div class="tb rv">
+<div class="tr h c3"><span>돈을 내는 곳</span><span>내는 이유</span><span>근거와 한계</span></div>
+<div class="tr c3"><b>의원</b><span>AI 차트 구독료에 포함. 환자 문의 전화 감소와 재방문 관리</span><span>니어닥 유료 전환율 50% 이상. 다만 월 매출 1,230만 원으로 아직 초기</span></div>
+<div class="tr c3"><b>입원 병원</b><span>환자경험평가 점수가 의료질평가지원금에 반영. 2026년부터 병원 887곳 추가</span><span>지원금 총액 약 7,000억 원. 환자경험 항목의 반영 비율은 확인 못 함</span></div>
+<div class="tr c3"><b>건강보험</b><span>진료 사이에 환자를 관리하는 의원에 별도 보상</span><span>만성질환 관리 사업에 의원 2,488곳, 환자 45만 8,225명 등록(2021년 말). 하루 한 줄이 이 보상 대상인지는 확인 못 함</span></div>
+<div class="tr c3"><b>병원의 위험 관리</b><span>설명한 내용이 기록으로 남아 분쟁 때 근거가 됨</span><span>의료분쟁 감정 4,405건 중 2,102건(47.7%)에서 설명 여부가 쟁점. 주로 수술 같은 진료</span></div>
+</div>
+<p class="note rv">환자에게 직접 받는 방식은 택하지 않음. 미국 Abridge도 환자용 무료 앱으로 시작했다가 병원 대상으로 전환</p>
 </div></section>
 
 <section id="limit"><div class="w">
@@ -393,6 +412,10 @@ section{scroll-margin-top:60px}
 <a href="https://dailypharm.com/user/news/226114">의료기관과 약국 담합 금지 기준</a>
 <a href="https://www.dailypharm.com/user/news/54915">QR 전자처방전 사례</a>
 <a href="https://dailypharm.com/user/news/335283">대체조제 간편통보 시행 (2026.2)</a>
+<a href="https://sacra.com/c/abridge/">Abridge 기업 가치와 계약 매출 (Sacra)</a>
+<a href="https://www.nhis.or.kr/announce/wbhaec11404m01.do">요양기관 현황 (국민건강보험공단)</a>
+<a href="https://solapi.com/guides/pricing">알림톡 발송 단가</a>
+<a href="https://medigatenews.com/news/4005101054">설명의무 분쟁 분석</a>
 <a href="https://medigatenews.com/news/926585122">의료기기 해당 소프트웨어 기준</a>
 </div>
 </div></footer>
