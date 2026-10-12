@@ -179,8 +179,8 @@ body{padding-bottom:58px}
 #mnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:9;gap:6px;padding:9px 12px calc(9px + env(safe-area-inset-bottom));background:rgba(245,243,238,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
 #mnav a{flex:none;font-size:13.5px;font-weight:600;color:var(--ink2);text-decoration:none;padding:8px 13px;border-radius:99px;background:var(--card);border:1px solid var(--line)}
 #mnav a.on{background:var(--ink);border-color:var(--ink);color:#fff}
-section{scroll-margin-top:60px}
 }
+section{scroll-margin-top:60px}
 .hint{display:none}
 @media (max-width:860px){.hint{display:block}}
 </style>
@@ -392,6 +392,16 @@ document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
 var ml = document.querySelectorAll('#mnav a'), secs = [].map.call(ml, function (a) { return document.querySelector(a.getAttribute('href')); });
 var so = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { var i = secs.indexOf(e.target); ml.forEach(function (a, k) { a.classList.toggle('on', k === i); }); ml[i].scrollIntoView({ block: 'nearest', inline: 'center' }); } }); }, { rootMargin: '-45% 0px -50% 0px' });
 secs.forEach(function (x) { so.observe(x); });
+
+var all = [].slice.call(document.querySelectorAll('section'));
+addEventListener('keydown', function (e) {
+  if (e.altKey || e.ctrlKey || e.metaKey || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+  var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return;
+  var y = scrollY + 70, i = 0; all.forEach(function (x, k) { if (x.offsetTop <= y) i = k; });
+  if (d < 0 && y - all[i].offsetTop > 40) d = 0;
+  var t = all[Math.max(0, Math.min(all.length - 1, i + d))];
+  e.preventDefault(); scrollTo({ top: t.offsetTop - 60, behavior: 'smooth' });
+});
 </script>
 </body>
 </html>
