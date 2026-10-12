@@ -121,6 +121,9 @@ h3{font-size:clamp(22px,2.3vw,32px);font-weight:800;letter-spacing:-.03em;line-h
 .who{font-size:13.5px;color:var(--ink3);margin-top:4px}
 .gap{margin-top:18px;padding:12px 14px;border-radius:12px;background:#FBE9E3;color:var(--warn);font-size:14.5px}
 .gap b{display:block;font-size:12px;margin-bottom:2px}
+.gap.ok2{background:var(--tint);color:var(--ac)}
+.ph2{margin-top:20px}.ph2 .ph{width:300px}
+.ok+.ok{margin-left:4px}
 /* 세 조건 */
 .three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:44px}
 .cd{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px}
@@ -166,7 +169,7 @@ section{padding:56px 0}
 .nums>*{flex-basis:70%}
 .nums{margin-top:28px}.steps{margin-top:28px}.three{margin-top:28px}
 .step,.sv{padding:20px;border-radius:22px;align-content:start}
-.step .ph{width:min(260px,100%)}
+.step .ph,.ph2 .ph{width:min(260px,100%)}
 .sc{min-height:0}
 .shots img{height:auto;width:calc(50% - 5px)}
 .hint{display:block;font-size:12.5px;color:var(--ink3);margin-top:10px}
@@ -259,6 +262,14 @@ section{scroll-margin-top:60px}
 <div class="bt"><span class="on">이 병원에 보내기</span><span>골라서 보내기</span></div>
 </div></div></div>
 </div>
+<div class="sv ph2 rv"><div class="ph"><div class="sc sm">
+<div class="bar"><span>12:52</span><span>RECAP</span></div>
+<div class="hd"><b>○○이비인후과</b><small>10월 12일 · 김○○ 원장</small><br><span class="ok">의사 확인 완료</span> <span class="ok">약사 확인 완료</span></div>
+<div class="bx"><small>약 먹는 법 · △△약국에서 확인</small><p>항생제 · 아침, 저녁 식후 · 5일</p><p>해열제 · 열이 날 때만 · 하루 3번까지</p></div>
+<div class="bt"><span>약국에 전화</span><span>약 사진 보기</span></div>
+</div></div><div class="si"><p class="no">선택 기능 · 약국</p><h3>약국에서 약사 확인 추가</h3><p class="who">병원이 약국을 정해 주지 않는 방식</p>
+<ul class="li"><li>환자가 약국에서 한 장의 QR 제시. 어느 약국이든 가능</li><li>약사가 실제 조제한 약 기준으로 "약 먹는 법" 확인과 수정</li><li>같은 한 장에 "약사 확인 완료" 표시 추가</li><li class="n">병원의 약국 지정, 처방전 자동 전송, 약국 재고 조회는 제외</li></ul>
+<p class="gap ok2"><b>이렇게 정한 이유</b>병원이 특정 약국으로 환자를 유도하는 일은 약사법으로 금지. 환자가 직접 고른 약국에서 시작하는 구조</p></div></div>
 </div></section>
 
 <section id="day"><div class="w">
@@ -270,6 +281,7 @@ section{scroll-margin-top:60px}
 <div><time>12:43</time><i></i><b>진료 끝</b><span>환자용 초안이 의사 화면에 표시</span></div>
 <div><time>12:44</time><i></i><b>의사가 한 번 누름</b><span>이때 발송. 누르지 않으면 나가지 않음</span></div>
 <div><time>12:47</time><i></i><b>약국에서 알림 확인</b><span>링크만 도착. 본인 확인 뒤 열림</span></div>
+<div><time>12:52</time><i></i><b>약을 받으며 QR 제시</b><span>약사가 약 먹는 법을 확인. 선택 기능</span></div>
 <div><time>19:30</time><i></i><b>저녁 약 시간</b><span>약 알림 한 번</span></div>
 <div><time>다음 날</time><i></i><b>아침</b><span>"오늘은 어때요?" 한 줄</span></div>
 <div><time>3일 뒤</time><i></i><b>다시 오기로 한 날</b><span>방문 알림</span></div>
@@ -316,6 +328,7 @@ section{scroll-margin-top:60px}
 <div class="tr c3"><b>니어닥</b><span>진료 대화를 분석해 의사용 차트 자동 작성. 병·의원 400곳 이상 도입</span><span>기사에 환자용 기능 언급 없음</span></div>
 <div class="tr c3"><b>루닛케어 AI진료노트</b><span>진료 내용을 AI로 쉽게 요약. 2024년 7월 출시 공지</span><span>암 환자와 보호자 대상. 환자가 직접 사용</span></div>
 <div class="tr c3"><b>카카오 케어챗</b><span>카카오톡에서 예약, 결제, 서류 발급, 입퇴원 안내</span><span>진료 요약과 날마다 묻는 기능은 기사에서 확인 안 됨</span></div>
+<div class="tr c3"><b>약국 팜봉투</b><span>약 봉투에 약 효능, 주의사항, 알약 사진을 인쇄</span><span>종이 봉투에만 남음. 의사 설명과 연결되지 않음</span></div>
 <div class="tr c3"><b>Abridge (미국)</b><span>2024년 4월부터 환자용 요약 제공</span><span>같은 방식. 의사가 검토한 뒤 환자에게 전달</span></div>
 </div>
 <p class="note rv">앱 화면과 평점은 앱스토어 공개 정보(2026년 10월 12일 조회). 앱을 직접 설치해 써 본 결과는 아님. 국내 병원이 AI 요약을 환자에게 자동으로 보내는 사례는 검색에서 찾지 못함</p>
@@ -340,7 +353,7 @@ section{scroll-margin-top:60px}
 <div class="three">
 <div class="cd rv"><h4>"집에 가서 잊는다"의 국내 수치</h4><ul class="li"><li class="n">해외 문헌(40~80%를 곧 잊음)만 있음</li><li class="n">설문 10문항으로 확인 예정</li></ul></div>
 <div class="cd rv"><h4>요약의 효과</h4><ul class="li"><li class="n">미국 연구에서 요약을 받아도 약 정보를 맞게 기억한 비율은 절반 정도</li><li class="n">요약의 용도를 다시 확인하는 자료와 하루 한 번 점검으로 설정</li></ul></div>
-<div class="cd rv"><h4>제도와 책임</h4><ul class="li"><li class="n">의료기기 해당 여부는 식약처 문의 전</li><li class="n">의사 확인이 형식에 그칠 위험</li><li class="n">진료 대화 기록에 대한 거부감은 조사 전</li></ul></div>
+<div class="cd rv"><h4>제도와 책임</h4><ul class="li"><li class="n">의료기기 해당 여부는 식약처 문의 전</li><li class="n">의사 확인이 형식에 그칠 위험</li><li class="n">진료 대화 기록에 대한 거부감은 조사 전</li><li class="n">QR 전자처방전에 약사 단체가 반발한 사례 있음. 약국 참여는 협의 필요</li></ul></div>
 </div>
 </div></section>
 
@@ -364,6 +377,9 @@ section{scroll-margin-top:60px}
 <a href="https://apps.apple.com/kr/app/id1438086768">모두닥 (앱스토어)</a>
 <a href="https://apps.apple.com/kr/app/id1580017428">나의건강기록 (앱스토어)</a>
 <a href="https://apps.apple.com/kr/app/id375279377">건강보험25시 (앱스토어)</a>
+<a href="https://dailypharm.com/user/news/226114">의료기관과 약국 담합 금지 기준</a>
+<a href="https://www.dailypharm.com/user/news/54915">QR 전자처방전 사례</a>
+<a href="https://dailypharm.com/user/news/335283">대체조제 간편통보 시행 (2026.2)</a>
 <a href="https://medigatenews.com/news/926585122">의료기기 해당 소프트웨어 기준</a>
 </div>
 </div></footer>
