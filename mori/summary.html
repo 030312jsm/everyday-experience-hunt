@@ -25,15 +25,16 @@ p,li{font-size:9pt;line-height:1.5}
 .core li{counter-increment:c;padding-left:5mm;text-indent:-5mm}
 .core li::before{content:counter(c) "  ";color:var(--amber);font-weight:700}
 .core b{font-weight:600}
-.kv{display:grid;grid-template-columns:minmax(0,2.4fr) repeat(3,minmax(0,1fr));gap:2mm}
-.kv img{height:62mm}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) 40.3mm;grid-template-rows:repeat(3,minmax(0,1fr));gap:2mm;height:72mm}
+.kv img{height:100%}
+.kv img:first-child{grid-row:span 3}
 .steps{display:flex;flex-wrap:wrap;gap:1mm 0;list-style:none}
 .steps li+li::before{content:"→";margin:0 2mm;color:var(--amber)}
 .turns{list-style:none;display:grid;gap:1.4mm}
 .turns b{font-weight:600}
 .foot{margin-top:auto;display:flex;justify-content:space-between;font-size:7.5pt;color:var(--ink2);border-top:1px solid var(--line);padding-top:2mm}
 @media print{body{background:none}.page{margin:0}@page{size:A4;margin:0}}
-@media (max-width:820px){.page{width:auto;min-height:0;margin:0;padding:24px 16px}.top,.cols,.core{grid-template-columns:1fr}.kv{grid-template-columns:1fr 1fr}.kv img{height:auto;aspect-ratio:1}}
+@media (max-width:820px){.page{width:auto;min-height:0;margin:0;padding:24px 16px}.top,.cols,.core{grid-template-columns:1fr}.kv{grid-template-columns:1fr;grid-template-rows:none;height:auto}.kv img{height:auto;aspect-ratio:16/9}.kv img:first-child{grid-row:auto}}
 </style>
 </head>
 <body>
@@ -43,7 +44,7 @@ p,li{font-size:9pt;line-height:1.5}
     <p class="one"><b>mori</b> — a late-night tactile bar where memories of touch are kept in glass jars and brought back to the fingertips.</p>
   </div>
   <section><h2>Key Visuals</h2>
-    <div class="kv"><img src="img/s5/94.webp" alt="Round counter with six glowing basins, seen from above"><img src="img/v/kv_wave.webp" alt="Wave and sand texture"><img src="img/v/kv_blanket.webp" alt="Blanket texture"><img src="img/v/kv_cloud.webp" alt="Cloud texture"></div>
+    <div class="kv"><img src="img/kv/kv1.webp" alt="Key Visual 01: the tactile bar seen from above through a round window"><img src="img/kv/kv2.webp" alt="Key Visual 02: wall of labelled jars"><img src="img/kv/kv3.webp" alt="Key Visual 03: the machine reading a jar"><img src="img/kv/kv4.webp" alt="Key Visual 04: a hand touching the glowing surface"></div>
   </section>
 
   <div class="cols">

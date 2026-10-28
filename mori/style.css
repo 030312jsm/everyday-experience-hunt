@@ -235,16 +235,9 @@ html::-webkit-scrollbar{display:none}
 .full .lab{color:var(--glow)}
 .full .lab span{color:var(--cream2)}
 .full .t1,.full .t-hero,.full .t2{color:var(--cream)}
-.cap{margin-top:auto}
-.cap p{font-family:var(--serif);font-size:var(--t2);color:var(--cream2);margin-top:calc(var(--u)*.6)}
-.cap i,.frames i{display:block;font-style:normal;font-size:var(--ts);letter-spacing:.08em;color:var(--glow);margin-top:calc(var(--u)*.8)}
-
-/* 스타일 프레임 셋 */
-.frames{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:calc(var(--u)*1.6)}
-.frames figure{display:flex;flex-direction:column;min-height:0}
-.frames img{flex:1;min-height:0;width:100%;object-fit:cover}
-.frames figcaption{margin-top:calc(var(--u)*1)}
-.frames b{font-family:var(--serif);font-weight:600;font-size:calc(var(--u)*1.45);color:var(--cream)}
+/* Key Visual: 16:9 스타일 프레임 한 장이 화면 전체 */
+.kvs{background:#0e0a07}
+.kvs img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 
 /* 라이브러리 10×2 */
 .ink #libcount{display:block;color:var(--cream);margin-top:calc(var(--u)*.5)}
@@ -370,14 +363,13 @@ html::-webkit-scrollbar{display:none}
   .cols3{margin-top:28px}
   .cols3 div+div,.flowline div+div{padding-left:0;border-left:0}
   .cols3 div{padding-bottom:20px}
-  .cols3 b,.rules b,.steps b,.frames b{font-size:18px}
+  .cols3 b,.rules b,.steps b{font-size:18px}
   .steps,.rules{grid-template-columns:1fr 1fr;margin-top:24px}
   .menu3{margin-top:24px;gap:28px}
   .menu3 li{font-size:16px;padding:8px 0}
   .nots{flex-direction:column;gap:6px;margin-top:28px}
   .full{min-height:100svh}
-  .frames{grid-template-columns:1fr;gap:24px}
-  .frames img{flex:none;aspect-ratio:3/4}
+  .kvs{min-height:0;height:56.25vw}
   .assets{grid-template-columns:repeat(2,1fr);margin-top:20px}
   .assets .ph span{font-size:20px}
   .map{margin:24px 0}
