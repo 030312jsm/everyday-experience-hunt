@@ -1,4 +1,4 @@
-// 06장 둘러보기 화면과 3D 장면을 잇는 부분
+// 05장 둘러보기 화면과 3D 장면을 잇는 부분
 import * as S from './store.js';
 
 const $ = (s) => document.querySelector(s);
@@ -74,7 +74,7 @@ function goPrev() {
 next.onclick = () => { if (!goNext()) S.go(0); };
 prev.onclick = goPrev;
 
-// 첫 화면이나 06장이 보일 때만 그림
+// 첫 화면이나 05장 가게가 보일 때만 그림
 let heroR = 1, storeR = 0;
 const sync = () => {
   S.setActive(heroR > 0 || storeR > 0);

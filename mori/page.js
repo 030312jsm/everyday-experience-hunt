@@ -1,4 +1,4 @@
-// 갤러리, 03·04장 그리기, 키보드로 넘기기
+// 갤러리, 04장 라이브러리와 06장 근거 자료 그리기, 키보드로 넘기기
 (function () {
   var $ = function (s) { return document.querySelector(s); };
   var gal = $('#gal'), gg = $('#gg'), gt = $('#gt'), gm = $('#gm');
@@ -21,7 +21,44 @@
   function closeGal() { gal.hidden = true; document.body.style.overflow = ''; }
   $('#gx').onclick = closeGal;
 
-  // 03 무드 판
+  // 04 에셋 라이브러리: f가 없는 칸은 Midjourney로 만드는 중인 컷
+  var LIB = [
+    { f: 'img/v/lib_beach.webp', k: '환경 · 기억 속 풍경', d: '원경' },
+    { n: 'L03', t: '밤거리의 가게', k: '환경', d: '원경' },
+    { f: 'img/s5/87.webp', k: '공간', d: '원경' },
+    { f: 'img/s5/102.webp', k: '공간 · 병의 벽', d: '원경' },
+    { f: 'img/s5/89.webp', k: '상황', d: '중경' },
+    { f: 'img/s5/96.webp', k: '사람 · 공간', d: '중경' },
+    { n: 'L02', t: '손님 한 사람', k: '인물', d: '중경' },
+    { n: 'L04', t: '병을 고르는 손', k: '상황', d: '중경' },
+    { f: 'img/s5/93.webp', k: '장면', d: '탑뷰' },
+    { f: 'img/s5/103.webp', k: '장면', d: '탑뷰' },
+    { n: 'L01', t: '촉감 병 하나', k: '제품', d: '근경' },
+    { f: 'img/s5/91.webp', k: '사물 · 병과 받침', d: '근경' },
+    { n: 'L05', t: '기계가 병을 알아보는 순간', k: '사물', d: '근경' },
+    { f: 'img/s5/92.webp', k: '디테일 · 빈 홈', d: '근경' },
+    { f: 'img/s5/90.webp', k: '디테일 · 손', d: '근경' },
+    { n: 'L06', t: '라벨 손글씨', k: '디테일', d: '초근경' },
+    { f: 'img/v/lib_moonwater.webp', k: '질감 · 달 그늘의 물결', d: '근경' },
+    { n: 'L07', t: '비 갠 뒤의 이끼', k: '질감', d: '초근경' },
+    { n: 'L08', t: '아무도 밟지 않은 구름', k: '질감', d: '초근경' },
+    { n: 'L09', t: '손바닥과 빛 고리', k: '상징', d: '추상' }
+  ];
+  (function () {
+    var box = $('#assets'), have = LIB.filter(function (a) { return a.f; });
+    $('#libcount').innerHTML = '<b>' + have.length + '</b>장 · 제작 중 <b>' + (LIB.length - have.length) + '</b> · 목표 20장';
+    LIB.forEach(function (a) {
+      var f = document.createElement('figure'); f.className = 'a' + (a.f ? '' : ' todo');
+      f.innerHTML = (a.f ? '<img loading="lazy" alt="" src="' + a.f + '">' : '<div class="ph"><span>' + a.n + '</span>' + a.t + '</div>') +
+        '<figcaption><b>' + a.k + '</b> · ' + a.d + (a.f ? '' : ' · 제작 중') + '</figcaption>';
+      if (a.f) f.onclick = function () {
+        openGal('Visual Asset Library', have.length + '장 · 모두 AI 생성', have.map(function (x) { return { src: x.f }; }));
+      };
+      box.appendChild(f);
+    });
+  })();
+
+  // 06 근거 자료: 무드 판
   var VTN = ['매끄러운 세라믹 표면 / 유기적 곡면', '무광, 패브릭', '선형적인, Art', '나무재질의 정갈한 느낌', '흑백의 대비가 명확한 단색조', '무채도 반투명 중첩', '반들반들한 은백색', '몸과 손을 따라 감기는 가는 선과 입자', '비정형적인, 유선형', '마디마다 끼운 반투명 조각'];
   fetch('img/s3/items.json').then(function (r) { return r.json(); }).then(function (d) {
     var box = $('#boards');
@@ -38,7 +75,7 @@
     });
   });
 
-  // 04 트랙
+  // 06 근거 자료: 키워드 파생 트랙
   var PROMPT = {
     'A 미니멀': 'a thin sensor glove and a hand, minimalist, vast negative space --ar 4:5',
     'A-1 미니멀-사진': '+ studio photography, soft diffused light',
@@ -100,7 +137,7 @@
     });
   });
 
-  // → ← 로 다음 멈춤 지점까지 넘기기 (06장 안에서는 둘러보기 단계를 넘김)
+  // → ← 로 다음 멈춤 지점까지 넘기기 (05장 가게 안에서는 둘러보기 단계를 넘김)
   var stops = [].slice.call(document.querySelectorAll('[data-stop]'));
   function cur() {
     var y = innerHeight * 0.3, k = 0;
@@ -120,7 +157,7 @@
   });
 
   // 위쪽 막대에서 지금 장 표시
-  var links = [].slice.call(document.querySelectorAll('#bar nav a'));
+  var links = [].slice.call(document.querySelectorAll('#bar nav a[href^="#"]'));
   var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
   addEventListener('scroll', function () {
     var y = innerHeight * 0.4, on = -1;

@@ -1,4 +1,4 @@
-// mori 가게 3D 장면: 첫 화면의 가게 앞 + 06장의 가게 안 둘러보기
+// mori 가게 3D 장면: 첫 화면의 가게 앞 + 05장의 가게 안 둘러보기
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -103,6 +103,19 @@ wallL.rotation.y = Math.PI / 2;
 const wallR = mesh(new THREE.PlaneGeometry(10, ROOM.h), M.plaster, ROOM.x1, ROOM.h / 2, -1, false);
 wallR.rotation.y = -Math.PI / 2;
 mesh(new THREE.PlaneGeometry(10, ROOM.h), M.plaster, 0, ROOM.h / 2, ROOM.z0, false);
+// 왼쪽 안쪽 구석의 포스터 셋 (에셋 라이브러리 이미지로 만든 것): 하나는 선반 옆 뒷벽, 둘은 왼쪽 벽
+[['wave', -4.5, ROOM.z0, 0], ['blanket', ROOM.x0, -5.3, Math.PI / 2], ['cloud', ROOM.x0, -4.4, Math.PI / 2]].forEach(([n, x, z, ry]) => {
+  const tex = new THREE.TextureLoader().load(`img/v/poster_${n}.webp`);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  const g = new THREE.Group();
+  g.position.set(x, 1.62, z); g.rotation.y = ry;
+  const frame = new THREE.Mesh(new THREE.BoxGeometry(0.62, 1.12, 0.03), M.oakDark);
+  frame.position.z = 0.015;
+  const p = new THREE.Mesh(new THREE.PlaneGeometry(0.56, 1.06), new THREE.MeshStandardMaterial({ map: tex, emissiveMap: tex, emissive: 0xffffff, emissiveIntensity: 0.28, roughness: 0.85 }));
+  p.position.z = 0.032;
+  g.add(frame, p);
+  scene.add(g);
+});
 
 const street = mesh(new THREE.PlaneGeometry(40, 20), M.street, 0, -0.01, 14, false);
 street.rotation.x = -Math.PI / 2;
@@ -434,7 +447,7 @@ const pickMid = jars[3].home;
 const POSE = {
   hero: { p: V(0.6, 1.5, 10.5), t: V(-1.0, 1.75, 3.6) },
   front: { p: V(1.25, 1.6, 7.2), t: V(0.9, 1.45, 3.5) },
-  hall: { p: V(1.1, 1.72, 2.9), t: V(-0.1, 1.0, -1.6) },
+  hall: { p: V(1.1, 1.72, 2.9), t: V(-0.8, 1.05, -1.6) },
   shelf: { p: V(pickMid.x - 0.35, 1.7, ROOM.z0 + 2.7), t: V(pickMid.x - 0.35, pickMid.y + 0.05, ROOM.z0) },
   seat: { p: V(W0.c.x + 0.1, 1.8, W0.c.z + 1.2), t: V(W0.c.x - 0.02, TOP - 0.05, W0.c.z + 0.1) },
   // 넓은 화면에서는 왼쪽 안내판을 피해 홈을 오른쪽으로 비켜 놓음
