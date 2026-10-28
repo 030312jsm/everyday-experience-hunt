@@ -29,3 +29,8 @@ services:
     runtime: static
     staticPublishPath: ./handover
     buildCommand: ""
+  - type: web
+    name: mori-tactile-archive
+    runtime: static
+    staticPublishPath: ./mori
+    buildCommand: ""
