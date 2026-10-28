@@ -22,151 +22,156 @@
 <header id="bar">
   <a href="#hero" class="mark">mori</a>
   <nav>
-    <a href="#brand">01</a><a href="#core">02</a><a href="#key">03</a><a href="#lib">04</a><a href="#show">05</a><a href="#process">06</a><a href="summary.html" class="en">EN</a>
+    <a href="#brand">01</a><a href="#core">02</a><a href="#key">03</a><a href="#lib">04</a><a href="#show">05</a><a href="#process">06</a><a href="#appendix">부록</a><a href="summary.html" class="en">EN</a>
   </nav>
 </header>
+<div id="pg" aria-hidden="true"><span id="pgc"></span><span id="pgn"></span></div>
 
 <main>
-<!-- 첫 화면: 뒤의 3D 가게 앞이 그대로 보임 -->
-<section id="hero" class="clear" data-stop>
+<!-- 1 표지: 뒤의 3D 가게 앞이 그대로 보임 -->
+<section id="hero" class="clear slide" data-stop data-ch="mori">
   <div class="hero-copy">
-    <p class="kicker">미래 브랜드 프로젝트 · 중간 발표</p>
+    <p class="kicker">Digital Content Design with GenAI · 중간 발표</p>
     <h1 class="logo">mori</h1>
     <p class="sub">The Tactile Archive</p>
     <p class="lead">도시의 밤, 병에 담긴 촉감을<br>손끝으로 꺼내 보는 촉감 바</p>
   </div>
-  <a class="cue" href="#path">아래로 내리거나 → 키</a>
+  <a class="cue" href="#path">→ 키로 넘기기</a>
 </section>
 
-<!-- 차례 -->
-<section id="path" class="ink" data-stop>
-  <div class="wrap">
-    <p class="kicker">차례</p>
-    <ol class="road">
-      <li><a href="#brand"><span class="n">01</span><b>Future Brand</b><small>어떤 미래, 누구를 위한 브랜드인지</small></a></li>
-      <li><a href="#core"><span class="n">02</span><b>Visual Core</b><small>이 세계를 정하는 시각 규칙 8가지</small></a></li>
-      <li><a href="#key"><span class="n">03</span><b>Key Visuals</b><small>세계를 대표하는 장면 4개</small></a></li>
-      <li><a href="#lib"><span class="n">04</span><b>Visual Asset Library</b><small>규칙이 여러 종류의 이미지에서 유지되는지 20장으로 확인</small></a></li>
-      <li><a href="#show"><span class="n">05</span><b>Visual World Showcase</b><small>가게에 들어가 병을 고르고 촉감을 느끼기까지</small></a></li>
-      <li><a href="#process"><span class="n">06</span><b>How We Got Here</b><small>여기까지 오게 한 전환점 4개</small></a></li>
+<!-- 2 차례 -->
+<section id="path" class="slide ink" data-stop data-ch="차례">
+  <div class="fr agenda">
+    <h2 class="t1">차례</h2>
+    <ol>
+      <li><a href="#brand"><i>01</i><b>Future Brand</b><span>어떤 미래, 누구를 위한 브랜드</span></a></li>
+      <li><a href="#core"><i>02</i><b>Visual Core</b><span>이 세계를 정하는 규칙 8가지</span></a></li>
+      <li><a href="#key"><i>03</i><b>Key Visuals</b><span>세계를 대표하는 장면 4개</span></a></li>
+      <li><a href="#lib"><i>04</i><b>Visual Asset Library</b><span>규칙이 살아남는지 20장으로 확인</span></a></li>
+      <li><a href="#show"><i>05</i><b>Visual World Showcase</b><span>가게에 들어가 촉감을 느끼기까지</span></a></li>
+      <li><a href="#process"><i>06</i><b>How We Got Here</b><span>여기까지 오게 한 전환점 4개</span></a></li>
     </ol>
   </div>
 </section>
 
-<!-- 01 Future Brand -->
-<section id="brand" class="ink alt">
-  <div class="wrap">
-    <header class="ch" data-stop>
-      <span class="chn">01</span>
-      <div><p class="kicker">Future Brand</p><h2>mori <em>The Tactile Archive</em></h2></div>
-    </header>
-    <p class="oneline"><b>mori</b> 기억 속 촉감을 병에 담아 두고, 밤의 바에서 손끝으로 다시 꺼내 만지는 촉감 아카이브</p>
+<!-- 3 브랜드 한 문장 -->
+<section id="brand" class="slide ink" data-stop data-ch="01 Future Brand">
+  <div class="fr split">
+    <div class="txt">
+      <p class="lab">01 · Future Brand</p>
+      <h2 class="logo-m">mori</h2>
+      <p class="en">The Tactile Archive</p>
+      <p class="t2">기억 속 촉감을 병에 담아 두고,<br>밤의 바에서 손끝으로 다시 꺼내<br>만지는 촉감 아카이브</p>
+    </div>
+    <figure class="bleed"><img src="img/s5/96.webp" alt="병이 가득한 선반 앞의 손님" loading="lazy"></figure>
+  </div>
+</section>
 
-    <div class="trio">
+<!-- 4 어떤 미래, 누구, 무엇이 다른가 -->
+<section class="slide ink alt" data-stop data-ch="01 Future Brand">
+  <div class="fr">
+    <p class="lab">01 · Future Brand</p>
+    <h2 class="t1">보는 기억이 아니라,<br>만지는 기억</h2>
+    <div class="cols3">
       <div><small>어떤 미래</small><b>사진·영상·대화가 전부 기록으로 남는 미래</b><p>보는 기억은 넘치는데, 손에 닿던 감각은 어디에도 남지 않음.</p></div>
       <div><small>누구를 위해</small><b>장면보다 그때의 온도와 감촉이 그리운 사람</b><p>“사진 속 활짝 웃는 얼굴보다, 거실을 채우던 따뜻한 온도가 더 그리울 때가 있어.” 페르소나 강서윤</p></div>
-      <div><small>무엇이 다른가</small><b>보는 기억이 아니라 만지는 기억</b><p>병을 고르고 기계에 올리는 짧은 의식. 겪어 본 적 없는 촉감(구름, 달 그늘의 물결)까지 메뉴에 있음.</p></div>
+      <div><small>무엇이 다른가</small><b>병을 고르고, 기계에 올리고, 손을 넣는 짧은 의식</b><p>겪어 본 적 없는 촉감(구름, 달 그늘의 물결)까지 메뉴에 있음.</p></div>
     </div>
-
-    <h3 class="sub-h" data-stop>이용 흐름</h3>
-    <ol class="steps4">
-      <li><span>01</span><b>병 고르기</b><p>벽을 채운 유리병마다 서로 다른 촉감. 마음이 가는 병 하나를 고름.</p></li>
-      <li><span>02</span><b>기계에 올리기</b><p>자리마다 병을 올리는 받침과 손이 들어가는 둥근 홈이 한 세트.</p></li>
-      <li><span>03</span><b>병을 알아봄</b><p>기계가 병을 읽고, 홈이 그 병의 촉감으로 차오름.</p></li>
-      <li><span>04</span><b>손을 넣어 느끼기</b><p>모래, 물결, 이불, 구름 같은 기억 속 촉감을 직접 만짐.</p></li>
-    </ol>
-
-    <details class="more">
-      <summary>촉감 메뉴 15가지 보기</summary>
-      <div class="menu">
-        <div><h4>풍경을 만지는 촉감</h4><dl>
-          <dt>어느 7월의 밤, 파도가 다녀간 자리</dt><dd>따뜻한 모래알 사이로 천천히 스며드는 서늘한 물결</dd>
-          <dt>해가 지고도 따뜻했던 나무 데크</dt><dd>손바닥에 남는 온기와 얕게 걸리는 나뭇결</dd>
-          <dt>비가 그친 뒤의 이끼 계단</dt><dd>서늘하고 촉촉한 표면, 누르면 부드럽게 되돌아오는 탄성</dd>
-          <dt>첫눈이 소매 끝에서 녹던 순간</dt><dd>작은 차가움이 닿았다가 옅은 물기로 사라지는 느낌</dd>
-          <dt>밤새 창가에 놓아둔 조약돌</dt><dd>차갑고 매끈하다가 손안에서 조금씩 따뜻해지는 표면</dd>
-          <dt>바람이 지나간 낮은 풀밭</dt><dd>가느다란 결들이 손바닥을 간질이며 한쪽으로 눕는 움직임</dd>
-        </dl></div>
-        <div><h4>일상과 사람을 기억하는 촉감</h4><dl>
-          <dt>수영을 마친 오후의 수건</dt><dd>젖은 피부를 감싸는 도톰한 올과 보송한 마찰</dd>
-          <dt>늦잠 잔 일요일의 시트</dt><dd>서늘한 면의 표면과 손끝에 느껴지는 느슨한 주름</dd>
-          <dt>네가 잠든 쪽의 이불</dt><dd>남아 있는 온기와 손바닥을 천천히 덮는 부드러운 무게</dd>
-          <dt>너를 기다리던 코트 주머니</dt><dd>손끝을 둘러싸는 촘촘한 안감과 서서히 고이는 온기</dd>
-          <dt>오래 잡았던 손을 놓은 뒤</dt><dd>따뜻한 압력이 천천히 풀리고 서늘한 공기가 스미는 느낌</dd>
-          <dt>막차 창가에 기댄 이마</dt><dd>차갑고 매끈한 표면 너머로 전해지는 작고 일정한 떨림</dd>
-        </dl></div>
-        <div><h4>mori에서 처음 만나는 촉감</h4><dl>
-          <dt>아직 아무도 밟지 않은 구름</dt><dd>손을 깊이 받아주다가 아주 느리게 밀어 올리는 폭신함</dd>
-          <dt>달의 그늘에 고인 물결</dt><dd>차가운 비단 같은 표면 아래에서 낮게 번지는 파동</dd>
-          <dt>중력이 잠든 방의 이불</dt><dd>피부에 닿아 있으면서도 무게가 거의 느껴지지 않는 감싸임</dd>
-        </dl></div>
-      </div>
-    </details>
   </div>
 </section>
 
-<!-- 02 Visual Core -->
-<section id="core" class="ink">
-  <div class="wrap">
-    <header class="ch" data-stop>
-      <span class="chn">02</span>
-      <div><p class="kicker">Visual Core</p><h2>이 세계를 정하는 규칙 8가지</h2><p>이미지를 만들고 고를 때 쓰는 기준. 하나라도 어긋나면 mori의 이미지가 아님.</p></div>
-    </header>
+<!-- 5 이용 흐름 -->
+<section class="slide ink" data-stop data-ch="01 Future Brand">
+  <div class="fr">
+    <p class="lab">01 · Future Brand</p>
+    <h2 class="t1">이용 흐름</h2>
+    <ol class="steps">
+      <li><img src="img/s5/102.webp" alt="" loading="lazy"><i>01</i><b>병 고르기</b><p>벽을 채운 유리병마다 서로 다른 촉감. 마음이 가는 병 하나를 고름.</p></li>
+      <li><img src="img/s5/91.webp" alt="" loading="lazy"><i>02</i><b>기계에 올리기</b><p>자리마다 병을 올리는 받침과 손이 들어가는 둥근 홈이 한 세트.</p></li>
+      <li><img src="img/s5/92.webp" alt="" loading="lazy"><i>03</i><b>병을 알아봄</b><p>기계가 병을 읽고, 홈이 그 병의 촉감으로 차오름.</p></li>
+      <li><img src="img/s5/90.webp" alt="" loading="lazy"><i>04</i><b>손을 넣어 느끼기</b><p>모래, 물결, 이불, 구름 같은 기억 속 촉감을 직접 만짐.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 6 촉감 메뉴 -->
+<section class="slide ink alt" data-stop data-ch="01 Future Brand">
+  <div class="fr">
+    <p class="lab">01 · Future Brand</p>
+    <h2 class="t1">촉감 메뉴 15가지</h2>
+    <div class="menu3">
+      <div><h4>풍경을 만지는 촉감</h4><ul><li>어느 7월의 밤, 파도가 다녀간 자리</li><li>해가 지고도 따뜻했던 나무 데크</li><li>비가 그친 뒤의 이끼 계단</li><li>첫눈이 소매 끝에서 녹던 순간</li><li>밤새 창가에 놓아둔 조약돌</li><li>바람이 지나간 낮은 풀밭</li></ul></div>
+      <div><h4>일상과 사람을 기억하는 촉감</h4><ul><li>수영을 마친 오후의 수건</li><li>늦잠 잔 일요일의 시트</li><li>네가 잠든 쪽의 이불</li><li>너를 기다리던 코트 주머니</li><li>오래 잡았던 손을 놓은 뒤</li><li>막차 창가에 기댄 이마</li></ul></div>
+      <div><h4>mori에서 처음 만나는 촉감</h4><ul><li>아직 아무도 밟지 않은 구름</li><li>달의 그늘에 고인 물결</li><li>중력이 잠든 방의 이불</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7·8 Visual Core -->
+<section id="core" class="slide ink" data-stop data-ch="02 Visual Core">
+  <div class="fr">
+    <p class="lab">02 · Visual Core <span>1 / 2</span></p>
+    <div class="head"><h2 class="t1">이 세계를 정하는 규칙 8가지</h2><p>이미지를 만들고 고를 때 쓰는 기준. 하나라도 어긋나면 mori의 이미지가 아님.</p></div>
     <ol class="rules">
-      <li><img src="img/s5/92.webp" alt="빛나는 둥근 홈" loading="lazy" style="object-position:50% 45%"><small>빛 · Light</small><b>빛은 아래에서</b><p>홈 안쪽과 병 바닥에서 올라오는 호박색 빛. 위에서 내리는 조명은 약하게.</p></li>
-      <li><img src="img/s5/94.webp" alt="원형 카운터를 위에서 본 모습" loading="lazy"><small>형태 · Form</small><b>원이 반복됨</b><p>둥근 카운터, 둥근 홈, 원통 병. 모서리 있는 사물은 배경으로만.</p></li>
-      <li><img src="img/s5/95.webp" alt="홈마다 다른 색의 촉감" loading="lazy" style="object-position:50% 60%"><small>색 · Color</small><b>호박색 바탕에 촉감 색 하나</b><p>바탕은 꿀색과 나무색의 단색조. 촉감마다 청록이나 이끼색 같은 색 하나만 더함.</p></li>
-      <li><img src="img/s5/90.webp" alt="홈 표면에 닿은 손" loading="lazy"><small>주인공 · Subject</small><b>주인공은 손</b><p>손은 늘 화면 안에. 얼굴은 숙이거나 잘려서 보는 사람이 그 자리에 들어갈 수 있게.</p></li>
-      <li><img src="img/s5/102.webp" alt="유리병이 가득한 선반" loading="lazy" style="object-position:30% 50%"><small>사물 · Object</small><b>코르크 마개 유리병</b><p>손글씨 라벨을 단 병 수백 개가 벽을 채움. 촉감이 보관된 모습.</p></li>
-      <li><img src="img/v/lib_moonwater.webp" alt="달빛 아래 물결" loading="lazy"><small>질감 · Texture</small><b>손이 닿는 거리의 질감</b><p>모래알, 물결, 이끼, 이불의 올을 손이 닿을 만큼 가까이서.</p></li>
-      <li><img src="img/s5/103.webp" alt="원형 카운터를 위에서 본 장면" loading="lazy"><small>시점 · Angle</small><b>위에서, 또는 손 높이에서</b><p>탑뷰로 전체를 보여 주고, 손 높이 클로즈업으로 감각을 보여 줌.</p></li>
-      <li><img src="img/s5/89.webp" alt="어둑한 가게 안의 손님" loading="lazy"><small>화면 · Effect</small><b>낮은 조도, 얕은 심도</b><p>어둑한 밤, 초점은 손과 표면에만. 옅은 필름 입자.</p></li>
+      <li><img src="img/s5/92.webp" alt="빛나는 둥근 홈" loading="lazy" style="object-position:50% 45%"><small>01 빛 · Light</small><b>빛은 아래에서</b><p>홈 안쪽과 병 바닥에서 올라오는 호박색 빛. 위에서 내리는 조명은 약하게.</p></li>
+      <li><img src="img/s5/94.webp" alt="원형 카운터를 위에서 본 모습" loading="lazy"><small>02 형태 · Form</small><b>원이 반복됨</b><p>둥근 카운터, 둥근 홈, 원통 병. 모서리 있는 사물은 배경으로만.</p></li>
+      <li><img src="img/s5/95.webp" alt="홈마다 다른 색의 촉감" loading="lazy" style="object-position:50% 60%"><small>03 색 · Color</small><b>호박색 바탕에 촉감 색 하나</b><p>꿀색과 나무색의 단색조에 촉감마다 색 하나만 더함.</p></li>
+      <li><img src="img/s5/90.webp" alt="홈 표면에 닿은 손" loading="lazy"><small>04 주인공 · Subject</small><b>주인공은 손</b><p>손은 늘 화면 안에. 얼굴은 숙이거나 잘림.</p></li>
     </ol>
-    <div class="nots">
-      <small>쓰지 않는 것</small>
-      <p>차가운 백색광 · 스크린과 UI 화면 · 정면 얼굴 클로즈업 · 쨍한 채도 · 장식용 패턴 반복</p>
+  </div>
+</section>
+<section class="slide ink" data-stop data-ch="02 Visual Core">
+  <div class="fr">
+    <p class="lab">02 · Visual Core <span>2 / 2</span></p>
+    <div class="head"><h2 class="t1">이 세계를 정하는 규칙 8가지</h2><p>이미지를 만들고 고를 때 쓰는 기준. 하나라도 어긋나면 mori의 이미지가 아님.</p></div>
+    <ol class="rules">
+      <li><img src="img/s5/102.webp" alt="유리병이 가득한 선반" loading="lazy" style="object-position:30% 50%"><small>05 사물 · Object</small><b>코르크 마개 유리병</b><p>손글씨 라벨을 단 병 수백 개가 벽을 채움.</p></li>
+      <li><img src="img/v/lib_moonwater.webp" alt="달빛 아래 물결" loading="lazy"><small>06 질감 · Texture</small><b>손이 닿는 거리의 질감</b><p>모래알, 물결, 이끼, 이불의 올을 손이 닿을 만큼 가까이서.</p></li>
+      <li><img src="img/s5/103.webp" alt="원형 카운터를 위에서 본 장면" loading="lazy"><small>07 시점 · Angle</small><b>위에서, 또는 손 높이에서</b><p>탑뷰로 전체를, 손 높이 클로즈업으로 감각을.</p></li>
+      <li><img src="img/s5/89.webp" alt="어둑한 가게 안의 손님" loading="lazy"><small>08 화면 · Effect</small><b>낮은 조도, 얕은 심도</b><p>어둑한 밤, 초점은 손과 표면에만. 옅은 필름 입자.</p></li>
+    </ol>
+    <p class="nots"><small>쓰지 않는 것</small>차가운 백색광 · 스크린과 UI 화면 · 정면 얼굴 클로즈업 · 쨍한 채도 · 장식용 패턴 반복</p>
+  </div>
+</section>
+
+<!-- 9·10 Key Visuals -->
+<section id="key" class="slide full" data-stop data-ch="03 Key Visuals">
+  <img class="bg" src="img/s5/94.webp" alt="여섯 개의 빛나는 홈이 있는 원형 카운터를 위에서 본 장면" loading="lazy">
+  <div class="fr">
+    <p class="lab">03 · Key Visuals <span>KV 1</span></p>
+    <div class="cap"><h2 class="t1">촉감 바</h2><p>원형 카운터와 여섯 개의 빛나는 홈. 이 세계의 중심.</p><i>빛 · 형태 · 색 · 시점</i></div>
+  </div>
+</section>
+<section class="slide ink" data-stop data-ch="03 Key Visuals">
+  <div class="fr">
+    <p class="lab">03 · Key Visuals <span>KV 2–4 · 스타일 프레임</span></p>
+    <div class="frames">
+      <figure><img src="img/v/kv_wave.webp" alt="파도와 모래가 차오른 홈을 손가락으로 쓰는 장면" loading="lazy"><figcaption><b>파도가 다녀간 자리</b><i>빛 · 손 · 질감</i></figcaption></figure>
+      <figure><img src="img/v/kv_blanket.webp" alt="이불 촉감이 차오른 홈에 손바닥을 얹은 장면" loading="lazy"><figcaption><b>네가 잠든 쪽의 이불</b><i>빛 · 손 · 질감</i></figcaption></figure>
+      <figure><img src="img/v/kv_cloud.webp" alt="구름 촉감이 차오른 홈에 손을 넣은 장면" loading="lazy"><figcaption><b>아무도 밟지 않은 구름</b><i>빛 · 손 · 질감</i></figcaption></figure>
     </div>
   </div>
 </section>
 
-<!-- 03 Key Visuals -->
-<section id="key" class="ink alt">
-  <div class="wrap">
-    <header class="ch" data-stop>
-      <span class="chn">03</span>
-      <div><p class="kicker">Key Visuals</p><h2>세계를 대표하는 장면</h2><p>전경 하나와 스타일 프레임 셋. 규칙이 한 장면 안에서 모두 겹치는 컷.</p></div>
-    </header>
-    <div class="kv">
-      <figure class="kv-main"><img src="img/s5/94.webp" alt="여섯 개의 빛나는 홈이 있는 원형 카운터를 위에서 본 장면" loading="lazy"><figcaption><b>KV 1 · 촉감 바</b>원형 카운터와 여섯 개의 빛나는 홈. 이 세계의 중심 <i>빛 · 형태 · 색 · 시점</i></figcaption></figure>
-      <figure><img src="img/v/kv_wave.webp" alt="파도와 모래가 차오른 홈을 손가락으로 쓰는 장면" loading="lazy"><figcaption><b>KV 2 · 파도가 다녀간 자리</b><i>빛 · 손 · 질감</i></figcaption></figure>
-      <figure><img src="img/v/kv_blanket.webp" alt="이불 촉감이 차오른 홈에 손바닥을 얹은 장면" loading="lazy"><figcaption><b>KV 3 · 네가 잠든 쪽의 이불</b><i>빛 · 손 · 질감</i></figcaption></figure>
-      <figure><img src="img/v/kv_cloud.webp" alt="구름 촉감이 차오른 홈에 손을 넣은 장면" loading="lazy"><figcaption><b>KV 4 · 아무도 밟지 않은 구름</b><i>빛 · 손 · 질감</i></figcaption></figure>
-    </div>
-  </div>
-</section>
-
-<!-- 04 Visual Asset Library -->
-<section id="lib" class="ink">
-  <div class="wrap">
-    <header class="ch" data-stop>
-      <span class="chn">04</span>
-      <div><p class="kicker">Visual Asset Library</p><h2>규칙이 살아남는지 20장으로 확인</h2><p>공간, 사람, 제품, 디테일, 질감, 상징까지 종류와 거리를 바꿔도 같은 세계로 보이는지. 영상 소스로도 쓸 재료.</p></div>
-    </header>
-    <p class="count" id="libcount"></p>
+<!-- 11 Asset Library -->
+<section id="lib" class="slide ink alt" data-stop data-ch="04 Asset Library">
+  <div class="fr">
+    <p class="lab">04 · Visual Asset Library</p>
+    <div class="head"><h2 class="t1">규칙이 살아남는지, 20장</h2><p>공간·사람·제품·디테일·질감·상징까지 종류와 거리를 바꿔도 같은 세계로 보이는지. 영상 소스로도 쓸 재료. <span id="libcount"></span></p></div>
     <div id="assets" class="assets"></div>
   </div>
 </section>
 
-<!-- 05 Visual World Showcase -->
-<section id="show" class="ink alt">
-  <div class="wrap">
-    <header class="ch" data-stop>
-      <span class="chn">05</span>
-      <div><p class="kicker">Visual World Showcase</p><h2>mori에 들어가 보기</h2><p>규칙으로 지은 가게 하나. 가게 앞에서 병을 고르고, 기계에 올리고, 촉감을 느끼기까지 7단계. 벽에는 라이브러리 이미지로 만든 포스터.</p></div>
-    </header>
+<!-- 12·13 Showcase -->
+<section id="show" class="slide full" data-stop data-ch="05 Showcase">
+  <img class="bg dim" src="img/s5/87.webp" alt="" loading="lazy">
+  <div class="fr center">
+    <p class="lab">05 · Visual World Showcase</p>
+    <h2 class="t-hero">mori에 들어가 보기</h2>
+    <p class="t2">규칙으로 지은 가게 하나. 병을 고르고, 기계에 올리고, 촉감을 느끼기까지 7단계.</p>
   </div>
 </section>
-<section id="store" class="clear" data-stop>
+<section id="store" class="clear slide" data-stop data-ch="05 Showcase">
   <div class="tour">
     <p class="kicker">05 · Showcase</p>
     <h2>mori에 들어가 보기</h2>
@@ -179,30 +184,108 @@
   <p id="hint" hidden></p>
 </section>
 
-<!-- 06 How We Got Here -->
-<section id="process" class="paper">
-  <div class="wrap">
-    <header class="ch" data-stop>
-      <span class="chn">06</span>
-      <div><p class="kicker">How We Got Here</p><h2>여기까지 오게 한 전환점 4개</h2><p>단계마다 무엇을 탐색하고, 무엇을 남기고 버렸는지. 자세한 근거 자료는 단계마다 펼쳐 볼 수 있음.</p></div>
-    </header>
-
-    <div class="flowline" data-stop>
+<!-- 14 과정 지도 -->
+<section id="process" class="slide paper" data-stop data-ch="06 How We Got Here">
+  <div class="fr">
+    <p class="lab">06 · How We Got Here</p>
+    <h2 class="t1">여기까지 오게 한 전환점 4개</h2>
+    <ol class="map">
+      <li><i>1</i><b>기억을 보관 → 기억을 꺼내 겪기</b></li>
+      <li><i>2</i><b>물건에 붙인 기록 → 손으로 겪는 경험</b></li>
+      <li><i>3</i><b>무드 판 10개 → 만져지는 표면</b></li>
+      <li><i>4</i><b>장갑 → 병과 기계</b></li>
+    </ol>
+    <div class="flowline">
       <div><small>입력</small><p>앞 과제 Memory Archive · 페르소나 4명 · 레퍼런스 검색어 표 8개 · Midjourney · 수업 피드백</p></div>
       <div><small>판단 기준</small><p>① 손으로 만져지는가 ② 장면보다 온도와 질감으로 기억되는가 ③ 한 장소에서 직접 겪는가 ④ 같은 규칙으로 여러 장면이 나오는가</p></div>
       <div><small>반복한 작업 흐름</small><p class="wf"><span>리서치</span><span>키워드 무드 판</span><span>프롬프트 파생</span><span>기준으로 고르기</span><span>장면으로 굳히기</span><span>피드백</span></p></div>
     </div>
+  </div>
+</section>
 
-    <article class="turn" data-stop>
-      <header><span class="tn">1</span><h3>기억을 보관하는 쪽에서<br>기억을 꺼내 겪는 쪽으로</h3></header>
-      <div class="ev"><img src="img/s12/p_archive.webp" alt="" loading="lazy"><img src="img/s12/p_c.webp" alt="" loading="lazy"><img src="img/s12/j2.webp" alt="" loading="lazy"></div>
+<!-- 15~18 전환점 -->
+<section class="slide paper" data-stop data-ch="06 How We Got Here">
+  <div class="fr turn">
+    <div class="txt">
+      <p class="lab">06 · How We Got Here <span>1 / 4</span></p>
+      <h3><i>1</i>기억을 보관하는 쪽에서<br>기억을 꺼내 겪는 쪽으로</h3>
       <dl>
         <dt>탐색</dt><dd>사용자 유형 4분류, 페르소나 4명, 브랜드 초안 8개, 미래 일기장 방향 6개</dd>
         <dt>남김</dt><dd>강서윤의 인사이트(장면보다 온도), Echo Room(시각 없이 온도와 질감만 복원)</dd>
         <dt>버림</dt><dd>기록을 분석해 패턴을 찾는 쪽(TRACE, 라이프 분석형)</dd>
         <dt>이유</dt><dd>보는 기록은 이미 넘치는 미래. 빈자리는 몸이 기억하는 감각 쪽에 있음</dd>
       </dl>
-      <details class="more"><summary>근거 자료 펼치기 · 리서치와 사용자 정의</summary><div class="arch">
+      <a class="more" href="#ap1">근거 자료: 리서치와 사용자 정의 →</a>
+    </div>
+    <div class="ev"><img src="img/s12/p_c.webp" alt="" loading="lazy"><img src="img/s12/p_archive.webp" alt="" loading="lazy"><img src="img/s12/j2.webp" alt="" loading="lazy"></div>
+  </div>
+</section>
+<section class="slide paper" data-stop data-ch="06 How We Got Here">
+  <div class="fr turn">
+    <div class="txt">
+      <p class="lab">06 · How We Got Here <span>2 / 4</span></p>
+      <h3><i>2</i>물건에 기록을 붙이는 아이디어에서<br>손으로 직접 겪는 경험으로</h3>
+      <dl>
+        <dt>탐색</dt><dd>일상 속 이야기에서 나온 서비스 아이디어 10개, 레퍼런스 검색어 표 8개</dd>
+        <dt>비교</dt><dd>옷·조명·열쇠처럼 물건에 기억을 붙이는 쪽과, 손기술을 몸으로 건네받는 HANDOVER</dd>
+        <dt>남김</dt><dd>HANDOVER의 ‘손’. 시나리오 3편(공방, 주방, 멀리서)으로 구체화</dd>
+        <dt>이유</dt><dd>기록을 다시 보는 것보다 손으로 겪는 쪽이 더 오래 남음</dd>
+      </dl>
+      <a class="more" href="#ap2">근거 자료: 서비스 아이디어와 시나리오 →</a>
+    </div>
+    <div class="ev"><img src="img/s12/sc_kitchen.webp" alt="" loading="lazy"><img src="img/s12/id_clothes.webp" alt="" loading="lazy"><img src="img/s12/sc_x.webp" alt="" loading="lazy"></div>
+  </div>
+</section>
+<section class="slide paper" data-stop data-ch="06 How We Got Here">
+  <div class="fr turn">
+    <div class="txt">
+      <p class="lab">06 · How We Got Here <span>3 / 4</span></p>
+      <h3><i>3</i>무드 판 10개에서<br>만져지는 표면만 남기기</h3>
+      <dl>
+        <dt>탐색</dt><dd>키워드별 무드 판 10개(350장), Midjourney 프롬프트 파생 244장</dd>
+        <dt>비교</dt><dd>같은 기본 프롬프트에 스타일과 재질을 한 단계씩 덧붙여 나란히 비교</dd>
+        <dt>남김</dt><dd>무광·패브릭, 비정형·유선형, 세라믹 곡면. 손에 닿는 표면을 가진 키워드</dd>
+        <dt>버림</dt><dd>선형 Art, 은백색, 흑백 대비처럼 눈으로만 읽히는 키워드</dd>
+      </dl>
+      <a class="more" href="#ap3">근거 자료: 무드 판과 키워드 파생 →</a>
+    </div>
+    <div class="ev"><img src="img/s3/b2.webp" alt="" loading="lazy"><img src="img/s3/b9.webp" alt="" loading="lazy"><img src="img/s3/b1.webp" alt="" loading="lazy"></div>
+  </div>
+</section>
+<section class="slide paper" data-stop data-ch="06 How We Got Here">
+  <div class="fr turn">
+    <div class="txt">
+      <p class="lab">06 · How We Got Here <span>4 / 4</span></p>
+      <h3><i>4</i>피드백 뒤, 장갑을 내려놓고<br>병과 기계로</h3>
+      <dl>
+        <dt>탐색</dt><dd>장갑, 촉감 인장, 선물 상자, 집에 두는 기기, 매장</dd>
+        <dt>남김</dt><dd>매장에서 병을 고르고 기계에 올리면 그 촉감이 홈에 차오르는 흐름 하나</dd>
+        <dt>버림</dt><dd>장갑, 촉감 인장, 선물 상자, 집용 기기</dd>
+        <dt>이유</dt><dd>여러 갈래로 흩어진 경험을 한 장소, 한 동작에 모음</dd>
+      </dl>
+    </div>
+    <div class="ev dropped"><figure><img src="img/s5/86.webp" alt="" loading="lazy"><figcaption>촉감 인장</figcaption></figure><figure><img src="img/s5/98.webp" alt="" loading="lazy"><figcaption>선물 상자</figcaption></figure><figure><img src="img/s5/84.webp" alt="" loading="lazy"><figcaption>집용 기기</figcaption></figure></div>
+  </div>
+</section>
+
+<!-- 19 마무리 -->
+<section id="end" class="slide ink" data-stop data-ch="mori">
+  <div class="fr center">
+    <h2 class="logo">mori</h2>
+    <p class="sub">The Tactile Archive</p>
+    <p class="t2">감사합니다</p>
+    <p class="links"><a href="summary.html">English one-page summary</a><a href="#appendix">부록 · 근거 자료</a></p>
+  </div>
+</section>
+
+<!-- 부록: 발표에서는 넘기지 않고 질문이 나오면 펼쳐 보는 자료 -->
+<section id="appendix" class="paper">
+  <div class="wrap">
+    <header class="ch" data-stop data-ch="부록">
+      <span class="chn">A</span>
+      <div><p class="kicker">Appendix</p><h2>근거 자료</h2><p>06장 전환점마다 쓴 원자료. 리서치, 아이디어, 무드 판, 키워드 파생.</p></div>
+    </header>
+    <h3 class="sub-h" id="ap1">A1 · 리서치와 사용자 정의</h3>
     <div class="trio">
       <div><small>미래 사회 방향</small><b>기억의 디지털화</b></div>
       <div><small>핵심 시나리오</small><b>사진·영상·대화 기록을 AI가 분석해 과거의 순간을 다시 체험</b></div>
@@ -248,20 +331,7 @@
       <li><b>사라지는 생활의 일기</b><p>자취방을 떠나기 전, 매일 반복하던 귀가의 순서를 남김</p></li>
       <li><b>이야기를 물려주는 일기</b><p>할머니의 말에 따라 골목이 생기고, 고쳐 말하면 공간도 바뀜</p></li>
     </ol>
-      </div></details>
-    </article>
-
-    <article class="turn" data-stop>
-      <header><span class="tn">2</span><h3>물건에 기록을 붙이는 아이디어에서<br>손으로 직접 겪는 경험으로</h3></header>
-      <div class="ev"><img src="img/s12/id_clothes.webp" alt="" loading="lazy"><img src="img/s12/sc_kitchen.webp" alt="" loading="lazy"><img src="img/s12/sc_x.webp" alt="" loading="lazy"></div>
-      <dl>
-        <dt>탐색</dt><dd>일상 속 이야기에서 나온 서비스 아이디어 10개, 레퍼런스 검색어 표 8개</dd>
-        <dt>비교</dt><dd>옷·조명·열쇠처럼 물건에 기억을 붙이는 쪽과, 손기술을 몸으로 건네받는 HANDOVER</dd>
-        <dt>남김</dt><dd>HANDOVER의 ‘손’. 시나리오 3편(공방, 주방, 멀리서)으로 구체화</dd>
-        <dt>이유</dt><dd>기록을 다시 보는 것보다 손으로 겪는 쪽이 더 오래 남음</dd>
-      </dl>
-      <p class="link-line"><a href="https://handover-7xl5.onrender.com/" target="_blank" rel="noopener">HANDOVER 발표 사이트 열기 →</a></p>
-      <details class="more"><summary>근거 자료 펼치기 · 서비스 아이디어와 시나리오</summary><div class="arch">
+    <h3 class="sub-h" id="ap2">A2 · 서비스 아이디어와 시나리오</h3>
     <table class="ideas">
       <thead><tr><th>아이디어</th><th>브랜드로 발전시킬 대상</th></tr></thead>
       <tbody>
@@ -304,38 +374,13 @@
       <li><b>손가락 움직임 추적 · 관절과 각도</b>finger motion capture · hand kinematics · 3D hand point cloud</li>
       <li><b>움직임의 흔적 · 반복과 변형</b>gesture drawing · palimpsest drawing · thread tension installation</li>
     </ul>
-      </div></details>
-    </article>
-
-    <article class="turn" data-stop>
-      <header><span class="tn">3</span><h3>무드 판 10개에서<br>만져지는 표면만 남기기</h3></header>
-      <div class="ev"><img src="img/s3/b2.webp" alt="" loading="lazy"><img src="img/s3/b9.webp" alt="" loading="lazy"><img src="img/s3/b1.webp" alt="" loading="lazy"></div>
-      <dl>
-        <dt>탐색</dt><dd>키워드별 무드 판 10개(350장), Midjourney 프롬프트 파생 244장</dd>
-        <dt>비교</dt><dd>같은 기본 프롬프트에 스타일과 재질을 한 단계씩 덧붙여 나란히 비교</dd>
-        <dt>남김</dt><dd>무광·패브릭, 비정형·유선형, 세라믹 곡면. 손에 닿는 표면을 가진 키워드</dd>
-        <dt>버림</dt><dd>선형 Art, 은백색, 흑백 대비처럼 눈으로만 읽히는 키워드</dd>
-      </dl>
-      <details class="more"><summary>근거 자료 펼치기 · 무드 판 10개</summary><div class="arch">
-        <p class="count"><b>350</b>장 · AI 생성 <b>314</b> · 외부 출처 <b>36</b> · 판을 누르면 전체 이미지</p>
-        <div id="boards" class="boards"></div>
-      </div></details>
-      <details class="more"><summary>근거 자료 펼치기 · 키워드 파생 트랙 4개</summary><div class="arch">
-        <p class="count"><b>244</b>장 · 모두 AI 생성</p>
-        <div id="tracks"></div>
-      </div></details>
-    </article>
-
-    <article class="turn" data-stop>
-      <header><span class="tn">4</span><h3>피드백 뒤, 장갑을 내려놓고<br>병과 기계로</h3></header>
-      <div class="ev dropped"><figure><img src="img/s5/86.webp" alt="" loading="lazy"><figcaption>촉감 인장</figcaption></figure><figure><img src="img/s5/98.webp" alt="" loading="lazy"><figcaption>선물 상자</figcaption></figure><figure><img src="img/s5/84.webp" alt="" loading="lazy"><figcaption>집용 기기</figcaption></figure></div>
-      <dl>
-        <dt>탐색</dt><dd>장갑, 촉감 인장, 선물 상자, 집에 두는 기기, 매장</dd>
-        <dt>남김</dt><dd>매장에서 병을 고르고 기계에 올리면 그 촉감이 홈에 차오르는 흐름 하나</dd>
-        <dt>버림</dt><dd>장갑, 촉감 인장, 선물 상자, 집용 기기</dd>
-        <dt>이유</dt><dd>여러 갈래로 흩어진 경험을 한 장소, 한 동작에 모음</dd>
-      </dl>
-    </article>
+    <p class="link-line"><a href="https://handover-7xl5.onrender.com/" target="_blank" rel="noopener">HANDOVER 발표 사이트 열기 →</a></p>
+    <h3 class="sub-h" id="ap3">A3 · 무드 판 10개</h3>
+    <p class="count"><b>350</b>장 · AI 생성 <b>314</b> · 외부 출처 <b>36</b> · 판을 누르면 전체 이미지</p>
+    <div id="boards" class="boards"></div>
+    <h3 class="sub-h">A4 · 키워드 파생 트랙 4개</h3>
+    <p class="count"><b>244</b>장 · 모두 AI 생성</p>
+    <div id="tracks"></div>
   </div>
 </section>
 </main>

@@ -50,7 +50,7 @@
     LIB.forEach(function (a) {
       var f = document.createElement('figure'); f.className = 'a' + (a.f ? '' : ' todo');
       f.innerHTML = (a.f ? '<img loading="lazy" alt="" src="' + a.f + '">' : '<div class="ph"><span>' + a.n + '</span>' + a.t + '</div>') +
-        '<figcaption><b>' + a.k + '</b> · ' + a.d + (a.f ? '' : ' · 제작 중') + '</figcaption>';
+        '<figcaption><b>' + a.k + '</b>' + a.d + (a.f ? '' : ' · 제작 중') + '</figcaption>';
       if (a.f) f.onclick = function () {
         openGal('Visual Asset Library', have.length + '장 · 모두 AI 생성', have.map(function (x) { return { src: x.f }; }));
       };
@@ -155,6 +155,20 @@
     if (fwd && i >= stops.length) { $('#foot').scrollIntoView({ behavior: 'smooth' }); return; }
     if (stops[Math.max(0, i)]) stops[Math.max(0, i)].scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
+
+  // 아래쪽에 지금 슬라이드의 장 이름과 쪽 번호
+  var slides = [].slice.call(document.querySelectorAll('.slide')), pgc = $('#pgc'), pgn = $('#pgn');
+  function page() {
+    var y = innerHeight * 0.5, k = 0;
+    slides.forEach(function (s, i) { if (s.getBoundingClientRect().top <= y) k = i; });
+    var ap = $('#appendix').getBoundingClientRect().top <= y;
+    pgc.textContent = ap ? '부록' : slides[k].getAttribute('data-ch');
+    pgn.textContent = ap ? '' : ('0' + (k + 1)).slice(-2) + ' / ' + slides.length;
+  }
+  addEventListener('scroll', page, { passive: true }); page();
+  // 주소 끝에 #s7처럼 쓰면 그 쪽으로 바로 감
+  var m = location.hash.match(/^#s(\d+)$/);
+  if (m && slides[m[1] - 1]) setTimeout(function () { slides[m[1] - 1].scrollIntoView(); }, 300);
 
   // 위쪽 막대에서 지금 장 표시
   var links = [].slice.call(document.querySelectorAll('#bar nav a[href^="#"]'));
