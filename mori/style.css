@@ -192,6 +192,7 @@ html::-webkit-scrollbar{display:none}
 .cover{justify-content:center}
 .cover .t-hero{margin:calc(var(--u)*1.6) 0 calc(var(--u)*2.4)}
 .cover .t2{color:var(--ink2)}
+.cover-en{font-family:var(--latin);font-weight:500;font-size:calc(var(--u)*6.6);line-height:1.05;letter-spacing:.01em}
 .map small{display:block;font-size:var(--ts);color:var(--mute);margin-top:calc(var(--u)*.4)}
 .turn .next{margin-top:calc(var(--u)*1.6);font-family:var(--serif);font-weight:600;font-size:var(--tb);color:var(--amber)}
 .hit{outline:2px solid var(--amber);outline-offset:calc(var(--u)*.5)}
