@@ -58,6 +58,44 @@
     });
   })();
 
+  // 05 Showcase 무드 필름: 슬라이드가 보이면 처음부터 재생, 화면을 누르면 멈춤과 이어 보기
+  (function () {
+    var sec = $('#show'), shots = [].slice.call(sec.querySelectorAll('.shot')), end = sec.querySelector('.fend');
+    var sub = $('#fsub'), meta = $('#fmeta'), bar = $('#fbar'), N = shots.length;
+    var FIRST = 4.6, DUR = 3.8, ENDT = 4.5, TOTAL = FIRST + DUR * (N - 1) + ENDT;
+    var i = -1, timer = null, due = 0, left = 0, t0 = 0, pauseAt = 0, held = 0, running = false;
+    var dur = function (k) { return k === 0 ? FIRST : DUR; };
+    function show(k) {
+      shots.forEach(function (s, j) { s.classList.toggle('on', j === k); });
+      shots[k].style.setProperty('--d', (dur(k) + 1.4) + 's');
+      var img = shots[k].querySelector('img'); img.style.animation = 'none'; void img.offsetWidth; img.style.animation = '';
+      var tx = shots[k].getAttribute('data-t');
+      sub.classList.remove('on');
+      setTimeout(function () { sub.textContent = tx; sub.classList.toggle('on', !!tx); }, 450);
+      meta.textContent = 'SHOT ' + ('0' + (k + 1)).slice(-2) + ' / ' + N + ' · ' + shots[k].getAttribute('data-n');
+    }
+    function arm(ms) { due = performance.now() + ms; timer = setTimeout(next, ms); }
+    function next() {
+      i++;
+      if (i < N) { show(i); arm(dur(i) * 1000); }
+      else { end.classList.add('on'); sub.classList.remove('on'); meta.textContent = 'END'; timer = null; setTimeout(function () { running = false; }, ENDT * 1000); }
+    }
+    function tick() {
+      if (!running) return;
+      var now = sec.classList.contains('paused') ? pauseAt : performance.now();
+      bar.style.width = Math.min(100, (now - t0 - held) / (TOTAL * 10)) + '%';
+      requestAnimationFrame(tick);
+    }
+    function reset() { clearTimeout(timer); timer = null; running = false; i = -1; sec.classList.remove('paused'); end.classList.remove('on'); sub.classList.remove('on'); shots.forEach(function (s) { s.classList.remove('on'); }); bar.style.width = '0'; }
+    function play() { reset(); running = true; t0 = performance.now(); held = 0; next(); tick(); }
+    $('#reel').onclick = function () {
+      if (sec.classList.contains('paused')) { sec.classList.remove('paused'); held += performance.now() - pauseAt; arm(left); return; }
+      if (!timer) { play(); return; }
+      left = Math.max(0, due - performance.now()); clearTimeout(timer); timer = null; pauseAt = performance.now(); sec.classList.add('paused');
+    };
+    new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) play(); else reset(); }); }, { threshold: 0.6 }).observe(sec);
+  })();
+
   // 00 과정 근거: 무드 판
   var VTN = ['매끄러운 세라믹 표면 / 유기적 곡면', '무광, 패브릭', '선형적인, Art', '나무재질의 정갈한 느낌', '흑백의 대비가 명확한 단색조', '무채도 반투명 중첩', '반들반들한 은백색', '몸과 손을 따라 감기는 가는 선과 입자', '비정형적인, 유선형', '마디마다 끼운 반투명 조각'];
   fetch('img/s3/items.json').then(function (r) { return r.json(); }).then(function (d) {

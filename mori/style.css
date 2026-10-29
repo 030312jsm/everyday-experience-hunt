@@ -295,6 +295,32 @@ html::-webkit-scrollbar{display:none}
 .trk3 .tcol:last-child .tgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
 
 
+/* 05 Showcase 무드 필름: 2.39:1 화면 띠 안에서 컷이 겹쳐 바뀌고, 위아래 띠에 제목·자막 */
+.film{background:#050302;color:var(--cream)}
+.reel{position:absolute;left:50%;top:50%;width:calc(var(--u)*100);height:calc(var(--u)*41.84);transform:translate(-50%,-50%);overflow:hidden;background:#000;cursor:pointer}
+.shot{position:absolute;inset:0;margin:0;opacity:0;transition:opacity 1.2s ease}
+.shot.on{opacity:1}
+.shot img{width:100%;height:100%;object-fit:cover;object-position:var(--p,50% 50%)}
+.shot.on img{animation:var(--m,push) var(--d,5s) linear forwards}
+.paused .shot img{animation-play-state:paused}
+@keyframes push{from{transform:scale(1)}to{transform:scale(1.07)}}
+@keyframes pull{from{transform:scale(1.07)}to{transform:scale(1)}}
+@keyframes drift{from{transform:scale(1.06) translateX(-1.6%)}to{transform:scale(1.06) translateX(1.6%)}}
+.fend{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 1.6s ease;background:rgba(5,3,2,.6);pointer-events:none}
+.fend.on{opacity:1}
+.fend b{font-family:var(--latin);font-weight:500;font-size:calc(var(--u)*8);letter-spacing:.06em;line-height:1}
+.fend span{font-family:var(--latin);font-style:italic;font-size:calc(var(--u)*1.6);color:var(--cream2);margin-top:calc(var(--u)*1)}
+.flab,.fnote,.fmeta{position:absolute;font-size:var(--tl);letter-spacing:.12em}
+.flab{left:calc(50% - var(--u)*44.5);top:calc(50% - var(--u)*24.2);color:var(--glow);font-weight:600}
+.flab b{color:var(--cream);font-weight:600}
+.fnote{left:calc(50% - var(--u)*44.5);top:calc(50% - var(--u)*22.7);color:var(--cream2);letter-spacing:.04em}
+.fmeta{right:calc(50% - var(--u)*44.5);top:calc(50% - var(--u)*24.2);color:var(--cream2)}
+.fbar{position:absolute;left:calc(50% - var(--u)*50);width:calc(var(--u)*100);top:calc(50% + var(--u)*20.92);height:2px;background:rgba(239,229,212,.12)}
+.fbar i{display:block;height:100%;width:0;background:var(--glow)}
+.fsub{position:absolute;left:0;right:0;top:calc(50% + var(--u)*22.6);text-align:center;font-family:var(--serif);font-size:calc(var(--u)*1.55);color:var(--cream);opacity:0;transition:opacity .8s ease}
+.fsub.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.shot.on img{animation:none}}
+
 /* 05 둘러보기 */
 #store{height:100vh;min-height:640px;position:relative;color:var(--cream)}
 .tour{position:absolute;left:32px;top:50%;transform:translateY(-50%);width:340px;padding:28px 28px 24px;background:rgba(14,10,8,.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(239,229,212,.14)}
@@ -387,6 +413,16 @@ html::-webkit-scrollbar{display:none}
   .e-matrix div{padding:16px 12px}
   .e-pick h3{font-size:48px}
   .e-ideas,.e-persona,.e-brands,.e-diary,.e-refs,.e-scenes,.boards,.tracks{margin-top:24px}
+  .film{height:100svh;min-height:0}
+  .reel{width:100vw;height:41.84vw}
+  .flab,.fnote{left:16px}
+  .flab{top:calc(50% - 20.92vw - 84px);right:16px}
+  .fmeta{left:16px;right:auto;top:calc(50% - 20.92vw - 40px)}
+  .fnote{top:auto;bottom:72px}
+  .fbar{left:0;width:100vw;top:calc(50% + 20.92vw)}
+  .fsub{top:calc(50% + 20.92vw + 18px);font-size:16px;padding:0 16px}
+  .fend b{font-size:56px}
+  .fend span{font-size:16px}
   #pg{left:16px;right:16px}
   #pg #pgc{display:none}
   .wrap{padding:0 16px}
