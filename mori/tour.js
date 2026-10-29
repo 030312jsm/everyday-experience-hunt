@@ -9,7 +9,7 @@ const LAST = S.STEPS.length - 1;
 // 단계마다 곁에 띄우는 에셋 라이브러리 사진
 const REF = [
   [['img/lib/L03.webp', '환경 · 원경']],
-  [['img/lib/r14.webp', '공간 · 원경'], ['img/s5/87.webp', '공간 · 원경']],
+  [['img/lib/L10.webp', '공간 · 원경'], ['img/s5/87.webp', '공간 · 원경']],
   [['img/lib/L04.webp', '상황 · 중경'], ['img/lib/L06.webp', '디테일 · 초근경']],
   [['img/lib/L01.webp', '제품 · 근경']],
   [['img/lib/L05.webp', '사물 · 근경'], ['img/lib/L09.webp', '상징 · 추상']],

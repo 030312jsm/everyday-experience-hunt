@@ -23,33 +23,35 @@
 
   // 04 에셋 라이브러리 20장 (img/lib/L01~L09는 Midjourney 추가 촬영분)
   var LIB = [
-    { f: 'img/v/lib_beach.webp', k: '환경 · 기억 속 풍경', d: '원경' },
-    { f: 'img/lib/L03.webp', k: '환경', d: '원경' },
-    { f: 'img/s5/87.webp', k: '공간', d: '원경' },
-    { f: 'img/lib/r14.webp', k: '공간 · 원형 카운터', d: '원경' },
-    { f: 'img/s5/89.webp', k: '상황', d: '중경' },
-    { f: 'img/s5/96.webp', k: '사람 · 공간', d: '중경' },
-    { f: 'img/lib/L02.webp', k: '인물', d: '중경' },
-    { f: 'img/lib/L04.webp', k: '상황', d: '중경' },
-    { f: 'img/s5/93.webp', k: '장면', d: '탑뷰' },
-    { f: 'img/s5/103.webp', k: '장면', d: '탑뷰' },
-    { f: 'img/lib/L01.webp', k: '제품', d: '근경' },
-    { f: 'img/lib/r13.webp', k: '상황 · 둘러앉은 손님', d: '중경' },
-    { f: 'img/lib/L05.webp', k: '사물', d: '근경' },
-    { f: 'img/s5/92.webp', k: '디테일 · 빈 홈', d: '근경' },
-    { f: 'img/lib/r9.webp', k: '사람 · 카운터의 두 사람', d: '중경' },
-    { f: 'img/lib/L06.webp', k: '디테일', d: '초근경' },
-    { f: 'img/v/lib_moonwater.webp', k: '질감 · 달 그늘의 물결', d: '근경' },
-    { f: 'img/lib/L07.webp', k: '질감', d: '초근경' },
-    { f: 'img/lib/L08.webp', k: '질감', d: '초근경' },
-    { f: 'img/lib/L09.webp', k: '상징', d: '추상' }
+    { f: 'img/v/lib_beach.webp', k: '환경 · 기억 속 풍경', d: '원경', r: [6] },
+    { f: 'img/lib/L03.webp', k: '환경', d: '원경', r: [6] },
+    { f: 'img/s5/87.webp', k: '공간', d: '원경', r: [1, 2, 4] },
+    { f: 'img/lib/L10.webp', k: '공간 · 가게 안', d: '원경', r: [1, 2, 6] },
+    { f: 'img/s5/89.webp', k: '상황', d: '중경', r: [1, 2, 3] },
+    { f: 'img/s5/96.webp', k: '사람 · 공간', d: '중경', r: [1, 4, 6] },
+    { f: 'img/lib/L02.webp', k: '인물', d: '중경', r: [1, 3, 6] },
+    { f: 'img/lib/L04.webp', k: '상황', d: '중경', r: [3, 4, 6] },
+    { f: 'img/s5/93.webp', k: '장면', d: '탑뷰', r: [1, 2, 3] },
+    { f: 'img/s5/103.webp', k: '장면', d: '탑뷰', r: [1, 2, 3] },
+    { f: 'img/lib/L01.webp', k: '제품', d: '근경', r: [1, 4, 6] },
+    { f: 'img/lib/L11.webp', k: '사물 · 시음 병 쟁반', d: '근경', r: [1, 4, 5] },
+    { f: 'img/lib/L05.webp', k: '사물', d: '근경', r: [1, 2, 4] },
+    { f: 'img/s5/92.webp', k: '디테일 · 빈 홈', d: '근경', r: [1, 2, 6] },
+    { f: 'img/lib/L12.webp', k: '디테일 · 손끝의 모래', d: '초근경', r: [1, 3, 5] },
+    { f: 'img/lib/L06.webp', k: '디테일', d: '초근경', r: [4, 5, 6] },
+    { f: 'img/v/lib_moonwater.webp', k: '질감 · 달 그늘의 물결', d: '근경', r: [5, 6] },
+    { f: 'img/lib/L07.webp', k: '질감', d: '초근경', r: [1, 5] },
+    { f: 'img/lib/L08.webp', k: '질감', d: '초근경', r: [1, 5, 6] },
+    { f: 'img/lib/L09.webp', k: '상징', d: '추상', r: [1, 3, 6] }
   ];
+  // Visual Core 규칙 번호와 짧은 이름 (사진마다 지키는 규칙 표시)
+  var RULE = ['', '빛', '홈', '손', '병', '질감', '조도'];
   (function () {
     var box = $('#assets'), have = LIB.filter(function (a) { return a.f; });
     LIB.forEach(function (a) {
       var f = document.createElement('figure'); f.className = 'a' + (a.f ? '' : ' todo');
       f.innerHTML = (a.f ? '<img loading="lazy" alt="" src="' + a.f + '">' : '<div class="ph"><span>' + a.n + '</span>' + a.t + '</div>') +
-        '<figcaption><b>' + a.k + '</b>' + a.d + (a.f ? '' : ' · 제작 중') + '</figcaption>';
+        '<figcaption><b>' + a.k + '</b>' + a.d + (a.f ? '' : ' · 제작 중') + (a.r ? '<span class="rl">' + a.r.map(function (n) { return '0' + n + ' ' + RULE[n]; }).join(' · ') + '</span>' : '') + '</figcaption>';
       if (a.f) f.onclick = function () {
         openGal('Visual Asset Library', have.length + '장 · 모두 AI 생성', have.map(function (x) { return { src: x.f }; }));
       };
