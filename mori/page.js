@@ -46,7 +46,6 @@
   ];
   (function () {
     var box = $('#assets'), have = LIB.filter(function (a) { return a.f; });
-    $('#libcount').innerHTML = '<b>' + have.length + '</b>장' + (LIB.length > have.length ? ' · 제작 중 <b>' + (LIB.length - have.length) + '</b>' : ' · 모두 AI 생성');
     LIB.forEach(function (a) {
       var f = document.createElement('figure'); f.className = 'a' + (a.f ? '' : ' todo');
       f.innerHTML = (a.f ? '<img loading="lazy" alt="" src="' + a.f + '">' : '<div class="ph"><span>' + a.n + '</span>' + a.t + '</div>') +

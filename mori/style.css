@@ -121,6 +121,9 @@ html::-webkit-scrollbar{display:none}
 .rules small{font-size:var(--ts);letter-spacing:.08em;color:var(--glow);font-weight:600}
 .rules b{display:block;font-family:var(--serif);font-weight:600;font-size:calc(var(--u)*1.5);color:var(--cream);margin:calc(var(--u)*.4) 0}
 .rules p{font-size:var(--ts);line-height:1.65}
+.rules6{grid-template-columns:repeat(6,minmax(0,1fr));gap:calc(var(--u)*1.4)}
+.rules6 img{aspect-ratio:3/4}
+.rules6 b{font-size:calc(var(--u)*1.3)}
 .nots{margin-top:auto;padding-top:calc(var(--u)*1.2);border-top:1px solid rgba(239,229,212,.25);font-family:var(--serif);font-size:var(--tb);display:flex;gap:calc(var(--u)*2);align-items:baseline}
 .nots small{font-family:var(--sans);font-size:var(--ts);letter-spacing:.1em;color:var(--ext);font-weight:600}
 
@@ -148,7 +151,7 @@ html::-webkit-scrollbar{display:none}
 .assets figcaption b{display:block;font-weight:600;color:var(--cream)}
 
 /* 과정 지도 */
-.map{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:calc(var(--u)*1.6);margin:calc(var(--u)*3) 0 auto}
+.map{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:calc(var(--u)*1.6);margin:auto 0 0}
 .map li{border-top:2px solid var(--ink);padding-top:calc(var(--u)*1)}
 .map i{font-family:var(--latin);font-style:italic;font-size:calc(var(--u)*3.4);line-height:1;color:var(--amber)}
 .map b{display:block;font-family:var(--serif);font-weight:600;font-size:calc(var(--u)*1.35);line-height:1.5;margin-top:calc(var(--u)*.5)}
@@ -295,6 +298,23 @@ html::-webkit-scrollbar{display:none}
 .trk3 .tcol:last-child .tgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
 
 
+/* 영문 요약 한 장 */
+.en-cols{flex:1;min-height:0;display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:calc(var(--u)*3)}
+.en-sum h2{font-family:var(--latin);font-weight:500;font-size:calc(var(--u)*4.4);line-height:1;color:var(--cream);letter-spacing:.03em}
+.en-sum h2 em{display:block;font-size:.38em;font-style:italic;color:var(--cream2);margin-top:calc(var(--u)*.6);letter-spacing:.02em}
+.en-sum .one{font-family:var(--latin);font-size:calc(var(--u)*1.5);line-height:1.4;color:var(--cream);margin:calc(var(--u)*1.6) 0 calc(var(--u)*.6)}
+.en-sum .one b{color:var(--glow);font-weight:500}
+.en-sum h3{font-size:var(--tl);letter-spacing:.14em;text-transform:uppercase;color:var(--glow);font-weight:600;margin:calc(var(--u)*1.4) 0 calc(var(--u)*.5)}
+.en-sum p,.en-sum li{font-size:var(--tb);line-height:1.6}
+.en-sum ol{list-style:none;display:grid;gap:calc(var(--u)*.55);counter-reset:e}
+.en-sum li{counter-increment:e;padding-left:calc(var(--u)*1.6);text-indent:calc(var(--u)*-1.6);color:var(--cream2)}
+.en-sum li::before{content:counter(e) "  ";color:var(--glow);font-weight:600}
+.en-sum li b{color:var(--cream);font-weight:600}
+.en-sum img{width:100%;aspect-ratio:16/9;object-fit:cover}
+.en-sum .wf-en{font-family:var(--latin);font-size:calc(var(--u)*1.35);line-height:1.5;color:var(--cream)}
+.en-sum h2{font-size:calc(var(--u)*3.2);line-height:1.1}
+.en-sum .one{font-size:calc(var(--u)*1.3);margin:0 0 calc(var(--u)*1)}
+
 /* 05 둘러보기 */
 #store{height:100vh;min-height:640px;position:relative;color:var(--cream)}
 .tour{position:absolute;left:32px;top:50%;transform:translateY(-50%);width:340px;padding:28px 28px 24px;background:rgba(14,10,8,.7);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(239,229,212,.14)}
@@ -349,7 +369,7 @@ html::-webkit-scrollbar{display:none}
   .fr{width:auto;height:auto;min-height:100svh;padding:88px 16px 64px}
   .slide .logo{font-size:96px}
   .slide .sub{font-size:20px}
-  .head,.agenda,.split,.turn,.e-split,.e-ideas,.e-pick{grid-template-columns:1fr}
+  .head,.agenda,.split,.turn,.e-split,.e-ideas,.e-pick,.en-cols{grid-template-columns:1fr}
   .head{gap:12px}
   .head p{justify-self:start;text-align:left}
   .agenda a{grid-template-columns:40px 1fr;gap:4px 0}
@@ -366,7 +386,7 @@ html::-webkit-scrollbar{display:none}
   .cols3 div+div,.flowline div+div,.e-diary li:not(:nth-child(3n+1)){padding-left:0;border-left:0}
   .cols3 div{padding-bottom:20px}
   .cols3 b,.rules b,.steps b{font-size:18px}
-  .steps,.rules,.e-persona,.e-brands,.boards,.tree4{grid-template-columns:1fr 1fr;margin-top:24px}
+  .steps,.rules,.rules6,.e-persona,.e-brands,.boards,.tree4{grid-template-columns:1fr 1fr;margin-top:24px}
   .menu3{margin-top:24px;gap:28px}
   .menu3 li{font-size:16px;padding:8px 0}
   .nots{flex-direction:column;gap:6px;margin-top:28px}
