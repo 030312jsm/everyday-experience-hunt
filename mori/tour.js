@@ -6,6 +6,17 @@ const stepsEl = $('#steps'), cap = $('#cap'), choices = $('#choices');
 const readout = $('#readout'), hint = $('#hint'), tip = $('#tip');
 const prev = $('#tprev'), next = $('#tnext');
 const LAST = S.STEPS.length - 1;
+// 단계마다 곁에 띄우는 에셋 라이브러리 사진
+const REF = [
+  [['img/lib/L03.webp', '환경 · 원경']],
+  [['img/lib/r14.webp', '공간 · 원경'], ['img/s5/87.webp', '공간 · 원경']],
+  [['img/lib/L04.webp', '상황 · 중경'], ['img/lib/L06.webp', '디테일 · 초근경']],
+  [['img/lib/L01.webp', '제품 · 근경']],
+  [['img/lib/L05.webp', '사물 · 근경'], ['img/lib/L09.webp', '상징 · 추상']],
+  [['img/lib/L02.webp', '인물 · 중경'], ['img/lib/L08.webp', '질감 · 초근경']],
+  [['img/v/lib_moonwater.webp', '질감 · 근경'], ['img/lib/L07.webp', '질감 · 초근경']],
+];
+const ref = $('#ref');
 
 S.STEPS.forEach((s, i) => {
   const li = document.createElement('li');
@@ -42,6 +53,7 @@ function render(n, ev) {
   if (ev === 'press') { hint.hidden = true; return; }
   [...stepsEl.children].forEach((li, i) => li.classList.toggle('on', i === n));
   cap.textContent = S.STEPS[n].d;
+  ref.innerHTML = '<small>에셋 라이브러리</small>' + REF[n].map(([f, k]) => `<figure><img src="${f}" alt=""><figcaption>${k}</figcaption></figure>`).join('');
   choices.innerHTML = '';
   if (n === 2) jarButtons(S.pick);
   if (n === 6) jarButtons(S.swap);
