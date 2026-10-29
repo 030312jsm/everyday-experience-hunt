@@ -121,6 +121,16 @@ html::-webkit-scrollbar{display:none}
 .rules small{font-size:var(--ts);letter-spacing:.08em;color:var(--glow);font-weight:600}
 .rules b{display:block;font-family:var(--serif);font-weight:600;font-size:calc(var(--u)*1.5);color:var(--cream);margin:calc(var(--u)*.4) 0}
 .rules p{font-size:var(--ts);line-height:1.65}
+.rules-t{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:calc(var(--u)*3) calc(var(--u)*3.4);margin-top:auto}
+.rules-t li{border-top:1.5px solid rgba(239,229,212,.5);padding-top:calc(var(--u)*1.2)}
+.rules-t small{font-size:var(--ts);letter-spacing:.08em;color:var(--glow);font-weight:600}
+.rules-t b{display:block;font-family:var(--serif);font-weight:600;font-size:calc(var(--u)*2);color:var(--cream);margin:calc(var(--u)*.5) 0 calc(var(--u)*.7)}
+.rules-t p{font-size:var(--tb);line-height:1.7}
+.rules-p{list-style:none;flex:1;min-height:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:calc(var(--u)*1.2);margin-top:calc(var(--u)*2.4)}
+.rules-p li{display:flex;flex-direction:column;min-height:0}
+.rules-p img{flex:1;min-height:0;width:100%;object-fit:cover;margin-bottom:calc(var(--u)*1)}
+.rules-p small{font-family:var(--latin);font-style:italic;font-size:calc(var(--u)*1.4);color:var(--glow)}
+.rules-p b{display:block;font-family:var(--serif);font-weight:600;font-size:calc(var(--u)*1.25);color:var(--cream);margin-top:calc(var(--u)*.2)}
 .rules6{grid-template-columns:repeat(6,minmax(0,1fr));gap:calc(var(--u)*1.4);margin-top:auto}
 .rules6 img{aspect-ratio:3/4}
 .rules6 b{font-size:calc(var(--u)*1.3)}
@@ -396,7 +406,9 @@ html::-webkit-scrollbar{display:none}
   .cols3 div+div,.flowline div+div,.e-diary li:not(:nth-child(3n+1)){padding-left:0;border-left:0}
   .cols3 div{padding-bottom:20px}
   .cols3 b,.rules b,.steps b{font-size:18px}
-  .steps,.rules,.rules6,.e-persona,.e-brands,.boards,.tree4{grid-template-columns:1fr 1fr;margin-top:24px}
+  .rules-t{grid-template-columns:1fr;margin-top:24px}
+  .rules-p img{flex:none;aspect-ratio:3/4}
+  .steps,.rules,.rules6,.rules-p,.e-persona,.e-brands,.boards,.tree4{grid-template-columns:1fr 1fr;margin-top:24px}
   .menu3{margin-top:24px;gap:28px}
   .menu3 li{font-size:16px;padding:8px 0}
   .nots{flex-direction:column;gap:6px;margin-top:28px}
