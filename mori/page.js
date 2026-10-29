@@ -1,4 +1,4 @@
-// 갤러리, 04장 라이브러리와 06장 근거 자료 그리기, 키보드로 넘기기
+// 갤러리, 00 과정 근거 자료와 04 라이브러리 그리기, 키보드로 넘기기
 (function () {
   var $ = function (s) { return document.querySelector(s); };
   var gal = $('#gal'), gg = $('#gg'), gt = $('#gt'), gm = $('#gm');
@@ -21,32 +21,32 @@
   function closeGal() { gal.hidden = true; document.body.style.overflow = ''; }
   $('#gx').onclick = closeGal;
 
-  // 04 에셋 라이브러리: f가 없는 칸은 Midjourney로 만드는 중인 컷
+  // 04 에셋 라이브러리 20장 (img/lib/L01~L09는 Midjourney 추가 촬영분)
   var LIB = [
     { f: 'img/v/lib_beach.webp', k: '환경 · 기억 속 풍경', d: '원경' },
-    { n: 'L03', t: '밤거리의 가게', k: '환경', d: '원경' },
+    { f: 'img/lib/L03.webp', k: '환경', d: '원경' },
     { f: 'img/s5/87.webp', k: '공간', d: '원경' },
     { f: 'img/s5/102.webp', k: '공간 · 병의 벽', d: '원경' },
     { f: 'img/s5/89.webp', k: '상황', d: '중경' },
     { f: 'img/s5/96.webp', k: '사람 · 공간', d: '중경' },
-    { n: 'L02', t: '손님 한 사람', k: '인물', d: '중경' },
-    { n: 'L04', t: '병을 고르는 손', k: '상황', d: '중경' },
+    { f: 'img/lib/L02.webp', k: '인물', d: '중경' },
+    { f: 'img/lib/L04.webp', k: '상황', d: '중경' },
     { f: 'img/s5/93.webp', k: '장면', d: '탑뷰' },
     { f: 'img/s5/103.webp', k: '장면', d: '탑뷰' },
-    { n: 'L01', t: '촉감 병 하나', k: '제품', d: '근경' },
+    { f: 'img/lib/L01.webp', k: '제품', d: '근경' },
     { f: 'img/s5/91.webp', k: '사물 · 병과 받침', d: '근경' },
-    { n: 'L05', t: '기계가 병을 알아보는 순간', k: '사물', d: '근경' },
+    { f: 'img/lib/L05.webp', k: '사물', d: '근경' },
     { f: 'img/s5/92.webp', k: '디테일 · 빈 홈', d: '근경' },
     { f: 'img/s5/90.webp', k: '디테일 · 손', d: '근경' },
-    { n: 'L06', t: '라벨 손글씨', k: '디테일', d: '초근경' },
+    { f: 'img/lib/L06.webp', k: '디테일', d: '초근경' },
     { f: 'img/v/lib_moonwater.webp', k: '질감 · 달 그늘의 물결', d: '근경' },
-    { n: 'L07', t: '비 갠 뒤의 이끼', k: '질감', d: '초근경' },
-    { n: 'L08', t: '아무도 밟지 않은 구름', k: '질감', d: '초근경' },
-    { n: 'L09', t: '손바닥과 빛 고리', k: '상징', d: '추상' }
+    { f: 'img/lib/L07.webp', k: '질감', d: '초근경' },
+    { f: 'img/lib/L08.webp', k: '질감', d: '초근경' },
+    { f: 'img/lib/L09.webp', k: '상징', d: '추상' }
   ];
   (function () {
     var box = $('#assets'), have = LIB.filter(function (a) { return a.f; });
-    $('#libcount').innerHTML = '<b>' + have.length + '</b>장 · 제작 중 <b>' + (LIB.length - have.length) + '</b> · 목표 20장';
+    $('#libcount').innerHTML = '<b>' + have.length + '</b>장' + (LIB.length > have.length ? ' · 제작 중 <b>' + (LIB.length - have.length) + '</b>' : ' · 모두 AI 생성');
     LIB.forEach(function (a) {
       var f = document.createElement('figure'); f.className = 'a' + (a.f ? '' : ' todo');
       f.innerHTML = (a.f ? '<img loading="lazy" alt="" src="' + a.f + '">' : '<div class="ph"><span>' + a.n + '</span>' + a.t + '</div>') +
@@ -58,7 +58,7 @@
     });
   })();
 
-  // 06 근거 자료: 무드 판
+  // 00 과정 근거: 무드 판
   var VTN = ['매끄러운 세라믹 표면 / 유기적 곡면', '무광, 패브릭', '선형적인, Art', '나무재질의 정갈한 느낌', '흑백의 대비가 명확한 단색조', '무채도 반투명 중첩', '반들반들한 은백색', '몸과 손을 따라 감기는 가는 선과 입자', '비정형적인, 유선형', '마디마다 끼운 반투명 조각'];
   fetch('img/s3/items.json').then(function (r) { return r.json(); }).then(function (d) {
     var box = $('#boards');
@@ -75,7 +75,7 @@
     });
   });
 
-  // 06 근거 자료: 키워드 파생 트랙
+  // 00 과정 근거: 키워드 파생 트랙
   var PROMPT = {
     'A 미니멀': 'a thin sensor glove and a hand, minimalist, vast negative space --ar 4:5',
     'A-1 미니멀-사진': '+ studio photography, soft diffused light',
@@ -97,63 +97,68 @@
     { t: 'matte', name: '무광 · 패브릭 · 무채색', d: '섹션 3 키워드 “무광, 패브릭”에서 출발한 키워드 묶음 3개.' },
     { t: 'organic', name: '비정형 · 유선형', d: '섹션 3 키워드 “비정형적인, 유선형”에서 출발한 키워드 묶음. 한글과 영문 키워드를 함께 시험.' }
   ];
-  function node(label, list, prompt, sq) {
-    var b = document.createElement('button'); b.type = 'button'; b.className = 'node';
-    var th = list.slice(0, 4).map(function (it) { return '<img loading="lazy" alt="" src="img/s4/' + it.f + '">'; }).join('');
-    b.innerHTML = '<b>' + label + '<small>' + list.length + '장</small></b>' + (prompt ? '<code>' + prompt + '</code>' : '') + '<div class="thumbs' + (sq ? ' sq' : '') + '">' + th + '</div>';
+  // 칸 하나: 이름과 장수, 미리보기 n장. 누르면 전체 이미지 (프롬프트는 갤러리 설명에)
+  function node(label, list, prompt, n) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'node'; if (prompt) b.title = prompt;
+    var th = list.slice(0, n).map(function (it) { return '<img loading="lazy" alt="" src="img/s4/' + it.f + '">'; }).join('');
+    b.innerHTML = '<b><span>' + label + '</span><small>' + list.length + '장</small></b><div class="thumbs" style="grid-template-columns:repeat(' + n + ',1fr)">' + th + '</div>';
     b.onclick = function () { openGal(label, list.length + '장 · AI 생성' + (prompt ? ' · ' + prompt : ''), list.map(function (it) { return { src: 'img/s4/' + it.f }; })); };
     return b;
   }
   function el(cls) { var d = document.createElement('div'); d.className = cls; return d; }
   fetch('img/s4/items.json').then(function (r) { return r.json(); }).then(function (items) {
-    var box = $('#tracks');
-    TRACKS.forEach(function (T, ti) {
+    var rest = el('trk3');
+    TRACKS.forEach(function (T) {
       var mine = items.filter(function (it) { return it.t === T.t; });
       var keys = [];
       mine.forEach(function (it) { if (keys.indexOf(it.k) < 0) keys.push(it.k); });
       var by = function (k) { return mine.filter(function (it) { return it.k === k; }); };
-      var sec = el('track');
-      sec.innerHTML = '<h3><span>' + (ti + 1) + '</span>' + T.name + ' <small class="note">' + mine.length + '장</small></h3><p>' + T.d + '</p>';
       if (T.t === 'minimal') {
-        var tree = el('tree'), l0 = el('lv0'), l1 = el('lv1'), l2 = el('lv2');
-        l0.appendChild(node('A 미니멀', by('A 미니멀'), PROMPT['A 미니멀']));
+        // 미니멀: 기본 → 스타일 3갈래 → 갈래마다 재질·기법 3가지 (열 하나가 갈래 하나)
+        var tree = el('tree4'), c0 = el('col');
+        c0.appendChild(node('A 미니멀 (기본)', by('A 미니멀'), PROMPT['A 미니멀'], 4));
+        tree.appendChild(c0);
         ['A-1 미니멀-사진', 'A-2 미니멀-수묵', 'A-3 미니멀-선 그래픽'].forEach(function (k, i) {
-          l1.appendChild(node(k, by(k), PROMPT[k]));
           var col = el('col');
+          col.appendChild(node(k, by(k), PROMPT[k], 4));
           [1, 2, 3].forEach(function (j) {
             var kk = keys.filter(function (x) { return x.indexOf('A-' + (i + 1) + '-' + j) === 0; })[0];
-            if (kk) col.appendChild(node(kk, by(kk), PROMPT[kk]));
+            if (kk) col.appendChild(node(kk, by(kk), PROMPT[kk], 4));
           });
-          l2.appendChild(col);
+          tree.appendChild(col);
         });
-        tree.appendChild(l0); tree.appendChild(l1); tree.appendChild(l2);
-        sec.appendChild(tree);
+        $('#track-min').appendChild(tree);
       } else {
-        var bs = el('bundles');
-        keys.forEach(function (k) { bs.appendChild(node(k, by(k), '', true)); });
-        sec.appendChild(bs);
+        var col = el('tcol');
+        col.innerHTML = '<h4>' + T.name + '<small>' + mine.length + '장</small></h4>';
+        var g = el('tgrid');
+        keys.forEach(function (k) { g.appendChild(node(k, by(k), '', 3)); });
+        col.appendChild(g); rest.appendChild(col);
       }
-      box.appendChild(sec);
     });
+    $('#track-rest').appendChild(rest);
   });
 
-  // → ← 로 다음 멈춤 지점까지 넘기기 (05장 가게 안에서는 둘러보기 단계를 넘김)
-  var stops = [].slice.call(document.querySelectorAll('[data-stop]'));
+  // 방향키로 한 장씩 넘기기 (05장 가게 안에서는 둘러보기 단계를 넘김)
+  // 넘기는 중에 다시 누르면 화면 위치가 아니라 가려던 장을 기준으로 한 장 더 감
+  var stops = [].slice.call(document.querySelectorAll('[data-stop]')), goal = -1, settle;
   function cur() {
     var y = innerHeight * 0.3, k = 0;
     stops.forEach(function (s, i) { if (s.getBoundingClientRect().top <= y) k = i; });
     return k;
   }
+  addEventListener('scroll', function () { clearTimeout(settle); settle = setTimeout(function () { goal = -1; }, 160); }, { passive: true });
   addEventListener('keydown', function (e) {
     if (!gal.hidden) { if (e.key === 'Escape') closeGal(); return; }
-    var fwd = e.key === 'ArrowRight' || e.key === 'PageDown', back = e.key === 'ArrowLeft' || e.key === 'PageUp';
+    var fwd = ['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) >= 0, back = ['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) >= 0;
     if (!fwd && !back) return;
     e.preventDefault();
     var T = window.moriTour;
-    if (T && T.on()) { if (fwd ? T.next() : T.prev()) return; }
-    var i = cur() + (fwd ? 1 : -1);
-    if (fwd && i >= stops.length) { $('#foot').scrollIntoView({ behavior: 'smooth' }); return; }
-    if (stops[Math.max(0, i)]) stops[Math.max(0, i)].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (goal < 0 && T && T.on()) { if (fwd ? T.next() : T.prev()) return; }
+    var i = Math.max(0, (goal >= 0 ? goal : cur()) + (fwd ? 1 : -1));
+    if (i >= stops.length) { $('#foot').scrollIntoView({ behavior: 'smooth' }); return; }
+    goal = i;
+    stops[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
   // 아래쪽에 지금 슬라이드의 장 이름과 쪽 번호
@@ -161,9 +166,8 @@
   function page() {
     var y = innerHeight * 0.5, k = 0;
     slides.forEach(function (s, i) { if (s.getBoundingClientRect().top <= y) k = i; });
-    var ap = $('#appendix').getBoundingClientRect().top <= y;
-    pgc.textContent = ap ? '부록' : slides[k].getAttribute('data-ch');
-    pgn.textContent = ap ? '' : ('0' + (k + 1)).slice(-2) + ' / ' + slides.length;
+    pgc.textContent = slides[k].getAttribute('data-ch');
+    pgn.textContent = ('0' + (k + 1)).slice(-2) + ' / ' + slides.length;
   }
   addEventListener('scroll', page, { passive: true }); page();
   // 주소 끝에 #s7처럼 쓰면 그 쪽으로 바로 감
