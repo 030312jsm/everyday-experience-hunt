@@ -4,6 +4,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -14,8 +16,8 @@ const mobile = matchMedia('(max-width: 760px)').matches;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 1.75));
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.0;
+renderer.toneMapping = THREE.AgXToneMapping;             // ACES보다 채도·대비를 덜 과장해 사진에 가까움
+renderer.toneMappingExposure = 1.2;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -26,10 +28,25 @@ const camera = new THREE.PerspectiveCamera(40, 1, 0.03, 80);
 scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 
 const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
+const renderPass = new RenderPass(scene, camera);
+// 가게 안 구석·카운터 밑·선반 칸의 그늘(SSAO). 가게에서만 켜고, 촉감 풍경(직접 짠 바닥 셰이더)에서는 끔
+const ssao = new SSAOPass(scene, camera, 1, 1, 16);
+ssao.kernelRadius = 0.6; ssao.minDistance = 0.0003; ssao.maxDistance = 0.06;
+composer.addPass(renderPass); composer.addPass(ssao);                 // SSAO는 앞 패스가 그린 화면 위에 그늘을 곱함
 const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.45, 0.5, 0.9);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
+// 렌즈: 가장자리가 살짝 어두워지고(비네트), 아주 옅은 필름 알갱이가 흐름
+const lens = new ShaderPass({
+  uniforms: { tDiffuse: { value: null }, uT: { value: 0 } },
+  vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}',
+  fragmentShader: `uniform sampler2D tDiffuse;uniform float uT;varying vec2 vUv;
+    float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+    void main(){vec4 c=texture2D(tDiffuse,vUv);vec2 d=vUv-.5;c.rgb*=1.-.32*smoothstep(.25,.85,dot(d,d)*2.2);
+      c.rgb+=(h(vUv*vec2(1733.,977.)+fract(uT)*91.)-.5)*.022;gl_FragColor=c;}`,
+});
+composer.addPass(lens);
+function setAO(on) { ssao.enabled = on; }
 
 // ---------- 재질 ----------
 function canvasTex(w, h, draw, repeat) {
@@ -172,6 +189,10 @@ fontReady.then(() => {
 const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 0.4), signMat);
 sign.position.set((D.x0 + D.x1) / 2, 2.95, ROOM.z1 + 0.17);
 scene.add(sign);
+// 창과 문틈에서 보도로 새어 나오는 따뜻한 빛(밤거리에서 가게 안이 실제로 켜져 있는 느낌)
+const spillWin = new THREE.PointLight(0xffb072, 2.2, 4.5, 2); spillWin.position.set((W.x0 + W.x1) / 2, 1.1, ROOM.z1 + 0.7);
+const spillDoor = new THREE.PointLight(0xffb072, 0.9, 3, 2); spillDoor.position.set((D.x0 + D.x1) / 2, 1.3, ROOM.z1 + 0.45);
+scene.add(spillWin, spillDoor);
 const sconce = new THREE.PointLight(0xffb070, 6, 6, 2);
 sconce.position.set((D.x0 + D.x1) / 2, 3.35, ROOM.z1 + 0.6);
 scene.add(sconce);
@@ -231,9 +252,13 @@ float amp(int k){return k==1?.024:k==2?.05:k==3?.075:k==4?.05:k==5?.018:0.;}
 float soft(int k){return k==1?.016:k==2?.035:k==3?.06:k==4?.022:k==5?.012:0.;}
 `;
 
+// 홈 속 촉감 면에 쓰는 실제 재질 사진(Fab Quixel Megascans): 이끼(0.5m 한 장)와 물결 모래(2m 한 장)
+const surfT = (f, c = true) => { const t = new THREE.TextureLoader().load(new URL(`assets/fab/surf/${f}`, import.meta.url).href); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 8; if (c) t.colorSpace = THREE.SRGBColorSpace; return t; };
+const SURF = { uMossT: { value: surfT('moss_b.jpg') }, uMossNT: { value: surfT('moss_n.jpg', false) }, uSandT: { value: surfT('sand_b.jpg') } };
 function surfaceMaterial(kind, fill) {
   return new THREE.ShaderMaterial({
     uniforms: {
+      ...SURF,
       uTime: { value: 0 }, uKind: { value: kind }, uFill: { value: fill },
       uHand: { value: new THREE.Vector2(9, 9) }, uPress: { value: 0 },
     },
@@ -249,7 +274,7 @@ function surfaceMaterial(kind, fill) {
         gl_Position=projectionMatrix*viewMatrix*w;
       }`,
     fragmentShader: GLSL + /* glsl */`
-      uniform float uTime,uFill,uPress;uniform int uKind;uniform vec2 uHand;
+      uniform float uTime,uFill,uPress;uniform int uKind;uniform vec2 uHand;uniform sampler2D uMossT,uMossNT,uSandT;
       varying vec2 vP;varying vec3 vW;varying float vH;
       void main(){
         vec2 p=vP;float r=length(p);if(r>.985)discard;
@@ -262,7 +287,7 @@ function surfaceMaterial(kind, fill) {
         if(uKind==1){
           vec2 q=rot(p,1.7*r-.5);float s=sandMask(p,t);
           vec3 water=mix(vec3(.015,.05,.12),vec3(.1,.22,.38),fbm(q*5.+t*.1));
-          vec3 sd=mix(vec3(.62,.44,.2),vec3(.9,.72,.42),.5*vnoise(p*170.)+.5*fbm(p*9.));
+          vec3 sd=texture2D(uSandT,p*.15+.3).rgb*3.4*(.9+.2*fbm(p*9.));             // 물결 모래 사진
           col=mix(water,sd,s);spec=mix(1.6,.5,s);shin=mix(110.,30.,s);
           col+=step(.993,hash(floor(p*230.)))*vec3(1.,.82,.45)*(.6+s);
         }else if(uKind==2){
@@ -273,8 +298,9 @@ function surfaceMaterial(kind, fill) {
           col=mix(vec3(.5,.56,.7),vec3(1.,.98,.95),smoothstep(.15,.9,h));
           emi=vec3(.45,.3,.16)*smoothstep(.6,.1,h)*.6;spec=.18;shin=10.;
         }else if(uKind==4){
-          col=mix(vec3(.05,.1,.04),vec3(.42,.52,.18),smoothstep(.2,1.,h)*(.6+.4*vnoise(p*48.)));
-          spec=.55;shin=40.;
+          vec2 tq=p*.6;vec3 tn=texture2D(uMossNT,tq).xyz*2.-1.;                       // 이끼 사진과 그 요철
+          col=texture2D(uMossT,tq).rgb*2.4*(.65+.55*smoothstep(.2,1.,h));N=normalize(N+vec3(tn.x,0.,-tn.y)*.9);
+          spec=.3;shin=24.;
         }else if(uKind==5){
           col=mix(vec3(.03,.05,.09),vec3(.66,.72,.84),pow(clamp(h,0.,1.),1.6));spec=1.5;shin=70.;
         }
@@ -625,7 +651,15 @@ let kind = 1;
   const glowUp = (m) => { if (m.emissive && m.emissive.getHex()) m.emissiveIntensity = Math.max(m.emissiveIntensity, 2.2); };   // 블룸이 잡히도록 전구·문틈을 밝게
   legacy.forEach((m) => { if (!m.userData.keep) m.visible = false; });
   door.children.forEach((m) => { m.visible = false; });
-  shop.traverse((o) => { if (!o.isMesh) return; o.castShadow = !o.material.transparent && !o.material.emissive?.getHex(); o.receiveShadow = true; glowUp(o.material); });
+  // 실내 반사 조명(RoomEnvironment)을 그대로 받으면 밤거리 정면까지 낮처럼 고르게 밝아짐: 바깥은 거의 끄고 실내도 낮춰 등불이 만든 빛과 그늘이 보이게
+  const OUT = ['facade', 'window_frame', 'door', 'sign_plate', 'street', 'curb', 'alley'];
+  shop.traverse((o) => {
+    if (!o.isMesh) return; o.castShadow = !o.material.transparent && !o.material.emissive?.getHex(); o.receiveShadow = true; glowUp(o.material);
+    let p = o, out = false; while (p && p !== shop) { if (OUT.includes(p.name)) out = true; p = p.parent; }
+    o.material.envMapIntensity = out ? 0.06 : 0.35;
+    let wet = false; for (let q = o; q && q !== shop; q = q.parent) if (q.name === 'street' || q.name === 'curb') wet = true;
+    if (wet) o.material.roughness = Math.min(o.material.roughness, 0.4);               // 비 온 뒤 젖은 보도: 불빛이 길게 번들거림
+  });
   const glbDoor = shop.getObjectByName('door');
   glbDoor.position.set(0, 0, 0); door.add(glbDoor);                                  // 문 원점이 경첩이라 코드의 문 축에 그대로 꽂음
   scene.add(shop);
@@ -918,6 +952,7 @@ function update(dt) {
   W0.mat.uniforms.uPress.value = hand.amt;
   handLight.intensity = hand.amt * 0.5;
   for (const w of wells) w.mat.uniforms.uTime.value = time;
+  lens.uniforms.uT.value = time;
   const sway = X.sway ?? (mode === 'hero' ? 0.45 : touchOn || pickOn ? 0.03 : 0.12);
   const drift = mode === 'hero' ? Math.sin(time * 0.12) * 0.25 : 0;
   camera.position.copy(cam.p).add(V(pointer.x * sway + drift, -pointer.y * sway * 0.4, 0));
@@ -928,5 +963,5 @@ function update(dt) {
 // 병 k를 받침에 올려 둔 상태로 바로 맞춤 (애니메이션 없음)
 export function place(k) { stopTweens(); kind = k; step = 3; pickOn = touchOn = false; canvas.classList.remove('touch'); settle(3); }
 // hooks: 매 프레임 끝에 불림 (dt, time). sway: 숫자를 넣으면 포인터에 따른 카메라 흔들림 크기를 덮어씀
-export const X = { scene, camera, renderer, cam, tween, camTo, jars, TOP, GLSL, dockTop, setDock, hooks: [], sway: null };
+export const X = { scene, camera, renderer, cam, tween, camTo, jars, TOP, GLSL, dockTop, setDock, setAO, ssao, hooks: [], sway: null };
 frame();

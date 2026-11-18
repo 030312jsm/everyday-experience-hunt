@@ -4,46 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>mori · 병을 열어 만져 보기</title>
-<meta name="description" content="mori의 촉감 병을 열어 화면에 쏟고, 손끝으로 만져 보는 페이지.">
-<!-- 가게 3D 장면(store.js)이 이미지를 mori/ 기준 경로로 불러오므로 기준 주소를 한 단계 위로 둠 -->
-<base href="../">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="touch/touch.css">
-<script type="importmap">
-{ "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-} }
-</script>
+<!-- 촉감 체험은 이제 첫 페이지 안에서 이어짐. 예전 주소(touch/?k=…)로 들어오면 그쪽으로 넘김 -->
+<script>location.replace('../?k=' + (new URLSearchParams(location.search).get('k') || 'cloud'));</script>
 </head>
-<body class="sealed">
-<canvas id="gl"></canvas>
-<!-- 물방울 커서: 마우스를 조금 늦게 따라오고, 꼭지가 움직이는 반대쪽으로 늘어짐. 누르면 차오르며 시계 반대 방향으로 45도 기욺 -->
-<svg id="drop" width="40" height="40" viewBox="-20 -20 40 40" aria-hidden="true"><path class="halo" d="M0-11C4-5 7-1 7 3A7 7 0 0 1-7 3C-7-1-4-5 0-11Z"/><path class="b" d="M0-11C4-5 7-1 7 3A7 7 0 0 1-7 3C-7-1-4-5 0-11Z"/></svg>
-
-<header id="bar">
-  <a href="./" class="mark">mori</a>
-  <nav id="kinds" aria-label="촉감 고르기">
-    <a href="touch/" data-k="cloud">No. 13 구름</a>
-    <a href="touch/?k=wave" data-k="wave">No. 07 파도</a>
-    <a href="touch/?k=moss" data-k="moss">No. 03 이끼</a>
-  </nav>
-  <button id="mute" type="button" aria-pressed="false">소리 끄기</button>
-</header>
-
-<main>
-  <div id="copy">
-    <p class="kicker">No. 13 · mori에서 처음 만나는 촉감</p>
-    <h1>아직 아무도 밟지 않은 구름</h1>
-    <p id="sense">손을 깊이 받아주다가 아주 느리게 밀어 올리는 폭신함</p>
-  </div>
-  <p id="hint" role="status">코르크를 위로 끌어 올리세요</p>
-  <button id="uncork" type="button" class="sr">코르크를 뽑아 병 열기</button>
-  <button id="again" type="button" hidden>병에 다시 담기</button>
-</main>
-
-<script type="module" src="touch/touch.js"></script>
-</body>
+<body><a href="../">mori로 가기</a></body>
 </html>

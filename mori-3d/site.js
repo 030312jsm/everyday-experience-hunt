@@ -6,7 +6,8 @@ const hero = $('#hero'), store = $('#store'), stepsEl = $('#steps'), cap = $('#c
 const readout = $('#readout'), hint = $('#hint'), tip = $('#tip'), open = $('#open');
 const prev = $('#tprev'), next = $('#tnext');
 const LAST = S.STEPS.length - 1;
-const TOUCH = { 1: 'touch/?k=wave', 3: 'touch/', 4: 'touch/?k=moss' };   // 열어서 쏟아 볼 수 있는 병
+const NAME = { 1: 'wave', 3: 'cloud', 4: 'moss' }, KOF = { wave: 1, cloud: 3, moss: 4 };   // 열어서 쏟아 볼 수 있는 병
+const TOUCH = Object.fromEntries(Object.entries(NAME).map(([k, n]) => [k, `./?k=${n}`]));
 
 S.STEPS.forEach((s, i) => {
   const li = document.createElement('li'), b = document.createElement('button');
@@ -61,10 +62,35 @@ function hover(k, x, y) {
 S.bind(render, hover);
 S.setActive(true);
 
+// ── 병 열기: 다른 페이지로 넘어가지 않고, 지금 보던 가게 장면에서 그대로 촉감 체험(touch/touch.js)으로 이어짐 ──
+let touching = false;
+async function startTouch(k, smooth) {
+  if (touching) return; touching = true;
+  if (location.search !== `?k=${NAME[k]}`) history.pushState(null, '', `./?k=${NAME[k]}`);   // touch.js가 주소의 k로 촉감을 정함
+  const css = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'touch/touch.css' });
+  await new Promise((r) => { css.onload = css.onerror = r; document.head.appendChild(css); });
+  document.querySelector('link[href="style.css"]').disabled = true;
+  document.querySelector('#bar').outerHTML = '<header id="bar"><a href="./" class="mark">mori</a><nav id="kinds" aria-label="촉감 고르기">'
+    + '<a href="./?k=cloud" data-k="cloud">No. 13 구름</a><a href="./?k=wave" data-k="wave">No. 07 파도</a><a href="./?k=moss" data-k="moss">No. 03 이끼</a>'
+    + '</nav><button id="mute" type="button" aria-pressed="false">소리 끄기</button></header>';
+  document.querySelector('main').innerHTML = '<div id="copy"><p class="kicker"></p><h1></h1><p id="sense"></p></div>'
+    + '<p id="hint" role="status">코르크를 위로 끌어 올리세요</p><button id="uncork" type="button" class="sr">코르크를 뽑아 병 열기</button><button id="again" type="button" hidden>병에 다시 담기</button>';
+  tip.remove();
+  document.querySelector('#gl').insertAdjacentHTML('afterend', '<svg id="drop" width="40" height="40" viewBox="-20 -20 40 40" aria-hidden="true"><path class="halo" d="M0-11C4-5 7-1 7 3A7 7 0 0 1-7 3C-7-1-4-5 0-11Z"/><path class="b" d="M0-11C4-5 7-1 7 3A7 7 0 0 1-7 3C-7-1-4-5 0-11Z"/></svg>');
+  document.body.className = 'sealed';
+  window.__moriSmooth = smooth;                                                   // 둘러보기에서 넘어오면 카메라가 끊기지 않고 병 앞으로 다가감
+  await import('./touch/touch.js');
+}
+open.onclick = (e) => { e.preventDefault(); startTouch(S.getKind(), true); };
+addEventListener('popstate', () => location.reload());                           // 뒤로 가기: 처음부터 다시
+const k0 = KOF[new URLSearchParams(location.search).get('k')];
+if (k0) { hero.hidden = true; startTouch(k0, false); }                              // 주소에 촉감이 있으면 바로 그 병 앞에서 시작
+
 next.onclick = () => { const s = S.getStep(); if (s === 2) S.pick(S.getKind()); else S.go(s < LAST ? s + 1 : 0); };
 prev.onclick = () => S.go(S.getStep() - 1);
 $('#enter').onclick = () => { hero.classList.add('out'); setTimeout(() => { hero.hidden = true; }, 800); store.hidden = false; S.setMode('tour'); };
 addEventListener('keydown', (e) => {
+  if (touching) return;
   if (!hero.hidden && (e.key === 'Enter' || e.key === 'ArrowRight')) { $('#enter').click(); return; }
   if (store.hidden) return;
   if (e.key === 'ArrowRight') next.click();
