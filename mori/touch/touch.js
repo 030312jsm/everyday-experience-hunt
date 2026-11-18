@@ -438,6 +438,22 @@ const drops = MOSS ? (() => {
 
 // ── 부드러운 김·먼지: 가장자리가 잡음으로 흩어지는 둥근 알갱이 ─────────────
 // 구름 덩이가 병 밖으로 나오면 이것으로 흩어지고, 모래가 떨어진 자리의 먼지도 이것으로 그림
+// 이끼 계단의 반딧불: 계단 위를 느리게 떠다니며 깜빡임(비 갠 여름밤의 생기)
+const fire = MOSS ? (() => {
+  const N = 26, p = new Float32Array(N * 3), s = new Float32Array(N);
+  for (let i = 0; i < N; i++) { p.set([Fc.x + (Math.random() - 0.5) * 6, SEA_Y + 0.3 + Math.random() * 0.9, jp.z - 0.8 - Math.random() * 4.5], i * 3); s[i] = Math.random(); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3)); g.setAttribute('seed', new THREE.BufferAttribute(s, 1));
+  const pts = new THREE.Points(g, new THREE.ShaderMaterial({
+    uniforms: { uTime: seaU.uTime }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+    vertexShader: `uniform float uTime;attribute float seed;varying float vA;
+      void main(){float t=uTime*(.12+.1*seed)+seed*50.;
+        vec3 q=position+vec3(sin(t*1.1)+.5*sin(t*2.3+seed*9.),.25*sin(t*1.7+seed*4.),cos(t*.9)+.5*cos(t*1.9+seed*6.))*.45;
+        vA=pow(max(sin(uTime*(.5+.5*seed)+seed*30.),0.),3.);                               // 느리게 켜졌다 꺼짐
+        vec4 mv=modelViewMatrix*vec4(q,1.);gl_PointSize=clamp(70./-mv.z,3.,10.);gl_Position=projectionMatrix*mv;}`,
+    fragmentShader: 'varying float vA;void main(){float r=length(gl_PointCoord-.5);if(r>.5)discard;gl_FragColor=vec4(vec3(.8,1.,.42)*vA*smoothstep(.5,.05,r)*2.6,1.);}',
+  }));
+  pts.frustumCulled = false; pts.visible = false; scene.add(pts); return pts;
+})() : null;
 const mist = (() => {
   const N = 900, pos = new Float32Array(N * 3), tint = new Float32Array(N * 3), size = new Float32Array(N), life = new Float32Array(N), seed = new Float32Array(N), alpha = new Float32Array(N);
   const life0 = new Float32Array(N), grow = new Float32Array(N), drag = new Float32Array(N), grav = new Float32Array(N), vel = Array.from({ length: N }, () => V(0, 0, 0));
@@ -1018,6 +1034,7 @@ function world(isSky) {
   seaU.uSky.value = veilU.uSky.value = isSky ? 1 : 0;
   if (vol) vol.over.visible = isSky;
   if (drops) drops.pts.visible = isSky;
+  if (fire) fire.visible = isSky;
   if (!isSky) { disU.uDisR.value = -1; disObjs.forEach((o) => { o.visible = true; }); }
 }
 
