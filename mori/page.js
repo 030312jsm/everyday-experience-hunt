@@ -150,6 +150,7 @@
   }
   addEventListener('scroll', function () { clearTimeout(settle); settle = setTimeout(function () { goal = -1; }, 160); }, { passive: true });
   addEventListener('keydown', function (e) {
+    if (window.__moriTouch) return;                                     // 병을 열어 촉감 체험 중에는 장 넘기기 없음
     if (!gal.hidden) { if (e.key === 'Escape') closeGal(); return; }
     var fwd = ['ArrowRight', 'ArrowDown', 'PageDown', ' '].indexOf(e.key) >= 0, back = ['ArrowLeft', 'ArrowUp', 'PageUp'].indexOf(e.key) >= 0;
     if (!fwd && !back) return;
