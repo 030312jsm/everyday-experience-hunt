@@ -34,3 +34,8 @@ services:
     runtime: static
     staticPublishPath: ./mori
     buildCommand: ""
+  - type: web
+    name: mori-3d
+    runtime: static
+    staticPublishPath: ./mori-3d
+    buildCommand: ""

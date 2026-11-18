@@ -1,0 +1,63 @@
+@font-face{font-family:Pretendard;src:url(../assets/PretendardVariable.woff2) format("woff2");font-weight:100 900;font-display:swap}
+:root{
+  --night:#08070a;--cream:#efe5d4;--cream2:rgba(239,229,212,.7);--glow:#e2ad68;
+  --serif:"Noto Serif KR",serif;--latin:"Cormorant Garamond",Georgia,serif;--sans:Pretendard,system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--sans);color:var(--cream);background:var(--night);-webkit-font-smoothing:antialiased;word-break:keep-all;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.sr{position:fixed;left:50%;top:50%;width:1px;height:1px;opacity:0;pointer-events:none}
+.sr:focus-visible{width:auto;height:auto;opacity:1;pointer-events:auto;transform:translate(-50%,-50%);padding:10px 16px;border-radius:99px;background:rgba(8,7,10,.7);outline:2px solid var(--glow);z-index:6}
+
+/* 글이 읽히도록 위쪽만 살짝 어둡게 */
+body::before{content:"";position:fixed;inset:0 0 auto 0;height:42vh;z-index:1;pointer-events:none;background:linear-gradient(rgba(8,7,10,.72),rgba(8,7,10,0))}
+
+/* 3D 장면 */
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;touch-action:none}
+/* 캔버스 위에서는 기본 커서 대신 물방울(#drop). 손가락 터치나 물방울을 못 쓰는 환경에서는 기본 커서 그대로 */
+body.drop #gl{cursor:none}
+#drop{position:fixed;left:0;top:0;z-index:6;pointer-events:none;overflow:visible;opacity:0;transition:opacity .3s;transform-origin:20px 23px}
+#drop .b{fill:rgba(239,229,212,0);stroke:var(--cream);stroke-width:1;transition:fill .25s}
+#drop .halo{fill:none;stroke:rgba(8,12,30,.4);stroke-width:2.8}   /* 흰 구름 위에서도 보이게 뒤에 옅은 남색 테두리 */
+body.drop.in #drop{opacity:1}
+body.drop.in.sky #drop{opacity:.35}      /* 하늘(배경)은 만지는 곳이 아님 */
+body.drop.pressing #drop .b{fill:rgba(239,229,212,.9)}
+body.grab:not(.drop) #gl{cursor:grab}
+body.grabbing:not(.drop) #gl{cursor:grabbing}
+
+#bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;padding:18px 32px;pointer-events:none}
+#bar>*{pointer-events:auto}
+.mark{font-family:var(--latin);font-size:26px;letter-spacing:.14em;color:var(--cream);text-decoration:none}
+#mute,#again{font-size:13px;letter-spacing:.02em;color:var(--cream2);padding:9px 15px;border:1px solid rgba(239,229,212,.28);border-radius:99px;background:rgba(8,7,10,.35);backdrop-filter:blur(6px);transition:color .2s,border-color .2s}
+#mute:hover,#again:hover{color:var(--cream);border-color:rgba(239,229,212,.6)}
+/* 촉감 고르기: 지금 보고 있는 병만 크림색, 나머지는 흐리게 */
+#kinds{display:flex;gap:22px;margin-left:auto;margin-right:22px}
+#kinds a{font-family:var(--serif);font-size:13.5px;color:rgba(239,229,212,.5);text-decoration:none;padding:8px 0;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+#kinds a:hover{color:var(--cream)}
+#kinds a[aria-current]{color:var(--cream);border-bottom-color:rgba(226,173,104,.7)}
+#kinds a:focus-visible{outline:1px solid var(--glow);outline-offset:4px}
+
+/* 글: 닫혀 있을 땐 병 위 가운데, 열리면 왼쪽 위 */
+#copy{position:fixed;left:50%;top:13vh;z-index:4;width:min(88vw,640px);transform:translateX(-50%);text-align:center;pointer-events:none;transition:left 1.6s cubic-bezier(.3,.7,.2,1),top 1.6s cubic-bezier(.3,.7,.2,1),transform 1.6s cubic-bezier(.3,.7,.2,1),opacity .5s}
+.kicker{font-family:var(--latin);font-size:17px;letter-spacing:.12em;color:var(--glow)}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(24px,3.4vmin,40px);line-height:1.3;margin-top:8px;text-shadow:0 2px 24px rgba(0,0,0,.6)}
+#sense{font-family:var(--serif);font-size:clamp(14px,1.7vmin,18px);line-height:1.7;color:var(--cream2);margin-top:10px;opacity:0;transition:opacity 1.2s 1.8s;text-shadow:0 1px 14px rgba(0,0,0,.6)}
+body.open #copy{left:32px;top:84px;transform:none;text-align:left}
+body.open #sense{opacity:1}
+body.veil #copy{opacity:0}
+
+#hint{position:fixed;left:50%;bottom:9vh;z-index:4;transform:translateX(-50%);font-size:15px;letter-spacing:.02em;color:var(--cream2);padding:10px 18px;border-radius:99px;background:rgba(8,7,10,.45);backdrop-filter:blur(6px);pointer-events:none;transition:opacity .6s;white-space:nowrap}
+#hint.nudge{animation:nudge .5s}
+@keyframes nudge{30%{transform:translate(-50%,-8px)}60%{transform:translate(-50%,2px)}}
+#again{position:fixed;right:32px;bottom:32px;z-index:5}
+
+@media (max-width:760px){
+  #bar{padding:14px 18px}
+  #kinds{gap:14px;margin-right:12px}
+  #kinds a{font-size:12.5px}
+  body.open #copy{left:18px;top:70px;width:calc(100vw - 36px)}
+  #again{right:18px;bottom:18px}
+  #hint{font-size:13.5px;bottom:12vh}
+}
+@media (prefers-reduced-motion:reduce){#copy{transition-duration:.01s}}
