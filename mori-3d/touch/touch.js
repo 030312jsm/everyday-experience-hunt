@@ -4,6 +4,7 @@
 // 구름 바다는 마우스가 지나간 자리가 파였다가 천천히 다시 차오름(자국 버퍼에 남김).
 import * as THREE from 'three';
 import * as S from '../store.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const X = S.X, { scene, camera, renderer, cam, tween, camTo, jars, TOP, GLSL } = X;
 const $ = (s) => document.querySelector(s);
@@ -118,11 +119,16 @@ const seaU = {
   uDeep: { value: null }, uDeepOn: { value: 0 },                    // 파인 자리 아래에 보일 영상(나중에 Higgsfield 구름 바다 영상)
   uSrc: { value: new THREE.Vector2(jp.x, jp.z) },                   // 쏟은 내용물이 떨어진 자리(여기서부터 번져 나감)
   uPile: { value: 0 }, uPileR: { value: 0.06 },                     // 떨어진 자리에 쌓이는 더미의 높이와 너비(m)
+  uLeaf: { value: null }, uPeb: { value: null }, uPebH: { value: null },   // Fab(Megascans) 바닥 사진: 젖은 낙엽, 해변 자갈과 그 높이
 };
+const fabURL = (f) => new URL(`../assets/fab/${f}`, import.meta.url).href;
+const fabTex = (f, color = true) => { const t = new THREE.TextureLoader().load(fabURL(f)); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 8; if (color) t.colorSpace = THREE.SRGBColorSpace; return t; };
+if (MOSS) seaU.uLeaf.value = fabTex('leaves.jpg');
+if (WAVE) { seaU.uPeb.value = fabTex('pebbles.jpg'); seaU.uPebH.value = fabTex('pebbles_h.jpg', false); }
 const SEA_FN = GLSL + /* glsl */`
   uniform sampler2D uTrail;uniform float uTime,uR,uSky,uTR;uniform vec2 uJar,uFc,uWell,uSrc;
   // 쏟은 자리에서 번진 가장자리까지 남은 거리(0보다 작으면 아직 안 닿음). 가장자리는 들쭉날쭉
-  uniform float uPile,uPileR;
+  uniform float uPile,uPileR;uniform sampler2D uLeaf,uPeb,uPebH;
   float pile(vec2 p){vec2 d=p-uSrc;return uPile*exp(-dot(d,d)/(uPileR*uPileR));}          // 쏟은 자리에 쌓이는 더미
   vec2 pileG(vec2 p){return -2.*(p-uSrc)/(uPileR*uPileR)*pile(p);}
   float spreadF(vec2 p){return uR>=60.?9.:uR-(.25+.6*fbm(p*3.+uTime*.25))*min(1.,uR*.8)-length(p-uSrc);}
@@ -244,6 +250,9 @@ if (WAVE) sea.material = new THREE.ShaderMaterial({
       sand*=1.-pit*.6;
       vec2 sc=p*14.;float sh=step(.965,hash(floor(sc)+.5))*smoothstep(.16,.08,length(fract(sc)-.5-.3*(vec2(hash(floor(sc)+1.3),hash(floor(sc)+2.9))-.5)))*nk*(1.-step(s,fr));   // 드문드문 조개 조각
       sand=mix(sand,vec3(.78,.74,.68),sh*.8);
+      vec2 pq=p*.5;float pb=smoothstep(.1,.35,s)*smoothstep(1.4,.9,s)*smoothstep(.48,.6,fbm(p*.9+17.));   // 물가에 드문드문 모인 자갈(Megascans 사진)
+      float pm=pb*smoothstep(.4,.6,texture2D(uPebH,pq).r+pb*.35-.25);           // 자갈 윗부분만 모래 위로 드러남
+      sand=mix(sand,texture2D(uPeb,pq).rgb*mix(1.,.55,wet),pm);
       float wrap=max((dot(N,L)+.3)/1.3,0.);                                    // 낮게 뜬 달이라 물결 그늘이 생김(너무 검지 않게)
       vec3 col=sand*(vec3(.05,.06,.09)+vec3(.68,.71,.86)*wrap*.95);
       vec3 H=normalize(L+V);
@@ -332,7 +341,8 @@ if (MOSS) sea.material = new THREE.ShaderMaterial({
       float pud=smoothstep(.78,.84,fbm(p*4.+9.)+.3*smoothstep(.6,.84,sk.y))*smoothstep(.84,.8,sk.y)*smoothstep(.5,.65,sk.y)*tread*onSt*(1.-jn);   // 디딤돌 안쪽, 다음 단 앞면 밑에 고인 작은 빗물
       vec4 lf=cellM(p*3.6+5.);float la=lf.y*31.;vec2 lq=mat2(cos(la),-sin(la),sin(la),cos(la))*lf.zw;
       float leaf=step(.9,lf.y)*smoothstep(.015,-.015,length(vec2(lq.x,lq.y*2.6))-.17)*tread*(1.-pud);   // 떨어져 젖은 잎(드문드문)
-      float mo=(1.-lay)*(1.-st)*(1.-leaf)*(1.-pud);                            // 이끼가 일어서 드러난 정도
+      float lp=smoothstep(.6,.7,fbm(p*1.7+31.))*tread*onSt*(1.-pud)*(1.-jn);   // 젖은 낙엽이 모여 깔린 자리(Megascans 사진)
+      float mo=(1.-lay)*(1.-st)*(1.-leaf)*(1.-pud)*(1.-lp);                    // 이끼가 일어서 드러난 정도
       vec3 N=normalize(vN+vec3(dx,0.,dz)*4.+(vec3(f1-.5,0.,f2-.5)*.9*(1.-lay)+vec3(b.x,0.,b.y)*.7+vec3(cu.z,0.,cu.w)*.9*mo)*nk);
       N=normalize(mix(N,vec3(0.,1.,0.),pud));
       vec3 moss=mix(vec3(.035,.07,.03),vec3(.10,.16,.06),smoothstep(.3,.75,fbm(p*2.2)));   // 밤이라 어둡고 푸른 기가 도는 초록
@@ -349,11 +359,12 @@ if (MOSS) sea.material = new THREE.ShaderMaterial({
       stone+=vec3(.16,.18,.13)*smoothstep(.05,0.,abs(lc.x-.37))*lk*.5;
       vec3 alb=mix(moss,stone,st);
       alb=mix(alb,mix(vec3(.19,.085,.03),vec3(.26,.16,.05),fract(lf.y*13.))*(1.-.4*smoothstep(.012,0.,abs(lq.y))),leaf);   // 잎맥이 보이는 갈색·호박색 잎
+      alb=mix(alb,texture2D(uLeaf,p*.55).rgb*.8,lp);
       alb*=1.-.65*pud;
       float wrap=max((dot(N,L)+.5)/1.5,0.);
       vec3 col=alb*(vec3(.06,.08,.11)+vec3(.62,.72,.95)*wrap);
       col+=vec3(.25,.4,.15)*pow(max(dot(-Vw,L),0.),3.)*smoothstep(.5,.85,tuft)*mo*(1.-jn)*.35*nk;   // 달을 마주 보면 이끼 끝이 비침
-      vec3 H=normalize(L+Vw);float sh=max(max(lay,st),max(leaf*.7,pud));
+      vec3 H=normalize(L+Vw);float sh=max(max(lay,st),max(max(leaf,lp)*.7,pud));
       col+=vec3(.7,.78,.95)*pow(max(dot(N,H),0.),mix(18.,160.,sh))*mix(.03,.5,max(max(lay,st*.25),leaf*.4));   // 누운 자리, 젖은 돌과 잎은 물기로 번들거림
       vec3 R=reflect(-Vw,vec3(0.,1.,0.));
       col=mix(col,vec3(.012,.018,.035)+vec3(.03,.04,.07)*smoothstep(-.1,.6,R.y)+vec3(.9,.95,1.)*pow(max(dot(R,L),0.),500.)*3.*(.7+.3*vnoise(p*40.+uTime)),pud*.85);   // 고인 물에 비친 밤하늘과 달
@@ -753,6 +764,70 @@ const moon = new THREE.DirectionalLight(0x9db4ff, 1.5); moon.position.set(1.7, 1
 const under = new THREE.PointLight(0xffa860, 0.3, 1.6, 2);   // 병 아래 따뜻한 빛(병이 번쩍이지 않게 약하게) under.position.set(jp.x - 0.2, SEA_Y + 0.02, jp.z + 0.05);
 const amb = new THREE.AmbientLight(0x243154, 0.9);
 const mine = [moon, under, amb]; mine.forEach((l) => { l.visible = false; scene.add(l); });
+
+// ── Fab(Quixel Megascans) 소품: 이끼 계단의 바위·고사리, 바닷가의 유목·조개 ─────────
+// 바닥 높이는 셰이더와 같은 식을 자바스크립트로 옮겨 계산하고, 쏟은 자리에서 번진 가장자리가 지나가면 나타남
+const props = (() => {
+  if (!WAVE && !MOSS) return null;
+  const fr = (x) => x - Math.floor(x), ss = (a, b, x) => { const t = THREE.MathUtils.clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+  const hash = (x, y) => { let px = fr(x * 123.34), py = fr(y * 456.21); const d = px * (px + 45.32) + py * (py + 45.32); return fr((px + d) * (py + d)); };
+  const vn = (x, y) => { const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy, ux = fx * fx * (3 - 2 * fx), uy = fy * fy * (3 - 2 * fy);
+    const a = hash(ix, iy), b = hash(ix + 1, iy), c = hash(ix, iy + 1), d = hash(ix + 1, iy + 1); return (a + (b - a) * ux) * (1 - uy) + (c + (d - c) * ux) * uy; };
+  const fbm = (x, y) => { let v = 0, a = 0.5; for (let i = 0; i < 5; i++) { v += a * vn(x, y); [x, y] = [1.6 * x - 1.2 * y, 1.2 * x + 1.6 * y]; a *= 0.5; } return v; };
+  const mossH = (x, z) => {                                                                // MOSS_FN의 mossH와 같은 식
+    const k = THREE.MathUtils.clamp((jp.z - 0.45 - z + 0.06 * (fbm(x * 0.8, 1.3) - 0.5)) / 0.46, 0, 5), i = Math.floor(k), f = k - i, sx = x / 0.62 + hash(i, 3);
+    let h = 0.1 * (i + ss(0.86, 1, f)) + 0.012 * (hash(i, Math.floor(sx)) - 0.5) * (f <= 0.86 ? 1 : 0);
+    const side = ss(1, 1.5, Math.abs(x - Fc.x)); h = h * (1 - side) + (0.1 * k + 0.12 + 0.12 * fbm(x * 1.3, z * 1.3)) * side;
+    h += 0.022 * ss(0.35, 0.8, fbm(x * 3.1, z * 3.1)) + 0.006 * vn(x * 25, z * 25);
+    const far = Math.hypot(x - jp.x, z - jp.z); return h - 0.7 * ss(4, 14, far) + 0.25 * (fbm(x * 0.12, z * 0.12) - 0.5) * ss(5, 25, far);
+  };
+  const shoreZ = (x) => tU.uZ0.value + 0.45 * (fbm(x * 0.35, 3.7) - 0.5);
+  const ground = (x, z) => SEA_Y + (MOSS ? mossH(x, z) : -0.03 * ss(0, -2, z - shoreZ(x)));
+  const g = new THREE.Group(); scene.add(g);
+  const items = [];
+  // 받은 모델을 크기(가장 긴 쪽, m)에 맞추고 바닥 가운데를 원점으로 둠
+  const fit = (src, size) => {
+    const o = src.clone(true), box = new THREE.Box3().setFromObject(o), sz = box.getSize(V(0, 0, 0)), c = box.getCenter(V(0, 0, 0));
+    const k = size / Math.max(sz.x, sz.z); o.position.set(-c.x, -box.min.y, -c.z); const w = new THREE.Group(); w.add(o); w.scale.setScalar(k); return w;
+  };
+  const put = (src, x, z, size, ry, sink = 0.15) => {
+    const w = fit(src, size); w.rotation.y = ry; w.position.set(x, ground(x, z) - sink * size * 0.3, z); w.visible = false;
+    w.traverse((o) => {
+      if (!o.isMesh) return;
+      const m = o.material; o.castShadow = o.receiveShadow = true;
+      m.envMapIntensity = 0.12; if (m.map) m.map.anisotropy = 8;                         // 가게용 실내 반사가 밤 풍경에서 튀지 않게
+      if (MOSS && !m.userData.night) { m.userData.night = 1; m.color.multiply(new THREE.Color(0.55, 0.62, 0.6)); }   // 비 갠 밤빛으로 차갑고 어둡게
+      if (m.map && !m.emissiveMap) {                                                     // 바닥 셰이더의 은은한 밤 하늘빛만큼 밝힘(달을 등진 면이 새까매지지 않게)
+        m.emissiveMap = m.map; if (m.alphaTest > 0) m.emissive.setRGB(0.16, 0.2, 0.15); else if (WAVE) m.emissive.setRGB(0.09, 0.1, 0.13); else m.emissive.setRGB(0.05, 0.06, 0.07);
+      }
+    });
+    g.add(w); items.push(w);
+  };
+  const load = (f) => new GLTFLoader().loadAsync(fabURL(f)).then((r) => r.scene);
+  if (MOSS) Promise.all([load('mossy_rock_formation.glb'), load('mossy_rock.glb'), load('fern/fern.gltf')]).then(([big, rock, fern]) => {
+    put(big, Fc.x - 2.1, jp.z - 3.4, 1.8, 0.6, 0.6); put(big, Fc.x + 2.0, jp.z - 4.3, 1.5, 2.4, 0.6);   // 계단 양옆 언덕에 조금 묻힌 큰 바위
+    put(rock, Fc.x + 1.3, jp.z - 1.6, 0.7, 1.1, 0.8); put(rock, Fc.x - 1.25, jp.z - 1.0, 0.55, 3.6, 0.8); put(rock, Fc.x - 1.05, jp.z - 2.6, 0.45, 5.2, 0.8);
+    const ferns = ['SM_rmAsg_VarA', 'SM_rmAsg_VarB', 'SM_rmAsg_VarC', 'SM_rmAsg_VarD'].map((n) => fern.getObjectByName(n)).filter(Boolean);
+    for (let i = 0; i < 18; i++) {                                                         // 계단 가장자리를 따라 작은 고사리 무리
+      const s = i % 2 ? 1 : -1, x = Fc.x + s * (0.95 + 0.45 * Math.random()), z = jp.z - 0.9 - 2.2 * (i / 17) - 0.2 * Math.random();
+      put(ferns[i % ferns.length], x, z, 0.28 + 0.2 * Math.random(), Math.random() * 6.28, 0);
+    }
+  });
+  if (WAVE) Promise.all([load('driftwood.glb'), load('seashells.glb')]).then(([wood, shells]) => {
+    const z0 = (x, s) => shoreZ(x) + s;                                                    // 물가 선에서 s만큼 뭍 쪽
+    put(wood, Fc.x + 1.5, z0(Fc.x + 1.5, 1.9), 1.3, 0.35, 0.2); put(wood, Fc.x - 1.9, z0(Fc.x - 1.9, 1.6), 0.9, 2.2, 0.2);   // 파도가 밀어 올린 유목
+    const one = (n) => { const o = shells.clone(true), drop = []; o.traverse((m) => { if (m.isMesh && !m.name.includes(`_00${n}_`)) drop.push(m); }); drop.forEach((m) => m.removeFromParent()); return o; };   // 세트의 조개 셋을 하나씩 따로
+    const sh = [0, 1, 2].map(one);
+    [[-0.35, 1.8, 0.06], [-0.28, 1.86, 0.045], [0.55, 1.65, 0.05], [1.0, 2.1, 0.055], [1.06, 2.02, 0.04], [-1.1, 1.55, 0.05], [0.15, 1.25, 0.045], [1.9, 1.75, 0.05]]
+      .forEach(([dx, s, size], i) => put(sh[i % 3], Fc.x + dx, z0(Fc.x + dx, s), size, i * 1.7, 0.1));   // 해초 줄 근처에 흩어진 조개
+  });
+  return {
+    step() {                                                                               // 번진 가장자리가 닿은 소품만 보임
+      const sky = seaU.uSky.value > 0, r = seaU.uR.value, src = seaU.uSrc.value;
+      for (const w of items) w.visible = sky && (r >= 60 || r - Math.hypot(w.position.x - src.x, w.position.z - src.y) > 0.1);
+    },
+  };
+})();
 // ── 부피 구름(레이마칭) ─────────────────────────────────────────────
 // 가까운 구름(카메라에서 9m 안)을 표면 한 장이 아니라 얇은 구름층으로 그림: 빛이 안으로 스미고 가장자리가 흩어짐.
 // 먼 구름과 휴대폰은 위의 표면 방식을 그대로 씀.
@@ -1159,7 +1234,7 @@ X.hooks.push((dt, time) => {
     if (drops) drops.step(dt);
   }
   if (!onFloor) speed *= Math.pow(0.9, dt * 60);
-  content.step(dt); spill.flow = content.flow;
+  content.step(dt); props?.step(); spill.flow = content.flow;
   mist.step(dt);
   spill.step(dt, time);
   sound(time);
