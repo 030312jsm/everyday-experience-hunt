@@ -804,7 +804,8 @@ const props = (() => {
     g.add(w); items.push(w);
   };
   const load = (f) => new GLTFLoader().loadAsync(fabURL(f)).then((r) => r.scene);
-  if (MOSS) Promise.all([load('mossy_rock_formation.glb'), load('mossy_rock.glb'), load('fern/fern.gltf')]).then(([big, rock, fern]) => {
+  let ready = null;
+  if (MOSS) ready = Promise.all([load('mossy_rock_formation.glb'), load('mossy_rock.glb'), load('fern/fern.gltf')]).then(([big, rock, fern]) => {
     put(big, Fc.x - 2.1, jp.z - 3.4, 1.8, 0.6, 0.6); put(big, Fc.x + 2.0, jp.z - 4.3, 1.5, 2.4, 0.6);   // 계단 양옆 언덕에 조금 묻힌 큰 바위
     put(rock, Fc.x + 1.3, jp.z - 1.6, 0.7, 1.1, 0.8); put(rock, Fc.x - 1.25, jp.z - 1.0, 0.55, 3.6, 0.8); put(rock, Fc.x - 1.05, jp.z - 2.6, 0.45, 5.2, 0.8);
     const ferns = ['SM_rmAsg_VarA', 'SM_rmAsg_VarB', 'SM_rmAsg_VarC', 'SM_rmAsg_VarD'].map((n) => fern.getObjectByName(n)).filter(Boolean);
@@ -813,7 +814,7 @@ const props = (() => {
       put(ferns[i % ferns.length], x, z, 0.28 + 0.2 * Math.random(), Math.random() * 6.28, 0);
     }
   });
-  if (WAVE) Promise.all([load('driftwood.glb'), load('seashells.glb')]).then(([wood, shells]) => {
+  if (WAVE) ready = Promise.all([load('driftwood.glb'), load('seashells.glb')]).then(([wood, shells]) => {
     const z0 = (x, s) => shoreZ(x) + s;                                                    // 물가 선에서 s만큼 뭍 쪽
     put(wood, Fc.x + 1.5, z0(Fc.x + 1.5, 1.9), 1.3, 0.35, 0.2); put(wood, Fc.x - 1.9, z0(Fc.x - 1.9, 1.6), 0.9, 2.2, 0.2);   // 파도가 밀어 올린 유목
     const one = (n) => { const o = shells.clone(true), drop = []; o.traverse((m) => { if (m.isMesh && !m.name.includes(`_00${n}_`)) drop.push(m); }); drop.forEach((m) => m.removeFromParent()); return o; };   // 세트의 조개 셋을 하나씩 따로
@@ -822,6 +823,7 @@ const props = (() => {
       .forEach(([dx, s, size], i) => put(sh[i % 3], Fc.x + dx, z0(Fc.x + dx, s), size, i * 1.7, 0.1));   // 해초 줄 근처에 흩어진 조개
   });
   return {
+    get ready() { return ready; },
     step() {                                                                               // 번진 가장자리가 닿은 소품만 보임
       const sky = seaU.uSky.value > 0, r = seaU.uR.value, src = seaU.uSrc.value;
       for (const w of items) w.visible = sky && (r >= 60 || r - Math.hypot(w.position.x - src.x, w.position.z - src.y) > 0.1);
@@ -1119,28 +1121,45 @@ pickScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMate
       gl_FragColor=vec4(uRo+uRd*b,1.);
     }`,
 })));
-function pickSurface() {
-  if (!pickRT) return ray.ray.intersectPlane(plane, hit);
-  pickU.uRo.value.copy(ray.ray.origin); pickU.uRd.value.copy(ray.ray.direction);
-  renderer.setRenderTarget(pickRT); renderer.render(pickScene, tCam); renderer.setRenderTarget(null);
-  renderer.readRenderTargetPixels(pickRT, 0, 0, 1, 1, pickBuf);
-  if (pickBuf[3] < 0.5) return null;
-  return hit.set(pickBuf[0], pickBuf[1], pickBuf[2]);
+// GPU에서 답을 받아 올 때 기다리지 않음: 한 프레임에 한 번만 그리고, 결과는 다 그려진 뒤(보통 다음 프레임)에 꺼내 씀.
+// 예전처럼 마우스가 움직일 때마다 바로 읽으면 그때마다 그래픽카드가 끝날 때까지 멈춰서 화면이 끊겼음
+const glc = renderer.getContext(), pickPBO = pickRT ? glc.createBuffer() : null;
+let pickWant = false, pickFence = null;
+if (pickPBO) { glc.bindBuffer(glc.PIXEL_PACK_BUFFER, pickPBO); glc.bufferData(glc.PIXEL_PACK_BUFFER, 16, glc.STREAM_READ); glc.bindBuffer(glc.PIXEL_PACK_BUFFER, null); }
+function pickStep() {
+  if (pickFence) {
+    if (glc.clientWaitSync(pickFence, 0, 0) === glc.TIMEOUT_EXPIRED) return;                  // 아직이면 다음 프레임에
+    glc.deleteSync(pickFence); pickFence = null;
+    glc.bindBuffer(glc.PIXEL_PACK_BUFFER, pickPBO); glc.getBufferSubData(glc.PIXEL_PACK_BUFFER, 0, pickBuf); glc.bindBuffer(glc.PIXEL_PACK_BUFFER, null);
+    takeHit(pickBuf[3] < 0.5 ? null : hit.set(pickBuf[0], pickBuf[1], pickBuf[2]));
+  }
+  if (!pickWant) return;
+  pickWant = false;
+  renderer.setRenderTarget(pickRT); renderer.render(pickScene, tCam);
+  glc.bindBuffer(glc.PIXEL_PACK_BUFFER, pickPBO); glc.readPixels(0, 0, 1, 1, glc.RGBA, glc.FLOAT, 0); glc.bindBuffer(glc.PIXEL_PACK_BUFFER, null);
+  renderer.setRenderTarget(null);
+  pickFence = glc.fenceSync(glc.SYNC_GPU_COMMANDS_COMPLETE, 0); glc.flush();
 }
 
 // 손은 마우스를 바로 따라오지 않고 조금 늦게, 부드럽게 따라감(cur가 tgt를 쫓음). 바닥 구름 위에서만 닿음
 const uvNow = new THREE.Vector2(9, 9), uvLast = new THREE.Vector2(9, 9), tgt = V(0, 0, 0), cur = V(0, 0, 0), fwd = V(0, 0, 0);
 const FOLLOW = 6;     // 따라오는 빠르기(클수록 바로 붙음)
 let pressed = false, onFloor = false, fresh = true, speed = 0, moved = 0, press = 0;
-function seaAt(e) {
-  ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
-  ray.setFromCamera(ndc, camera);
-  const ok = pickSurface() && Math.abs(hit.x - Fc.x) < TR * 0.46 && Math.abs(hit.z - Fc.y) < TR * 0.46;
-  onFloor = !!ok; body.classList.toggle('sky', !ok);
+function takeHit(h) {
+  const ok = !!h && Math.abs(hit.x - Fc.x) < TR * 0.46 && Math.abs(hit.z - Fc.y) < TR * 0.46;
+  if (ok !== onFloor) body.classList.toggle('sky', !ok);
+  onFloor = ok;
   if (!ok) { fresh = true; return false; }
   tgt.copy(hit);
   if (fresh) cur.copy(hit);
   return true;
+}
+function seaAt(e) {
+  ndc.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  if (!pickRT) return takeHit(ray.ray.intersectPlane(plane, hit));
+  pickU.uRo.value.copy(ray.ray.origin); pickU.uRd.value.copy(ray.ray.direction); pickWant = true;   // 실제 겉면은 다음 프레임에 GPU가 알려 줌
+  return onFloor || takeHit(ray.ray.intersectPlane(plane, hit));                                    // 아직 답이 없으면 평평한 판으로 먼저 판정
 }
 canvas.addEventListener('pointerdown', (e) => {
   if (state === 'sealed' && nearCork(e)) { audio(); dragY = e.clientY; canvas.setPointerCapture(e.pointerId); body.classList.add('grabbing'); return; }
@@ -1234,7 +1253,7 @@ X.hooks.push((dt, time) => {
     if (drops) drops.step(dt);
   }
   if (!onFloor) speed *= Math.pow(0.9, dt * 60);
-  content.step(dt); props?.step(); spill.flow = content.flow;
+  if (pickRT) pickStep(); content.step(dt); props?.step(); spill.flow = content.flow;
   mist.step(dt);
   spill.step(dt, time);
   sound(time);
@@ -1289,4 +1308,22 @@ muteBtn.onclick = () => { muted = !muted; if (master) master.gain.setTargetAtTim
 showMute();
 
 console.assert(lumps.length > 0 && cork.isMesh && half !== undefined, 'mori touch: 병 부품을 찾지 못함');
-window.mori = { vol, drops, spill, content, cam, J, open, reseal, get state() { return state; }, corkAt, seaU, tU, P_SEA, P_JAR };
+window.mori = { vol, drops, spill, content, cam, J, open, reseal, get state() { return state; }, corkAt, seaU, tU, P_SEA, P_JAR, renderer };
+
+// ── 미리 데우기: 밤하늘로 넘어가는 순간 처음 쓰는 셰이더(조명 조합이 바뀌면 모든 재질이 다시 컴파일됨)와 텍스처를
+// 불러올 때 미리 만들어 둠. 안 하면 쏟은 뒤 전환 때 0.1~0.3초씩 멈칫함
+const warmRT = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType });
+function warm() {
+  const hidden = []; scene.traverse((o) => { if (!o.visible && (!o.isLight || mine.includes(o))) { hidden.push(o); o.visible = true; } });   // 꺼 둔 조명은 그대로(조명 수가 달라지면 다른 조합이 됨)
+  const texs = new Set(); scene.traverse((o) => [].concat(o.material || []).forEach((m) => {
+    Object.values(m).forEach((v) => v?.isTexture && texs.add(v)); Object.values(m.uniforms || {}).forEach((u) => u.value?.isTexture && texs.add(u.value));
+  }));
+  texs.forEach((t) => { if (t.image || t.isRenderTargetTexture) renderer.initTexture(t); });
+  const cc = () => renderer.compileAsync ? renderer.compileAsync(scene, camera) : renderer.compile(scene, camera);   // 가능하면 그래픽 드라이버가 뒤에서 나눠 컴파일(화면을 멈추지 않음)
+  renderer.setRenderTarget(warmRT);                    // 실제로는 블룸용 버퍼에 그리므로(톤매핑·색공간이 화면과 다름) 같은 조건으로 컴파일
+  cc();                                                // 가게 불빛과 달빛이 함께 켜진 전환 중의 조합
+  world(true); cc();                                   // 달빛만 남은 열린 뒤의 조합
+  renderer.setRenderTarget(null);
+  world(false); hidden.forEach((o) => { o.visible = false; });
+}
+warm(); props?.ready?.then(warm);

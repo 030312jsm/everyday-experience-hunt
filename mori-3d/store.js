@@ -879,10 +879,19 @@ resize();
 
 const clock = new THREE.Clock();
 let time = 0;
+// 느린 컴퓨터에서는 화면 해상도를 한 단계씩 낮춤: 1.5초 넘게 45fps 아래로 떨어지면 0.25씩, 0.75까지
+let slow = 0;
+function govern(dt) {
+  if (document.hidden) return;
+  slow = dt > 1 / 45 ? slow + dt : Math.max(0, slow - dt * 0.5);
+  const pr = renderer.getPixelRatio();
+  if (slow > 1.5 && pr > 0.75) { slow = 0; renderer.setPixelRatio(Math.max(0.75, pr - 0.25)); composer.setPixelRatio(renderer.getPixelRatio()); dispatchEvent(new Event('resize')); }
+}
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 0.1);
   if (!active) return;
+  govern(dt);
   update(dt);
   composer.render();
 }
