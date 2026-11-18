@@ -3,9 +3,58 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>mori</title>
-<!-- 3D 체험은 소개 사이트(mori/)로 합쳐짐. 예전 주소로 들어오면 그쪽으로 넘김(?k=… 는 그대로 이어 줌) -->
-<script>location.replace('../mori/' + (location.search || '#hero'));</script>
+<title>mori · 촉감 바에 들어가기</title>
+<meta name="description" content="밤의 촉감 바 mori에 들어가 병을 고르고, 기계에 올리고, 병을 열어 손끝으로 만져 보는 3D 체험.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Noto+Serif+KR:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<!-- 주소에 촉감(?k=)이 있으면 가게 첫 화면을 건너뜀: 불러오는 동안 어둡게 덮어 두었다가 준비되면 걷힘(촉감 사이를 넘어갈 때 첫 화면이 번쩍 보이지 않게) -->
+<style>html.k body::after{content:"";position:fixed;inset:0;z-index:99;background:#08070a;transition:opacity .4s}html.k.in body::after{opacity:0;pointer-events:none}</style>
+<script>if (/[?&]k=(cloud|wave|moss)/.test(location.search)) document.documentElement.className = 'k';</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
 </head>
-<body><a href="../mori/">mori로 가기</a></body>
+<body>
+<canvas id="gl"></canvas>
+
+<header id="bar">
+  <a href="./" class="mark">mori</a>
+  <nav aria-label="촉감 바로 가기">
+    <a href="./?k=cloud">No. 13 구름</a><a href="./?k=wave">No. 07 파도</a><a href="./?k=moss">No. 03 이끼</a>
+  </nav>
+  <button id="mute" type="button" aria-pressed="false">소리 끄기</button>
+</header>
+
+<main>
+  <section id="hero">
+    <div class="hero-copy">
+      <p class="kicker">The Tactile Archive</p>
+      <h1 class="logo">mori</h1>
+      <p class="lead">도시의 밤, 병에 담긴 촉감을<br>손끝으로 꺼내 보는 촉감 바</p>
+      <button id="enter" type="button">가게에 들어가기</button>
+    </div>
+  </section>
+
+  <section id="store" hidden>
+    <div class="tour">
+      <p class="kicker">mori에 들어가 보기</p>
+      <ol id="steps"></ol>
+      <p id="cap"></p>
+      <div id="choices"></div>
+      <a id="open" href="./?k=cloud" hidden>이 병을 열어 쏟아 보기</a>
+      <div class="tnav"><button id="tprev" type="button">이전</button><button id="tnext" type="button">다음</button></div>
+    </div>
+    <div id="readout" hidden><small></small><b></b><p></p></div>
+    <p id="hint" hidden></p>
+  </section>
+</main>
+
+<div id="tip" hidden></div>
+<script type="module" src="site.js"></script>
+</body>
 </html>

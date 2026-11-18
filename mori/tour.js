@@ -16,13 +16,7 @@ const REF = [
   [['img/lib/L02.webp', '인물 · 중경'], ['img/lib/L08.webp', '질감 · 초근경']],
   [['img/v/lib_moonwater.webp', '질감 · 근경'], ['img/lib/L07.webp', '질감 · 초근경']],
 ];
-const ref = $('#ref'), open = $('#open');
-const NAME = { 1: 'wave', 3: 'cloud', 4: 'moss' }, KOF = { wave: 1, cloud: 3, moss: 4 };   // 열어서 쏟아 볼 수 있는 병
-function openLink(n) {
-  const name = NAME[S.getKind()];
-  open.hidden = !(n >= 4 && name);
-  if (name) open.href = `./?k=${name}`;
-}
+const ref = $('#ref');
 
 S.STEPS.forEach((s, i) => {
   const li = document.createElement('li');
@@ -54,8 +48,8 @@ function jarButtons(fn) {
 }
 
 function render(n, ev) {
-  if (ev === 'scan') { show('병을 읽는 중', S.getKind(), false); open.hidden = true; jarButtons(S.swap); if (n !== 6) choices.innerHTML = ''; return; }
-  if (ev === 'known') { show('인식됨', S.getKind(), true); if (n === 6) jarButtons(S.swap); openLink(n); return; }
+  if (ev === 'scan') { show('병을 읽는 중', S.getKind(), false); jarButtons(S.swap); if (n !== 6) choices.innerHTML = ''; return; }
+  if (ev === 'known') { show('인식됨', S.getKind(), true); if (n === 6) jarButtons(S.swap); return; }
   if (ev === 'press') { hint.hidden = true; return; }
   [...stepsEl.children].forEach((li, i) => li.classList.toggle('on', i === n));
   cap.textContent = S.STEPS[n].d;
@@ -64,7 +58,6 @@ function render(n, ev) {
   if (n === 2) jarButtons(S.pick);
   if (n === 6) jarButtons(S.swap);
   if (n >= 4) show('인식됨', S.getKind(), true); else readout.hidden = true;
-  openLink(n);
   hint.hidden = !(n === 5 || n === 6);
   hint.textContent = n === 5 ? '홈을 누른 채 움직여 보기' : '병을 바꾼 뒤 다시 만져 보기';
   prev.disabled = n === 0;
@@ -96,7 +89,6 @@ prev.onclick = goPrev;
 // 첫 화면이나 05장 가게가 보일 때만 그림
 let heroR = 1, storeR = 0;
 const sync = () => {
-  if (window.__moriTouch) return;                                       // 촉감 체험 중에는 슬라이드 위치와 상관없이 계속 그림
   S.setActive(heroR > 0 || storeR > 0);
   if (storeR > 0.55) S.setMode('tour');
   else if (heroR > 0.25) S.setMode('hero');
@@ -106,28 +98,3 @@ new IntersectionObserver((es) => es.forEach((e) => { heroR = e.intersectionRatio
 new IntersectionObserver((es) => es.forEach((e) => { storeR = e.intersectionRatio; sync(); }), { threshold: th }).observe($('#store'));
 
 window.moriTour = { on: () => storeR > 0.55, next: goNext, prev: goPrev };
-
-// ── 병 열기: 다른 페이지로 넘어가지 않고, 05장 가게 장면에서 그대로 촉감 체험(touch/touch.js)으로 이어짐 ──
-// 발표 슬라이드는 걷어 내고 같은 3D 화면 위에 촉감 화면을 띄움. 주소는 ./?k=… (그 주소로 바로 들어와도 같은 병 앞에서 시작)
-async function startTouch(k, smooth) {
-  if (window.__moriTouch) return; window.__moriTouch = true;
-  if (location.search !== `?k=${NAME[k]}`) history.pushState(null, '', `./?k=${NAME[k]}`);
-  const css = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'touch/touch.css' });
-  await new Promise((r) => { css.onload = css.onerror = r; document.head.appendChild(css); });
-  document.querySelector('link[href="style.css"]').disabled = true;
-  ['#pg', '#foot', '#tip', '#gal'].forEach((s) => $(s)?.remove());
-  $('#bar').outerHTML = '<header id="bar"><a href="./#store" class="mark">mori</a><nav id="kinds" aria-label="촉감 고르기">'
-    + '<a href="./?k=cloud" data-k="cloud">No. 13 구름</a><a href="./?k=wave" data-k="wave">No. 07 파도</a><a href="./?k=moss" data-k="moss">No. 03 이끼</a>'
-    + '</nav><button id="mute" type="button" aria-pressed="false">소리 끄기</button></header>';
-  $('main').innerHTML = '<div id="copy"><p class="kicker"></p><h1></h1><p id="sense"></p></div>'
-    + '<p id="hint" role="status">코르크를 위로 끌어 올리세요</p><button id="uncork" type="button" class="sr">코르크를 뽑아 병 열기</button><button id="again" type="button" hidden>병에 다시 담기</button>';
-  $('#gl').insertAdjacentHTML('afterend', '<svg id="drop" width="40" height="40" viewBox="-20 -20 40 40" aria-hidden="true"><path class="halo" d="M0-11C4-5 7-1 7 3A7 7 0 0 1-7 3C-7-1-4-5 0-11Z"/><path class="b" d="M0-11C4-5 7-1 7 3A7 7 0 0 1-7 3C-7-1-4-5 0-11Z"/></svg>');
-  document.body.className = 'sealed'; scrollTo(0, 0);
-  window.__moriSmooth = smooth;                                         // 둘러보기에서 넘어오면 카메라가 끊기지 않고 병 앞으로 다가감
-  S.setActive(true);
-  await import('./touch/touch.js');
-}
-open.onclick = (e) => { e.preventDefault(); startTouch(S.getKind(), true); };
-addEventListener('popstate', () => location.reload());
-const k0 = KOF[new URLSearchParams(location.search).get('k')];
-if (k0) startTouch(k0, false);

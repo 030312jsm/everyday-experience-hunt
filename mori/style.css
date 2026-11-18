@@ -346,9 +346,6 @@ html::-webkit-scrollbar{display:none}
 #choices button{text-align:left;font-size:13.5px;padding:9px 12px;border:1px solid rgba(239,229,212,.22);transition:background .3s,border-color .3s}
 #choices button:hover{border-color:var(--glow)}
 #choices button.on{background:rgba(226,173,104,.16);border-color:var(--glow)}
-#open{display:block;margin-top:14px;padding:12px 14px;text-align:center;font-size:14.5px;letter-spacing:.04em;text-decoration:none;color:var(--cream);background:rgba(226,173,104,.2);border:1px solid var(--glow)}
-#open:hover{background:rgba(226,173,104,.32)}
-#open[hidden]{display:none}
 .tnav{display:flex;justify-content:space-between;margin-top:18px}
 .tnav button{font-size:14px;padding:8px 0;letter-spacing:.04em}
 #tnext{color:var(--glow);font-weight:600}

@@ -4,11 +4,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-import { SSAOPass } from 'three/addons/postprocessing/SSAOPass.js';
-import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 const $ = (s) => document.querySelector(s);
 const canvas = $('#gl');
@@ -16,8 +13,8 @@ const mobile = matchMedia('(max-width: 760px)').matches;
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 1.75));
-renderer.toneMapping = THREE.AgXToneMapping;             // ACES보다 채도·대비를 덜 과장해 사진에 가까움
-renderer.toneMappingExposure = 1.2;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -28,29 +25,10 @@ const camera = new THREE.PerspectiveCamera(40, 1, 0.03, 80);
 scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
 
 const composer = new EffectComposer(renderer);
-const renderPass = new RenderPass(scene, camera);
-// 가게 안 구석·카운터 밑·선반 칸의 그늘(SSAO). 가게에서만 켜고, 촉감 풍경(직접 짠 바닥 셰이더)에서는 끔
-const ssao = new SSAOPass(scene, camera, 1, 1, 16);
-ssao.kernelRadius = 0.6; ssao.minDistance = 0.0003; ssao.maxDistance = 0.06;
-composer.addPass(renderPass); composer.addPass(ssao);                 // SSAO는 앞 패스가 그린 화면 위에 그늘을 곱함
+composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.45, 0.5, 0.9);
 composer.addPass(bloom);
 composer.addPass(new OutputPass());
-// 렌즈: 가장자리가 살짝 어두워지고(비네트), 아주 옅은 필름 알갱이가 흐름
-const lens = new ShaderPass({
-  uniforms: { tDiffuse: { value: null }, uT: { value: 0 } },
-  vertexShader: 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}',
-  fragmentShader: `uniform sampler2D tDiffuse;uniform float uT;varying vec2 vUv;
-    float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
-    void main(){vec4 c=texture2D(tDiffuse,vUv);vec2 d=vUv-.5;c.rgb*=1.-.32*smoothstep(.25,.85,dot(d,d)*2.2);
-      vec2 o=d*dot(d,d)*.012;float vg=1.-.32*smoothstep(.25,.85,dot(d,d)*2.2);c.r=texture2D(tDiffuse,vUv+o).r*vg;c.b=texture2D(tDiffuse,vUv-o).b*vg;   // 화면 가장자리의 옅은 색 번짐(렌즈)
-      float l=dot(c.rgb,vec3(.299,.587,.114));
-      c.rgb=mix(c.rgb*vec3(.94,.99,1.08),c.rgb*vec3(1.05,1.,.93),smoothstep(.06,.55,l));   // 그늘은 차갑게, 밝은 곳은 따뜻하게
-      c.rgb=mix(vec3(l),c.rgb,1.06);
-      c.rgb+=(h(vUv*vec2(1733.,977.)+fract(uT)*91.)-.5)*.022;gl_FragColor=c;}`,
-});
-composer.addPass(lens);
-function setAO(on) { ssao.enabled = on; }
 
 // ---------- 재질 ----------
 function canvasTex(w, h, draw, repeat) {
@@ -105,17 +83,13 @@ const M = {
   glow: new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.72, 0.42).multiplyScalar(2.2) }),
 };
 
-// 코드로 만든 도형은 모두 legacy에 모아 둠: Blender 모델(GLB)이 들어오면 userData.keep이 없는 것은 숨김
-const legacy = [];
 function mesh(geo, mat, x = 0, y = 0, z = 0, cast = true) {
   const m = new THREE.Mesh(geo, mat);
   m.position.set(x, y, z);
   m.castShadow = cast; m.receiveShadow = true;
   scene.add(m);
-  legacy.push(m);
   return m;
 }
-const keep = (m) => { m.userData.keep = true; return m; };
 
 // ---------- 방과 바깥 ----------
 const ROOM = { x0: -5, x1: 5, z0: -6, z1: 4, h: 3.3 };
@@ -193,16 +167,12 @@ fontReady.then(() => {
 const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.15, 0.4), signMat);
 sign.position.set((D.x0 + D.x1) / 2, 2.95, ROOM.z1 + 0.17);
 scene.add(sign);
-// 창과 문틈에서 보도로 새어 나오는 따뜻한 빛(밤거리에서 가게 안이 실제로 켜져 있는 느낌)
-const spillWin = new THREE.PointLight(0xffb072, 2.2, 4.5, 2); spillWin.position.set((W.x0 + W.x1) / 2, 1.1, ROOM.z1 + 0.7);
-const spillDoor = new THREE.PointLight(0xffb072, 0.9, 3, 2); spillDoor.position.set((D.x0 + D.x1) / 2, 1.3, ROOM.z1 + 0.45);
-scene.add(spillWin, spillDoor);
 const sconce = new THREE.PointLight(0xffb070, 6, 6, 2);
 sconce.position.set((D.x0 + D.x1) / 2, 3.35, ROOM.z1 + 0.6);
 scene.add(sconce);
 // 멀리 있는 거리 불빛
 for (const [x, y, z, s] of [[-9, 3.2, 9, 0.12], [8.5, 3.0, 11, 0.1], [-14, 2.6, 16, 0.14], [12, 2.4, 19, 0.12], [3, 3.4, 22, 0.1]]) {
-  keep(mesh(new THREE.SphereGeometry(s, 12, 8), M.glow, x, y, z, false));
+  mesh(new THREE.SphereGeometry(s, 12, 8), M.glow, x, y, z, false);
   if (x < 0 && z < 12) { const l = new THREE.PointLight(0xffa860, 4, 9, 2); l.position.set(x, y, z); scene.add(l); }
 }
 
@@ -256,13 +226,9 @@ float amp(int k){return k==1?.024:k==2?.05:k==3?.075:k==4?.05:k==5?.018:0.;}
 float soft(int k){return k==1?.016:k==2?.035:k==3?.06:k==4?.022:k==5?.012:0.;}
 `;
 
-// 홈 속 촉감 면에 쓰는 실제 재질 사진(Fab Quixel Megascans): 이끼(0.5m 한 장)와 물결 모래(2m 한 장)
-const surfT = (f, c = true) => { const t = new THREE.TextureLoader().load(new URL(`assets/fab/surf/${f}`, import.meta.url).href); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 8; if (c) t.colorSpace = THREE.SRGBColorSpace; return t; };
-const SURF = { uMossT: { value: surfT('moss_b.jpg') }, uMossNT: { value: surfT('moss_n.jpg', false) }, uSandT: { value: surfT('sand_b.jpg') } };
 function surfaceMaterial(kind, fill) {
   return new THREE.ShaderMaterial({
     uniforms: {
-      ...SURF,
       uTime: { value: 0 }, uKind: { value: kind }, uFill: { value: fill },
       uHand: { value: new THREE.Vector2(9, 9) }, uPress: { value: 0 },
     },
@@ -278,7 +244,7 @@ function surfaceMaterial(kind, fill) {
         gl_Position=projectionMatrix*viewMatrix*w;
       }`,
     fragmentShader: GLSL + /* glsl */`
-      uniform float uTime,uFill,uPress;uniform int uKind;uniform vec2 uHand;uniform sampler2D uMossT,uMossNT,uSandT;
+      uniform float uTime,uFill,uPress;uniform int uKind;uniform vec2 uHand;
       varying vec2 vP;varying vec3 vW;varying float vH;
       void main(){
         vec2 p=vP;float r=length(p);if(r>.985)discard;
@@ -291,7 +257,7 @@ function surfaceMaterial(kind, fill) {
         if(uKind==1){
           vec2 q=rot(p,1.7*r-.5);float s=sandMask(p,t);
           vec3 water=mix(vec3(.015,.05,.12),vec3(.1,.22,.38),fbm(q*5.+t*.1));
-          vec3 sd=texture2D(uSandT,p*.15+.3).rgb*3.4*(.9+.2*fbm(p*9.));             // 물결 모래 사진
+          vec3 sd=mix(vec3(.62,.44,.2),vec3(.9,.72,.42),.5*vnoise(p*170.)+.5*fbm(p*9.));
           col=mix(water,sd,s);spec=mix(1.6,.5,s);shin=mix(110.,30.,s);
           col+=step(.993,hash(floor(p*230.)))*vec3(1.,.82,.45)*(.6+s);
         }else if(uKind==2){
@@ -302,9 +268,8 @@ function surfaceMaterial(kind, fill) {
           col=mix(vec3(.5,.56,.7),vec3(1.,.98,.95),smoothstep(.15,.9,h));
           emi=vec3(.45,.3,.16)*smoothstep(.6,.1,h)*.6;spec=.18;shin=10.;
         }else if(uKind==4){
-          vec2 tq=p*.6;vec3 tn=texture2D(uMossNT,tq).xyz*2.-1.;                       // 이끼 사진과 그 요철
-          col=texture2D(uMossT,tq).rgb*2.4*(.65+.55*smoothstep(.2,1.,h));N=normalize(N+vec3(tn.x,0.,-tn.y)*.9);
-          spec=.3;shin=24.;
+          col=mix(vec3(.05,.1,.04),vec3(.42,.52,.18),smoothstep(.2,1.,h)*(.6+.4*vnoise(p*48.)));
+          spec=.55;shin=40.;
         }else if(uKind==5){
           col=mix(vec3(.03,.05,.09),vec3(.66,.72,.84),pow(clamp(h,0.,1.),1.6));spec=1.5;shin=70.;
         }
@@ -340,7 +305,7 @@ for (let i = 0; i < SEATS; i++) {
   // 받침(도크)
   const da = a - 0.33, dp = polar(da, R_WELL + 0.14, TOP);
   mesh(new THREE.CylinderGeometry(0.06, 0.064, 0.03, 32), M.brass, dp.x, TOP + 0.015, dp.z);
-  const dockGlow = keep(mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.006, 32), new THREE.MeshBasicMaterial({ color: new THREE.Color(1, 0.75, 0.45).multiplyScalar(i === 0 ? 0.25 : 1.8) }), dp.x, TOP + 0.033, dp.z, false));
+  const dockGlow = mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.006, 32), new THREE.MeshBasicMaterial({ color: new THREE.Color(1, 0.75, 0.45).multiplyScalar(i === 0 ? 0.25 : 1.8) }), dp.x, TOP + 0.033, dp.z, false);
   wells.push({ a, c, surf, mat, dock: dp, dockGlow, glow });
 }
 const hitDisc = new THREE.Mesh(new THREE.CircleGeometry(WELL_R, 48), new THREE.MeshBasicMaterial({ visible: false }));
@@ -372,36 +337,6 @@ const pend = new THREE.PointLight(0xffb070, 5, 5, 2);
 pend.position.set(-2.1, ROOM.h - 1.0, -0.8);
 scene.add(pend);
 
-// ── 공기: 등불 속에 떠다니는 먼지와 전등 주변에 번진 빛(습한 밤공기) ──
-const dust = (() => {
-  const N = 260, p = new Float32Array(N * 3), s = new Float32Array(N);
-  for (let i = 0; i < N; i++) { const a = Math.random() * 6.283, r = Math.sqrt(Math.random()) * 2.4; p.set([C.x + Math.cos(a) * r, 1.1 + Math.random() * 1.9, C.z + Math.sin(a) * r], i * 3); s[i] = Math.random(); }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3)); g.setAttribute('seed', new THREE.BufferAttribute(s, 1));
-  const u = { uT: { value: 0 }, uPx: { value: 800 }, uTop: { value: new THREE.Vector3(C.x, ROOM.h, C.z + 0.3) } };
-  const m = new THREE.Points(g, new THREE.ShaderMaterial({
-    uniforms: u, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    vertexShader: `uniform float uT,uPx;uniform vec3 uTop;attribute float seed;varying float vA;
-      void main(){vec3 q=position;float t=uT*.05+seed*40.;
-        q+=vec3(sin(t*1.3+seed*9.),sin(t*.7+seed*5.)*.6,cos(t*1.1+seed*7.))*.18;          // 아주 천천히 떠다님
-        vec3 d=q-uTop;float cone=smoothstep(.8,.25,length(d.xz)/max(-d.y,.01));             // 위에서 내리는 등불 원뿔 안에서만 빛을 받음
-        vec4 mv=modelViewMatrix*vec4(q,1.);vA=cone*(.35+.65*fract(seed*7.3))*smoothstep(.15,.6,-mv.z);
-        gl_PointSize=(.004+.006*fract(seed*3.1))*uPx/-mv.z;gl_Position=projectionMatrix*mv;}`,
-    fragmentShader: 'varying float vA;void main(){float r=length(gl_PointCoord-.5);if(r>.5)discard;gl_FragColor=vec4(vec3(1.,.82,.6)*vA*smoothstep(.5,.1,r)*.5,1.);}',
-  }));
-  m.frustumCulled = false; scene.add(m); return u;
-})();
-{
-  const tex = canvasTex(128, 128, (g) => { const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, 'rgba(255,200,140,.55)'); gr.addColorStop(0.3, 'rgba(255,180,110,.16)'); gr.addColorStop(1, 'rgba(255,170,90,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); });
-  const halo = (x, y, z, s) => { const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); sp.position.set(x, y, z); sp.scale.setScalar(s); scene.add(sp); };
-  halo((D.x0 + D.x1) / 2, 3.3, ROOM.z1 + 0.5, 2.2);                                          // 간판 등
-  halo(-9, 3.2, 9, 1.8); halo(8.5, 3.0, 11, 1.6);                                            // 가로등
-  // 젖은 보도에 길게 번져 비친 불빛: 문틈과 창 앞 바닥에 눕힌 빛 자국(실제 반사 대신 가볍게)
-  const streak = (x, z, w, len, a) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, len).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ map: tex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: a })); m.position.set(x, 0.126, z); scene.add(m); };
-  streak((D.x0 + D.x1) / 2 - 0.25, ROOM.z1 + 1.15, 0.7, 2.0, 0.55);                           // 문틈 불빛
-  streak((W.x0 + W.x1) / 2, ROOM.z1 + 1.1, 3.4, 1.9, 0.3);                                    // 창에서 새는 불빛
-  for (const [x, z] of [[-1.6, 0.2], [-2.6, -2.2], [1.7, -2.6], [2.6, 0.6]]) halo(x, 2.35, z, 0.9);   // 천장 등
-}
-
 // ---------- 병 선반 ----------
 const SH = { cols: 20, rows: 7, x0: -4, cw: 0.4, y0: 0.45, rh: 0.38, z: ROOM.z0 + 0.16, d: 0.3 };
 const shelfBack = canvasTex(1024, 360, (g, w, h) => {
@@ -416,7 +351,7 @@ const shelfBack = canvasTex(1024, 360, (g, w, h) => {
   }
 });
 const backMat = new THREE.MeshBasicMaterial({ map: shelfBack, color: new THREE.Color(1.15, 1.0, 0.9) });
-keep(mesh(new THREE.PlaneGeometry(SH.cols * SH.cw, SH.rows * SH.rh), backMat, 0, SH.y0 + (SH.rows * SH.rh) / 2, ROOM.z0 + 0.01, false));
+mesh(new THREE.PlaneGeometry(SH.cols * SH.cw, SH.rows * SH.rh), backMat, 0, SH.y0 + (SH.rows * SH.rh) / 2, ROOM.z0 + 0.01, false);
 for (let r = 0; r <= SH.rows; r++) mesh(new THREE.BoxGeometry(SH.cols * SH.cw + 0.03, 0.026, SH.d), M.oak, 0, SH.y0 + r * SH.rh, SH.z, false);
 for (let c = 0; c <= SH.cols; c++) mesh(new THREE.BoxGeometry(0.026, SH.rows * SH.rh, SH.d), M.oak, SH.x0 + c * SH.cw, SH.y0 + (SH.rows * SH.rh) / 2, SH.z, false);
 mesh(new THREE.BoxGeometry(SH.cols * SH.cw + 0.03, SH.y0, SH.d + 0.04), M.oakDark, 0, SH.y0 / 2, SH.z, false);
@@ -487,7 +422,7 @@ const tagI = new THREE.InstancedMesh(tagGeo, new THREE.MeshStandardMaterial({ ma
 const cellPos = [];
 const tmp = new THREE.Object3D(), col = new THREE.Color();
 for (let c = 0, i = 0; c < SH.cols; c++) for (let r = 0; r < SH.rows; r++, i++) {
-  const x = SH.x0 + c * SH.cw + SH.cw / 2, y = SH.y0 + r * SH.rh;   // Blender 선반의 칸 바닥 윗면이 y0 + r·rh
+  const x = SH.x0 + c * SH.cw + SH.cw / 2, y = SH.y0 + r * SH.rh + 0.013;
   const rnd = (n) => ((Math.sin(i * 12.9898 + n * 78.233) * 43758.5453) % 1 + 1) % 1;
   cellPos.push(new THREE.Vector3(x, y, SH.z));
   tmp.rotation.set(0, 0, 0); tmp.scale.set(1, 1, 1);
@@ -664,7 +599,7 @@ for (let k = 1; k <= 5; k++) {
   scene.add(g);
   // 빛 대신 내용물이 스스로 밝아짐 (조명 수를 줄여 가볍게)
   const light = { set intensity(v) { mats.forEach((m) => { m.emissiveIntensity = 1 + v * 2.2; }); } };
-  jars.push({ g, home, light, lift: 0, cork: ck, inner, glass: gl, mats });
+  jars.push({ g, home, light, lift: 0 });
 }
 function hideCell(i) {
   [glassI, fillI, corkI, twineI, tagI].forEach((m) => { m.setMatrixAt(i, new THREE.Matrix4().makeScale(0, 0, 0)); m.instanceMatrix.needsUpdate = true; });
@@ -674,113 +609,7 @@ let kind = 1;
 {
   const y = SH.y0 + PICK_ROW * SH.rh + 0.004;
   const x = (jars[1].home.x + jars[5].home.x) / 2;
-  keep(mesh(new THREE.BoxGeometry(5 * SH.cw - 0.03, 0.008, 0.012), M.glow, x, y, SH.z + SH.d / 2 + 0.004, false));
-}
-
-// ---------- Astra가 Blender로 만든 모델(model/ASTRA_BRIEF.md)로 가게·병·내용물을 바꿔 끼움 ----------
-// 빛, 간판 글씨, 포스터, 선반 뒤 불빛, 홈 표면, 꼬리표는 위의 코드 것을 그대로 씀. 구름 내용물은 코드 덩이가 더 나아서 유지
-{
-  const load = (f) => new GLTFLoader().loadAsync(new URL(`assets/models/${f}`, import.meta.url).href).then((g) => { g.scene.updateMatrixWorld(true); return g.scene; });
-  const [shop, jarM, cont] = await Promise.all(['shop.glb', 'jar.glb', 'contents.glb'].map(load));
-  const glowUp = (m) => { if (m.emissive && m.emissive.getHex()) m.emissiveIntensity = Math.max(m.emissiveIntensity, 2.2); };   // 블룸이 잡히도록 전구·문틈을 밝게
-  legacy.forEach((m) => { if (!m.userData.keep) m.visible = false; });
-  door.children.forEach((m) => { m.visible = false; });
-  // 실내 반사 조명(RoomEnvironment)을 그대로 받으면 밤거리 정면까지 낮처럼 고르게 밝아짐: 바깥은 거의 끄고 실내도 낮춰 등불이 만든 빛과 그늘이 보이게
-  const OUT = ['facade', 'window_frame', 'door', 'sign_plate', 'street', 'curb', 'alley'];
-  shop.traverse((o) => {
-    if (!o.isMesh) return; o.castShadow = !o.material.transparent && !o.material.emissive?.getHex(); o.receiveShadow = true; glowUp(o.material);
-    let p = o, out = false; while (p && p !== shop) { if (OUT.includes(p.name)) out = true; p = p.parent; }
-    o.material.envMapIntensity = out ? 0.06 : 0.35;
-    let wet = false; for (let q = o; q && q !== shop; q = q.parent) if (q.name === 'street' || q.name === 'curb') wet = true;
-    if (wet) o.material.roughness = Math.min(o.material.roughness, 0.4);               // 비 온 뒤 젖은 보도: 불빛이 길게 번들거림
-  });
-  // 건물 겉면에 실제 재질 사진(Fab Quixel Megascans)을 실제 크기로 입힘. 재질 이름으로 고르고, 좌표는 면이 향한 쪽에 맞춰 실제 위치(m)에서 다시 계산
-  // 겉벽·건너편 건물 = 오래된 벽돌(사진 한 장 1m), 실내 벽 = 회벽(2m), 길 = 아스팔트(2m), 연석·창대·기둥 받침 = 콘크리트 보도(2m)
-  const SKIN = { 'Umbrian earth render': ['brick', 1, 0.75, 1], 'Lime and chalk': ['plaster', 2, 1, 1], 'Wet aggregate': ['asphalt', 2, 0.8, 0.55], 'Blue limestone': ['pave', 2, 0.85, 0.8] };
-  const skinned = new Set(), vv = new THREE.Vector3(), nn = new THREE.Vector3(), nm = new THREE.Matrix3();
-  // 마루: 문·천장과 같은 재질(Smoked oak)을 함께 쓰고 있어, 바닥만 재질을 복제해 나무 마루 사진(2m)을 입힘
-  shop.getObjectByName('room_floor')?.traverse((o) => { if (o.isMesh && o.material.name === 'Smoked oak') { o.material = o.material.clone(); o.material.name = 'Floor boards'; } });
-  SKIN['Floor boards'] = ['floor', 2, 0.8, 0.75];
-  // 문짝도 같은 이유로 재질을 복제해 나무 판재 사진을 입힘(짙게, 판이 더 좁아 보이게 1.4m 타일)
-  shop.getObjectByName('door')?.traverse((o) => { if (o.isMesh && o.material.name === 'Smoked oak') { o.material = o.material.clone(); o.material.name = 'Door boards'; } });
-  SKIN['Door boards'] = ['floor', 1.4, 0.5, 0.7];
-  const glassM = shop.getObjectByName('window_glass')?.getObjectByProperty('isMesh', true)?.material ?? shop.getObjectByName('window_glass')?.material;
-  if (glassM) { glassM.roughness = 0.04; glassM.metalness = 0; glassM.envMapIntensity = 0.5; }   // 창유리에 실내 불빛이 은은하게 비침
-  shop.traverse((o) => {
-    const s = o.isMesh && SKIN[o.material.name]; if (!s) return;
-    const [k, size, tint, rough] = s, g = o.geometry, P = g.attributes.position, N = g.attributes.normal, uv = new Float32Array(P.count * 2);
-    nm.getNormalMatrix(o.matrixWorld);
-    for (let i = 0; i < P.count; i++) {
-      vv.fromBufferAttribute(P, i).applyMatrix4(o.matrixWorld); nn.fromBufferAttribute(N, i).applyMatrix3(nm);
-      const ax = Math.abs(nn.x), ay = Math.abs(nn.y), az = Math.abs(nn.z), [a, b] = ay > ax && ay > az ? [vv.x, vv.z] : ax > az ? [vv.z, vv.y] : [vv.x, vv.y];
-      uv[i * 2] = a / size; uv[i * 2 + 1] = b / size;
-    }
-    g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
-    const m = o.material; if (skinned.has(m)) return; skinned.add(m);
-    m.map = surfT(`${k}_b.jpg`); m.normalMap = surfT(`${k}_n.jpg`, false); m.roughnessMap = surfT(`${k}_r.jpg`, false);
-    m.color.setScalar(tint); m.roughness = rough; m.metalness = 0; m.normalScale.setScalar(k === 'brick' ? 1.8 : k === 'floor' ? 1.3 : 1.1); m.needsUpdate = true;   // 벽돌 줄눈과 마루 이음매가 빛에 도드라지게
-  });
-  // 가게 앞 소품(Fab Quixel Megascans 실물 스캔): 문 옆 보도에 나무 통·상자·토분을 놓아 사람이 쓰는 가게처럼
-  {
-    const ps = await Promise.all(['prop_barrel.glb', 'prop_crate.glb', 'prop_pot.glb'].map((f) => new GLTFLoader().loadAsync(new URL(`assets/fab/${f}`, import.meta.url).href).catch(() => null)));
-    const put = (g, x, z, size, ry, y = 0.12) => {                                                    // y 기본값은 연석 높이
-      if (!g) return; const o = g.scene.clone(true), b = new THREE.Box3().setFromObject(o), s = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3()), w = new THREE.Group();
-      o.position.set(-c.x, -b.min.y, -c.z); w.add(o); w.scale.setScalar(size / Math.max(s.x, s.y, s.z)); w.rotation.y = ry; w.position.set(x, y, z);
-      w.traverse((m) => { if (m.isMesh) { m.castShadow = m.receiveShadow = true; m.material.envMapIntensity = 0.06; } }); scene.add(w);
-    };
-    const zf = ROOM.z1 + 0.15;                                                                       // 겉벽 앞면
-    put(ps[0], 2.75, zf + 0.42, 0.85, 0.7); put(ps[1], 2.15, zf + 0.36, 0.5, 0.25); put(ps[1], 2.2, zf + 0.38, 0.36, 1.1);   // 통 하나, 상자 둘(작은 것은 아래에서 따로 올림)
-    scene.children[scene.children.length - 1].position.y = 0.12 + 0.5 * 0.62;                        // 작은 상자를 큰 상자 위에 얹음
-    put(ps[2], 0.05, zf + 0.3, 0.42, 0); put(ps[2], -0.35, zf + 0.34, 0.3, 2);                         // 문 왼쪽에 토분 둘
-    // 가게 안: 창가 구석과 문 안쪽 오른쪽 구석에 통·상자·토분(통로와 카운터 둘레는 비워 둠)
-    put(ps[0], -4.35, 3.2, 0.85, 2.1, 0); put(ps[1], -3.7, 3.35, 0.5, 0.6, 0); put(ps[2], -3.72, 3.33, 0.3, 1, 0.31);
-    put(ps[0], 4.3, 3.2, 0.85, 0.4, 0); put(ps[0], 4.35, 2.4, 0.85, 1.7, 0); put(ps[1], 3.65, 3.4, 0.5, 1.2, 0);
-  }
-  const glbDoor = shop.getObjectByName('door');
-  glbDoor.position.set(0, 0, 0); door.add(glbDoor);                                  // 문 원점이 경첩이라 코드의 문 축에 그대로 꽂음
-  scene.add(shop);
-  sign.position.z = ROOM.z1 + 0.21;                                                   // 간판 바탕판 앞으로 글씨를 띄움
-
-  // 병: 유리·끈은 병 바닥 기준 좌표 그대로, 코르크는 가운데 기준(코드가 0.212 위에 올림)
-  const part = (n, centered) => {
-    const o = jarM.getObjectByName(n), m = o.isMesh ? o : o.getObjectByProperty('isMesh', true);
-    const T = m.matrixWorld.clone(); if (centered) T.setPosition(0, 0, 0);
-    return { g: m.geometry.clone().applyMatrix4(T), mat: m.material };
-  };
-  const glass = part('jar_glass'), cork = part('jar_cork', true), twine = part('jar_twine');
-  const mm = new THREE.Matrix4();
-  glassI.geometry = glass.g; corkI.geometry = cork.g; corkI.material = cork.mat; twineI.geometry = twine.g; twineI.material = twine.mat;
-  for (let i = 0; i < nJar; i++) { glassI.getMatrixAt(i, mm); twineI.setMatrixAt(i, mm); }
-  twineI.instanceMatrix.needsUpdate = true;
-  for (let k = 1; k <= 5; k++) {
-    const J = jars[k], [, , , tw0, tw1] = J.g.children;
-    J.glass.geometry = glass.g; J.cork.geometry = cork.g; J.cork.material = cork.mat;
-    tw0.geometry = twine.g; tw0.material = twine.mat; tw0.position.set(0, 0, 0); tw0.rotation.set(0, 0, 0); tw1.visible = false;
-  }
-
-  // 내용물: 묶음의 직접 자식 순서를 그대로 씀(touch.js가 순서로 흙덩이·모래·물 재질을 찾음)
-  // 재질이 여럿이라 하위 메시로 나뉜 노드는 가장 큰 메시의 geometry·material을 노드에 달아 둠(touch.js가 덩이 크기와 재질을 읽음)
-  const flat = (node) => {
-    if (node.isMesh) return node;
-    const ms = []; node.traverse((o) => { if (o.isMesh) ms.push(o); });
-    const big = ms.sort((a, b) => b.geometry.attributes.position.count - a.geometry.attributes.position.count)[0];
-    node.geometry = big.geometry; node.material = big.material;
-    return node;
-  };
-  [[1, 'k1_wave'], [2, 'k2_blanket'], [4, 'k4_moss'], [5, 'k5_moon']].forEach(([k, n]) => {
-    const J = jars[k], kids = cont.getObjectByName(n).children.slice().map(flat);
-    J.inner.clear(); J.mats.length = 0;
-    kids.forEach((o) => {
-      J.inner.add(o);
-      o.traverse((m) => {
-        if (!m.isMesh) return;
-        m.castShadow = true; m.userData.kind = k;
-        const t = m.material;                                                         // 코드 재질처럼 같은 색으로 스스로 조금 밝아짐(인식할 때 더 밝아짐)
-        t.emissive = t.color.clone().multiplyScalar(0.12); if (t.map) t.emissiveMap = t.map;
-        if (!J.mats.includes(t)) J.mats.push(t);
-      });
-    });
-  });
+  mesh(new THREE.BoxGeometry(5 * SH.cw - 0.03, 0.008, 0.012), M.glow, x, y, SH.z + SH.d / 2 + 0.004, false);
 }
 
 // 인식할 때 병을 따라 올라가는 빛 띠
@@ -796,7 +625,7 @@ const dockTop = () => W0.dock.clone().setY(TOP + 0.036);
 const pickMid = jars[3].home;
 const POSE = {
   hero: { p: V(0.6, 1.5, 10.5), t: V(-1.0, 1.75, 3.6) },
-  front: { p: V(2.0, 1.5, 9.3), t: V(0.55, 1.55, 3.6) },   // 문과 간판, 창 한쪽이 함께 보이는 거리(문짝만 꽉 차면 밋밋함)
+  front: { p: V(1.25, 1.6, 7.2), t: V(0.9, 1.45, 3.5) },
   hall: { p: V(1.1, 1.72, 2.9), t: V(-0.8, 1.05, -1.6) },
   shelf: { p: V(pickMid.x - 0.35, 1.7, ROOM.z0 + 2.7), t: V(pickMid.x - 0.35, pickMid.y + 0.05, ROOM.z0) },
   seat: { p: V(W0.c.x + 0.1, 1.8, W0.c.z + 1.2), t: V(W0.c.x - 0.02, TOP - 0.05, W0.c.z + 0.1) },
@@ -989,19 +818,10 @@ resize();
 
 const clock = new THREE.Clock();
 let time = 0;
-// 느린 컴퓨터에서는 화면 해상도를 한 단계씩 낮춤: 1.5초 넘게 45fps 아래로 떨어지면 0.25씩, 0.75까지
-let slow = 0;
-function govern(dt) {
-  if (document.hidden) return;
-  slow = dt > 1 / 45 ? slow + dt : Math.max(0, slow - dt * 0.5);
-  const pr = renderer.getPixelRatio();
-  if (slow > 1.5 && pr > 0.75) { slow = 0; renderer.setPixelRatio(Math.max(0.75, pr - 0.25)); composer.setPixelRatio(renderer.getPixelRatio()); dispatchEvent(new Event('resize')); }
-}
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 0.1);
   if (!active) return;
-  govern(dt);
   update(dt);
   composer.render();
 }
@@ -1028,19 +848,9 @@ function update(dt) {
   W0.mat.uniforms.uPress.value = hand.amt;
   handLight.intensity = hand.amt * 0.5;
   for (const w of wells) w.mat.uniforms.uTime.value = time;
-  lens.uniforms.uT.value = time;
-  dust.uT.value = time; dust.uPx.value = renderer.domElement.height / (2 * Math.tan(camera.fov * Math.PI / 360));
-  const fl = 1 + 0.035 * Math.sin(time * 7.3) * Math.sin(time * 2.9) + 0.015 * Math.sin(time * 13.1);   // 등불이 아주 조금씩 흔들림
-  pend.intensity = 5 * fl; sconce.intensity = 6 * (1 + 0.03 * Math.sin(time * 5.1 + 1)); spillWin.intensity = 2.2 * fl;
-  const sway = X.sway ?? (mode === 'hero' ? 0.45 : touchOn || pickOn ? 0.03 : 0.12);
+  const sway = mode === 'hero' ? 0.45 : touchOn || pickOn ? 0.03 : 0.12;
   const drift = mode === 'hero' ? Math.sin(time * 0.12) * 0.25 : 0;
-  camera.position.copy(cam.p).add(V(pointer.x * sway + drift + Math.sin(time * 0.6) * 0.004, -pointer.y * sway * 0.4 + Math.sin(time * 0.9 + 1) * 0.003, 0));   // 손에 든 카메라처럼 아주 작은 숨결
+  camera.position.copy(cam.p).add(V(pointer.x * sway + drift, -pointer.y * sway * 0.4, 0));
   camera.lookAt(cam.t);
-  for (const f of X.hooks) f(dt, time);
 }
-// ---------- 다른 페이지(touch/)가 이 장면 위에 덧붙일 때 쓰는 손잡이 ----------
-// 병 k를 받침에 올려 둔 상태로 바로 맞춤 (애니메이션 없음)
-export function place(k) { stopTweens(); kind = k; step = 3; pickOn = touchOn = false; canvas.classList.remove('touch'); settle(3); }
-// hooks: 매 프레임 끝에 불림 (dt, time). sway: 숫자를 넣으면 포인터에 따른 카메라 흔들림 크기를 덮어씀
-export const X = { scene, camera, renderer, cam, tween, camTo, jars, TOP, GLSL, dockTop, setDock, setAO, ssao, hooks: [], sway: null };
 frame();
