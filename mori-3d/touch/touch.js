@@ -1126,7 +1126,7 @@ async function open() {
   if (!spill.landed) seaU.uSrc.value.set(g0.x + 0.25, g0.z);
   await wait(0.25);                                                                     // 줄기의 꼬리가 떨어져 내림
   // 4) 쏴악: 고인 자리에서 바닥이 번지고, 그 뒤를 따라 가게가 쏟은 자리부터 빛나는 경계와 함께 녹아 사라지며 밤하늘이 드러남
-  sfx('swell', { gain: 0.2 }); window.moriBgm?.level(0.6, 3); if (MOSS) sfx('press_moss', { gain: 0.3, pan: panAt(J.g.position) });   // 낮게 부푸는 들바람 3초(예전 영화식 돌진음은 갑자기 크게 울려서 바꿈). 브금은 끊지 않고 조금만 낮춰 풍경까지 이어 감
+  sfx('swell', { gain: 0.2 }); window.moriBgm?.level(0, 0.8); if (MOSS) sfx('press_moss', { gain: 0.3, pan: panAt(J.g.position) });   // 낮게 부푸는 들바람 3초(예전 영화식 돌진음은 갑자기 크게 울려서 바꿈). 브금은 풍경이 열리는 동안 2~3초에 걸쳐 꺼지고, 병에 다시 담으면 돌아옴
   sky.visible = true; mine.forEach((l) => { l.visible = true; }); if (vol) vol.over.visible = true; if (envNight) scene.environment = envNight; X.setAO(false);   // 녹기 시작할 때부터 밤하늘이 비침, 그늘 패스는 끔(녹는 가게·바닥 셰이더와 맞지 않음)
   disU.uDisC.value.set(seaU.uSrc.value.x, SEA_Y, seaU.uSrc.value.y);
   skyU.uRise.value = -0.16; tween(16 * Q, (k) => { skyU.uRise.value = -0.16 * (1 - k); }, out3);   // 달이 천천히 떠오름
