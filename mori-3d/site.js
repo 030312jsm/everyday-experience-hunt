@@ -67,6 +67,8 @@ let touching = false;
 async function startTouch(k, smooth) {
   if (touching) return; touching = true;
   if (location.search !== `?k=${NAME[k]}`) history.pushState(null, '', `./?k=${NAME[k]}`);   // touch.js가 주소의 k로 촉감을 정함
+  const syncTop = () => { try { if (parent !== window) { parent.history.replaceState(null, '', `./?k=${NAME[k]}`); parent.document.title = document.title; } } catch { /* 다른 사이트 안이면 건너뜀 */ } };
+  syncTop();                                                                       // 바깥 틀의 주소창도 지금 촉감으로
   const css = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'touch/touch.css' });
   await new Promise((r) => { css.onload = css.onerror = r; document.head.appendChild(css); });
   document.querySelector('link[href="style.css"]').disabled = true;
@@ -80,11 +82,12 @@ async function startTouch(k, smooth) {
   document.body.className = 'sealed';
   window.__moriSmooth = smooth;                                                   // 둘러보기에서 넘어오면 카메라가 끊기지 않고 병 앞으로 다가감
   await import('./touch/touch.js');
+  syncTop();                                                                       // touch.js가 바꾼 제목을 탭 제목에도
   const root = document.documentElement;
   requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('k', 'in')));   // 준비되면 어두운 덮개를 걷음(둘러보기에서 이어 들어온 경우엔 덮개 없이 그대로)
-  document.querySelectorAll('#kinds a').forEach((a) => { a.onclick = (e) => {                   // 다른 촉감으로: 어둡게 덮고 소리를 줄인 뒤 넘어감
+  document.querySelectorAll('#kinds a').forEach((a) => { a.onclick = (e) => {                   // 다른 촉감으로: 어둡게 덮고 넘어감. 브금은 끊지 않고(풍경에서 꺼져 있었다면 다시 올리며) 이어 감
     e.preventDefault(); if (a.getAttribute('aria-current')) return;
-    root.classList.remove('in'); window.moriBgm?.level(0, 0.1); setTimeout(() => { location.href = a.href; }, 380);
+    root.classList.remove('in'); window.moriBgm?.level(1, 0.8); setTimeout(() => { location.href = a.href; }, 380);
   }; });
 }
 open.onclick = (e) => { e.preventDefault(); startTouch(S.getKind(), true); };
@@ -92,21 +95,10 @@ addEventListener('popstate', () => location.reload());                          
 const k0 = KOF[new URLSearchParams(location.search).get('k')];
 if (k0) { hero.hidden = true; startTouch(k0, false); }                              // 주소에 촉감이 있으면 바로 그 병 앞에서 시작
 
-// ── 브금: 가게에 들어갈 때부터 작게 깔림. 촉감 풍경이 열리면 touch.js가 level()로 낮추고, 병에 다시 담으면 되돌림 ──
-const bgm = window.moriBgm = {
-  ac: null, g: null, k: 1, muted: false,
-  start() {
-    if (this.ac) return this.ac.resume();
-    this.ac = new (window.AudioContext || window.webkitAudioContext)();
-    this.g = this.ac.createGain(); this.g.gain.value = 0; this.g.connect(this.ac.destination);
-    fetch('touch/sound/bgm_b.mp3').then((r) => r.arrayBuffer()).then((a) => this.ac.decodeAudioData(a)).then((b) => {
-      const s = this.ac.createBufferSource(); s.buffer = b; s.loop = true; s.connect(this.g); s.start(); this.level(this.k, 1.2);
-    }).catch(() => {});
-  },
-  level(k, tc = 0.8) { this.k = k; this.g?.gain.setTargetAtTime(this.muted ? 0 : 0.3 * k, this.ac.currentTime, tc); },   // k: 0~1 크기, tc: 바뀌는 빠르기(초)
-  mute(m) { this.muted = m; this.level(this.k, 0.05); },
-};
-$('#mute').onclick = (e) => { bgm.mute(!bgm.muted); e.target.textContent = bgm.muted ? '소리 켜기' : '소리 끄기'; e.target.setAttribute('aria-pressed', bgm.muted); };
+// ── 브금(bgm.js): 바깥 틀이 들고 있어 소리 끔 상태도 화면이 새로 불린 뒤 그대로 이어짐 ──
+const bgm = window.moriBgm, shopMute = $('#mute');
+const showMute = () => { shopMute.textContent = bgm.muted ? '소리 켜기' : '소리 끄기'; shopMute.setAttribute('aria-pressed', bgm.muted); };
+shopMute.onclick = () => { bgm.mute(!bgm.muted); showMute(); }; showMute();
 
 next.onclick = () => { const s = S.getStep(); if (s === 2) S.pick(S.getKind()); else S.go(s < LAST ? s + 1 : 0); };
 prev.onclick = () => S.go(S.getStep() - 1);

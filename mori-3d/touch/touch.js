@@ -1089,6 +1089,11 @@ const cork = J.cork, cork0 = cork.position.clone(), lumps = J.inner.children.sli
 const lumpMats = []; J.inner.traverse((o) => { if (o.material && !lumpMats.includes(o.material)) lumpMats.push(o.material); });   // 병 속 내용물 재질(구름 덩이, 모래와 물 층)
 const lump0Mat = lumpMats.map((m) => [m.transparent, m.opacity]);
 const fadeLumps = (a) => lumpMats.forEach((m, i) => { m.transparent = a < 1 || lump0Mat[i][0]; m.opacity = a * lump0Mat[i][1]; });
+const jarMat0 = [...jarMats].filter((m) => !lumpMats.includes(m)).map((m) => [m, m.transparent, m.opacity]);   // 속 내용물 재질은 fadeLumps가 따로 다룸
+const fadeJar = (a) => {   // 병 전체(유리·코르크·끈)를 a(0~1)만큼만 보이게. 투명 여부가 바뀔 때만 셰이더를 다시 만듦
+  jarMat0.forEach(([m, tr, op]) => { const t = a < 1 || tr; if (m.transparent !== t) { m.transparent = t; m.needsUpdate = true; } m.opacity = a * op; });
+  J.g.visible = a > 0;
+};
 let state = 'sealed', pull = 0, dragY = null;
 const corkAt = () => { const v = cork.getWorldPosition(V(0, 0, 0)).project(camera); return [(v.x + 1) / 2 * innerWidth, (1 - v.y) / 2 * innerHeight]; };
 const nearCork = (e) => { const [cx, cy] = corkAt(); return Math.hypot(e.clientX - cx, e.clientY - cy) < Math.max(56, innerHeight * 0.09); };
@@ -1099,7 +1104,6 @@ async function open() {
   state = 'opening'; audio(); dragY = null; pull = 0;
   body.classList.remove('grab', 'grabbing'); body.classList.replace('sealed', 'open');
   hint.style.opacity = 0; J.g.rotation.z = 0;
-  sfx('cork', { gain: 0.63 });   // 작은 유리병 코르크 '뽁' 한 번(0.5초). 예전 파일은 앞이 0.9초 비어 있고 소리가 두 번 들어 있었음
   // 1) 코르크가 튀어 오름
   const c = cork.position.clone();
   tween(0.9 * Q, (k) => { cork.position.set(c.x + 0.1 * k, c.y + 0.5 * k, c.z + 0.06 * k); cork.rotation.set(0.9 * k, 0, 1.6 * k); }, out3).then(() => { cork.visible = false; });
@@ -1112,7 +1116,7 @@ async function open() {
   camTo({ p: V(jp.x + 0.08, jp.y + 0.36, jp.z + 1.15), t: V(jp.x + 0.2, jp.y + 0.24, jp.z) }, 1.8 * Q);   // 병 속과 줄기가 한눈에 들어오게
   const ss = (k) => k * k * (3 - 2 * k);
   await tween(1.3 * Q, (k) => tilt(-2.05 * ss(Math.max(0, (k - 0.15) / 0.85)), 0.06 * ss(k), 0.28 * ss(Math.min(1, k / 0.6))), (k) => k);   // 먼저 들고, 이어서 기울임
-  sfx(WAVE ? 'sandpour' : MOSS ? 'waterpour' : 'pour_cloud', { gain: WAVE ? 0.8 : MOSS ? 0.6 : 0.3, pan: panAt(J.g.position), fade: [WAVE || MOSS ? 3 : 2.4, 0.7] });   // 쏟아지는 소리
+  if (!QUIET) sfx(WAVE ? 'sandpour' : 'waterpour', { gain: WAVE ? 0.8 : 0.6, pan: panAt(J.g.position), fade: [3, 0.7] });   // 쏟아지는 소리
   // 3) 다 빠질 때까지 점점 더 거꾸로 세우며 털듯이 흔듦. 떨어진 자리에 내용물이 쌓이고 고임
   await tween(3.4 * Q, (k) => {
     tilt(-2.05 - 0.5 * ss(k) - 0.1 * Math.sin(k * Math.PI * 6) * (1 - k), 0.06, 0.28);
@@ -1144,7 +1148,7 @@ async function open() {
     J.g.rotation.z = THREE.MathUtils.lerp(a1, -Math.PI / 2, out3(Math.min(1, k / 0.6)));
     J.g.position.set(THREE.MathUtils.lerp(p1.x, rest.x, k), THREE.MathUtils.lerp(p1.y, rest.y, f) + 0.015 * Math.sin(u * Math.PI) * (1 - u), THREE.MathUtils.lerp(p1.z, rest.z, k));
   });
-  wait(0.36).then(() => sfx('glass', { gain: 0.35, pan: panAt(J.g.position) }));            // 빈 병이 바닥에 닿는 소리
+  wait(0.36).then(() => tween(1.4 * Q, (k) => fadeJar(1 - k)));                             // 빈 병이 바닥에 닿으면 소리 없이 옅어지며 사라짐
   camTo({ p: V(jp.x + 0.1, jp.y + 0.8, jp.z + 2.4), t: V(jp.x + 0.3, jp.y + 0.3, jp.z - 0.8) }, 2.4 * Q);   // 크게 물러나 가게가 사라지는 걸 보여 줌
   await wait(2.8);
   world(true); seaU.uR.value = 80;
@@ -1158,12 +1162,12 @@ async function open() {
 async function reseal() {
   if (state !== 'open') return;
   state = 'closing'; again.hidden = true; hint.style.opacity = 0; pressed = false;
-  sfx('reseal', { gain: 0.32 }); wait(0.9).then(() => sfx('glass', { gain: 0.25 }));
+  sfx('reseal', { gain: 0.32 });
   body.classList.add('veil');
   await tween(0.8 * Q, (k) => { veilU.uVeil.value = k; });
   world(false); seaU.uR.value = 0; sea.visible = false; tU.uDecay.value = 0;   // 자국 버퍼도 비움
   cork.visible = true; cork.position.copy(cork0); cork.rotation.set(0, 0, 0);
-  J.g.rotation.set(0, 0, 0); J.g.position.copy(X.dockTop());                                 // 눕혀 둔 병을 받침 위에 다시 세움
+  fadeJar(1); J.g.rotation.set(0, 0, 0); J.g.position.copy(X.dockTop());                     // 사라졌던 병을 받침 위에 다시 세움
   content.reset(); seaU.uPile.value = 0;
   lumps.forEach((m, i) => { m.position.copy(lump0[i]); m.scale.setScalar(1); });
   fadeLumps(1); J.inner.visible = true; J.inner.scale.set(1, 1, 1); J.inner.position.y = 0; J.light.intensity = 0.65;
@@ -1237,7 +1241,7 @@ function seaAt(e) {
 }
 canvas.addEventListener('pointerdown', (e) => {
   if (state === 'sealed' && nearCork(e)) { audio(); dragY = e.clientY; canvas.setPointerCapture(e.pointerId); body.classList.add('grabbing'); return; }
-  if (state === 'open' && seaAt(e)) { pressed = true; canvas.setPointerCapture(e.pointerId); sfx(WAVE ? 'sandscratch' : MOSS ? 'press_moss' : 'press_cloud', { gain: WAVE ? 0.4 : MOSS ? 0.42 : 0.3, at: WAVE ? Math.random() * 10 : 0, dur: WAVE ? 0.3 : undefined, pan: panAt(hit) }); }
+  if (state === 'open' && seaAt(e)) { pressed = true; canvas.setPointerCapture(e.pointerId); if (!QUIET) sfx(WAVE ? 'sandscratch' : 'press_moss', { gain: WAVE ? 0.4 : 0.42, at: WAVE ? Math.random() * 10 : 0, dur: WAVE ? 0.3 : undefined, pan: panAt(hit) }); }
 });
 canvas.addEventListener('pointermove', (e) => {
   if (state === 'sealed') {
@@ -1337,8 +1341,9 @@ X.hooks.push((dt, time) => {
 // 효과음은 CC0와 Pixabay Content License(출처 표기 없이 사용 가능). 파일과 원본 주소는 sound/출처.md
 // 손이 닿는 소리와 한 번씩 나는 소리는 화면에서 닿은 쪽(왼쪽·오른쪽)에서 들림
 const VOL = 0.6;
-const RUB = WAVE ? 'sandscratch' : MOSS ? 'rub_moss' : 'rub_cloud', AMB = WAVE ? 'amb_wave' : MOSS ? 'amb_moss' : 'amb_cloud';   // 쓸 때 소리, 배경 소리(배경은 크기를 −24 LUFS로 맞춘 Freesound CC0 녹음)
-const SND = ['cork', 'drip', 'glass', 'swell', 'reseal', RUB, AMB, ...(WAVE ? ['sandpour'] : MOSS ? ['waterpour', 'press_moss'] : ['pour_cloud', 'press_cloud'])];   // 이 촉감에 쓰는 것만 받음
+const QUIET = !WAVE && !MOSS;   // 구름은 쏟을 때·쓸 때·누를 때 소리를 내지 않음(천 스치는 소리도, 바람 잡음도 사용자가 "어울리지 않는다"고 함). 낮은 배경 바람만 남김
+const RUB = WAVE ? 'sandscratch' : MOSS ? 'rub_moss' : '', AMB = WAVE ? 'amb_wave' : MOSS ? 'amb_moss' : 'amb_cloud';   // 쓸 때 소리, 배경 소리(배경은 크기를 −24 LUFS로 맞춘 Freesound CC0 녹음)
+const SND = ['drip', 'swell', 'reseal', AMB, ...(WAVE ? [RUB, 'sandpour'] : MOSS ? [RUB, 'waterpour', 'press_moss'] : [])];   // 이 촉감에 쓰는 것만 받음
 let AC = null, master, tPan, tGain, tLP, ambGain, muted = !!window.moriBgm?.muted;   // 가게에서 소리를 꺼 두었으면 그대로 이어받음
 const buf = {};
 function audio() {
